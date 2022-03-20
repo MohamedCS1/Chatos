@@ -6,7 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.util.Patterns
+import android.widget.Toast
 import com.example.messenger.databinding.ActivitySignUpBinding
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
@@ -56,6 +58,8 @@ class SignUpActivity : AppCompatActivity(),TextWatcher {
                 return@setOnClickListener
             }
 
+            sendEmailVerification()
+
             mAuth.createUserWithEmailAndPassword(email ,password).addOnCompleteListener(object :OnCompleteListener<AuthResult>{
                 override fun onComplete(task: Task<AuthResult>) {
                     if (task.isSuccessful)
@@ -73,6 +77,21 @@ class SignUpActivity : AppCompatActivity(),TextWatcher {
 
         }
 
+    }
+
+    fun sendEmailVerification() {
+        val user = mAuth.currentUser
+        user!!.sendEmailVerification().addOnCompleteListener {
+            if (it.isSuccessful)
+            {
+               Toast.makeText(this ,"Email is send" ,Toast.LENGTH_SHORT).show()
+            }
+            else
+            {
+                Log.e("email" ,it.exception?.message.toString())
+                Toast.makeText(this , it.exception?.message.toString(),Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
