@@ -2,17 +2,15 @@ package com.example.messenger
 
 import android.content.Intent
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Patterns
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.example.messenger.databinding.ActivityLogInBinding
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.*
 
 class LogInActivity : AppCompatActivity() ,TextWatcher{
 
@@ -50,6 +48,7 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
                 return@setOnClickListener
             }
 
+
             emailIsVerify()
 
         }
@@ -60,20 +59,36 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
 
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     fun emailIsVerify()
     {
-        val user = mAuth.currentUser
-        user?.reload()
-        if (user!!.isEmailVerified)
-        {
-            val intentToMainActivity = Intent(this@LogInActivity ,MainActivity::class.java)
-            intentToMainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            startActivity(intentToMainActivity)
-        }
-        else
-        {
-             Toast.makeText(this ,"Email Verification" ,Toast.LENGTH_SHORT).show()
-        }
+       GlobalScope.launch(Dispatchers.Main) {
+
+           val user = mAuth.currentUser
+
+           val reloadFirebase = async { user!!.reload() }
+
+           reloadFirebase.await().addOnCompleteListener {
+               if (it.isSuccessful)
+               {
+                   if (user!!.isEmailVerified)
+                   {
+                       val intentToMainActivity = Intent(this@LogInActivity ,MainActivity::class.java)
+                       intentToMainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                       startActivity(intentToMainActivity)
+                   }
+                   else
+                   {
+                       Toast.makeText(this@LogInActivity ,"Email Verification" ,Toast.LENGTH_SHORT).show()
+                   }
+               }
+               else
+               {
+                   Toast.makeText(this@LogInActivity ,"Check your connection" ,Toast.LENGTH_SHORT).show()
+               }
+           }
+
+       }
     }
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
