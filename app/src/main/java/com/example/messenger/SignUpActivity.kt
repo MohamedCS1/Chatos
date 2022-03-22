@@ -58,13 +58,13 @@ class SignUpActivity : AppCompatActivity(),TextWatcher {
                 return@setOnClickListener
             }
 
-            sendEmailVerification()
 
             mAuth.createUserWithEmailAndPassword(email ,password).addOnCompleteListener(object :OnCompleteListener<AuthResult>{
                 override fun onComplete(task: Task<AuthResult>) {
                     if (task.isSuccessful)
                     {
-                        val intentToMainActivity = Intent(this@SignUpActivity ,MainActivity::class.java)
+                        sendEmailVerification()
+                        val intentToMainActivity = Intent(this@SignUpActivity ,LogInActivity::class.java)
                         intentToMainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                         startActivity(intentToMainActivity)
                     }
@@ -74,7 +74,6 @@ class SignUpActivity : AppCompatActivity(),TextWatcher {
                     }
                 }
             })
-
         }
 
     }

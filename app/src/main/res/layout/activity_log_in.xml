@@ -3,10 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:focusableInTouchMode="true"
-    tools:context=".SignUpActivity">
-
+    android:layout_height="match_parent"
+    tools:context=".LogInActivity">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,20 +21,6 @@
             app:layout_constraintTop_toTopOf="parent"
             android:src="@drawable/ic_logo"/>
 
-        <EditText
-            android:id="@+id/et_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/_20sdp"
-            android:layout_marginLeft="@dimen/_20sdp"
-            android:layout_marginTop="32dp"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:hint="Name"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
         <EditText
             android:id="@+id/et_emailOrNumber"
@@ -51,7 +35,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/et_name" />
+            app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
         <EditText
             android:id="@+id/et_password"
@@ -69,7 +53,7 @@
             app:layout_constraintTop_toBottomOf="@+id/et_emailOrNumber" />
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/buSignUp"
+            android:id="@+id/bu_LogIn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_25sdp"
@@ -84,14 +68,14 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_hint_failure">
 
             <TextView
-                android:id="@+id/tv_bu_signIn"
+                android:id="@+id/tv_bu_LogIn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/_20sdp"
                 android:layout_marginTop="@dimen/_5sdp"
                 android:layout_marginRight="@dimen/_20sdp"
                 android:layout_marginBottom="@dimen/_5sdp"
-                android:text="SIGN UP"
+                android:text="LogIn"
                 android:padding="@dimen/_5sdp"
                 android:gravity="center"
                 android:layout_gravity="center"
@@ -112,7 +96,37 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/et_password" />
 
+        <androidx.cardview.widget.CardView
+            android:id="@+id/bu_CreateNewAccount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginRight="@dimen/_20sdp"
+            app:cardBackgroundColor="#51BA65"
+            app:cardCornerRadius="@dimen/_10sdp"
+            app:cardElevation="@null"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/bu_LogIn">
 
+            <TextView
+                android:id="@+id/tv_bu_CreateNewAccount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginRight="@dimen/_20sdp"
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:gravity="center"
+                android:padding="@dimen/_5sdp"
+                android:text="CREATE NEW ACCOUNT"
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/_15ssp"
+                android:textStyle="bold" />
+        </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>
