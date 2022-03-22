@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.util.Patterns
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import com.example.messenger.databinding.ActivityLogInBinding
 import com.example.tools.LoadingProgress
 import com.google.firebase.auth.FirebaseAuth
@@ -26,6 +27,9 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
         super.onCreate(savedInstanceState)
         binding = ActivityLogInBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
 
         binding.etEmailOrNumber.addTextChangedListener(this)
         binding.etPassword.addTextChangedListener(this)
@@ -102,14 +106,13 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
                    else
                    {
                        progressDialog.hide()
-                       Toast.makeText(this@LogInActivity ,"Email Verification" ,Toast.LENGTH_SHORT).show()
+                       binding.tvHintFailure.text = "Please check your email to verify it"
                    }
                }
                else
                {
-
                    progressDialog.hide()
-                   Toast.makeText(this@LogInActivity ,"Check your connection" ,Toast.LENGTH_SHORT).show()
+                   binding.tvHintFailure.text = "Please check your internet"
                }
            }
        }
