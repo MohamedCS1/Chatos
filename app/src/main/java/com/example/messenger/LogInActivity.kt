@@ -29,28 +29,7 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
         mAuth = FirebaseAuth.getInstance()
 
         binding.buLogIn.setOnClickListener {
-            val email = binding.etEmailOrNumber.text.toString()
-            val password = binding.etPassword.text.toString()
-
-
-
-            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches())
-            {
-                binding.etEmailOrNumber.error = "Please enter a valid email"
-                binding.etEmailOrNumber.requestFocus()
-                return@setOnClickListener
-            }
-
-            if (password.length < 6)
-            {
-                binding.etPassword.error = "Password 6 char required"
-                binding.etPassword.requestFocus()
-                return@setOnClickListener
-            }
-
-
-            emailIsVerify()
-
+            logIn()
         }
 
         binding.buCreateNewAccount.setOnClickListener {
@@ -59,8 +38,32 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
 
     }
 
+    fun logIn()
+    {
+        val email = binding.etEmailOrNumber.text.toString()
+        val password = binding.etPassword.text.toString()
+
+
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches())
+        {
+            binding.etEmailOrNumber.error = "Please enter a valid email"
+            binding.etEmailOrNumber.requestFocus()
+            return
+        }
+
+        if (password.length < 6)
+        {
+            binding.etPassword.error = "Password 6 char required"
+            binding.etPassword.requestFocus()
+            return
+        }
+        emailIsVerifyAndLogIn(email, password)
+
+    }
+
     @OptIn(DelicateCoroutinesApi::class)
-    fun emailIsVerify()
+    fun emailIsVerifyAndLogIn(email:String ,password:String)
     {
        GlobalScope.launch(Dispatchers.Main) {
 
@@ -73,9 +76,18 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
                {
                    if (user!!.isEmailVerified)
                    {
-                       val intentToMainActivity = Intent(this@LogInActivity ,MainActivity::class.java)
-                       intentToMainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                       startActivity(intentToMainActivity)
+                       mAuth.signInWithEmailAndPassword(email ,password).addOnCompleteListener {
+                           if(it.isSuccessful)
+                           {
+                               val intentToMainActivity = Intent(this@LogInActivity ,MainActivity::class.java)
+                               intentToMainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                               startActivity(intentToMainActivity)
+                           }
+                           else
+                           {
+                               binding.tvHintFailure.text = "${it.exception!!.message}"
+                           }
+                       }
                    }
                    else
                    {
@@ -87,7 +99,6 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
                    Toast.makeText(this@LogInActivity ,"Check your connection" ,Toast.LENGTH_SHORT).show()
                }
            }
-
        }
     }
 

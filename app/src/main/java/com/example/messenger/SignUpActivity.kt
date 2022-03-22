@@ -9,6 +9,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.example.messenger.databinding.ActivitySignUpBinding
 import com.example.pojo.User
 import com.google.android.gms.tasks.OnCompleteListener
