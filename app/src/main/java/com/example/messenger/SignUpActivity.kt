@@ -10,15 +10,24 @@ import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
 import com.example.messenger.databinding.ActivitySignUpBinding
+import com.example.pojo.User
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FirebaseFirestore
 
 class SignUpActivity : AppCompatActivity(),TextWatcher {
 
     lateinit var binding: ActivitySignUpBinding
-    lateinit var mAuth:FirebaseAuth
+    private val mAuth:FirebaseAuth by lazy {
+        FirebaseAuth.getInstance()
+    }
+    private val fireStore:FirebaseFirestore by lazy {
+        FirebaseFirestore.getInstance()
+    }
+    val  currentUserDocRef get() =  fireStore.document("users/${mAuth.currentUser!!.uid}")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,52 +39,59 @@ class SignUpActivity : AppCompatActivity(),TextWatcher {
         binding.etPassword.addTextChangedListener(this)
         binding.buSignUp.isEnabled = false
 
-        mAuth = FirebaseAuth.getInstance()
-
         binding.buSignUp.setOnClickListener {
-            val email = binding.etEmailOrNumber.text.toString()
-            val password = binding.etPassword.text.toString()
-            val name = binding.etName.text.toString()
-
-            if (name.isBlank())
-            {
-                binding.etName.error = "Name required"
-                binding.etName.requestFocus()
-                return@setOnClickListener
-            }
-
-            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches())
-            {
-                binding.etEmailOrNumber.error = "Please enter a valid email"
-                binding.etEmailOrNumber.requestFocus()
-                return@setOnClickListener
-            }
-
-            if (password.length < 6)
-            {
-                binding.etPassword.error = "Password 6 char required"
-                binding.etPassword.requestFocus()
-                return@setOnClickListener
-            }
-
-
-            mAuth.createUserWithEmailAndPassword(email ,password).addOnCompleteListener(object :OnCompleteListener<AuthResult>{
-                override fun onComplete(task: Task<AuthResult>) {
-                    if (task.isSuccessful)
-                    {
-                        sendEmailVerification()
-                        val intentToMainActivity = Intent(this@SignUpActivity ,LogInActivity::class.java)
-                        intentToMainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                        startActivity(intentToMainActivity)
-                    }
-                    else
-                    {
-                        binding.tvHintFailure.text = task.exception?.message.toString()
-                    }
-                }
-            })
+          signUp()
         }
 
+    }
+
+    fun signUp()
+    {
+        val email = binding.etEmailOrNumber.text.toString()
+        val password = binding.etPassword.text.toString()
+        val name = binding.etName.text.toString()
+
+        if (name.isBlank())
+        {
+            binding.etName.error = "Name required"
+            binding.etName.requestFocus()
+            return
+        }
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches())
+        {
+            binding.etEmailOrNumber.error = "Please enter a valid email"
+            binding.etEmailOrNumber.requestFocus()
+            return
+        }
+
+        if (password.length < 6)
+        {
+            binding.etPassword.error = "Password 6 char required"
+            binding.etPassword.requestFocus()
+            return
+        }
+        createNewAccount(User(name ,email ,password))
+    }
+
+    fun createNewAccount(user: User)
+    {
+        mAuth.createUserWithEmailAndPassword(user.email ,user.password).addOnCompleteListener(object :OnCompleteListener<AuthResult>{
+            override fun onComplete(task: Task<AuthResult>) {
+                if (task.isSuccessful)
+                {
+                    sendEmailVerification()
+                    currentUserDocRef.set(user)
+                    val intentToMainActivity = Intent(this@SignUpActivity ,LogInActivity::class.java)
+                    intentToMainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    startActivity(intentToMainActivity)
+                }
+                else
+                {
+                    binding.tvHintFailure.text = task.exception?.message.toString()
+                }
+            }
+        })
     }
 
     fun sendEmailVerification() {
