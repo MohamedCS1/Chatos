@@ -9,6 +9,7 @@ import android.util.Patterns
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.messenger.databinding.ActivityLogInBinding
+import com.example.tools.LoadingProgress
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.*
 
@@ -16,6 +17,10 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
 
     lateinit var binding: ActivityLogInBinding
     lateinit var mAuth: FirebaseAuth
+
+    private val progressDialog by lazy {
+        LoadingProgress(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +45,7 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
 
     fun logIn()
     {
-        val email = binding.etEmailOrNumber.text.toString()
+        val email = binding.etEmailOrNumber.text.toString().trim()
         val password = binding.etPassword.text.toString()
 
 
@@ -67,6 +72,8 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
     {
        GlobalScope.launch(Dispatchers.Main) {
 
+           progressDialog.show()
+
            val user = mAuth.currentUser
 
            val reloadFirebase = async { user!!.reload() }
@@ -79,23 +86,29 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
                        mAuth.signInWithEmailAndPassword(email ,password).addOnCompleteListener {
                            if(it.isSuccessful)
                            {
+                               progressDialog.hide()
                                val intentToMainActivity = Intent(this@LogInActivity ,MainActivity::class.java)
                                intentToMainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                                startActivity(intentToMainActivity)
+                               finish()
                            }
                            else
                            {
+                               progressDialog.hide()
                                binding.tvHintFailure.text = "${it.exception!!.message}"
                            }
                        }
                    }
                    else
                    {
+                       progressDialog.hide()
                        Toast.makeText(this@LogInActivity ,"Email Verification" ,Toast.LENGTH_SHORT).show()
                    }
                }
                else
                {
+
+                   progressDialog.hide()
                    Toast.makeText(this@LogInActivity ,"Check your connection" ,Toast.LENGTH_SHORT).show()
                }
            }
@@ -123,4 +136,16 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
 
     override fun afterTextChanged(s: Editable?) {
     }
+
+//    override fun onStart() {
+//
+//        if (mAuth.currentUser?.uid != null)
+//        {
+//            val intentToMainActivity = Intent(this@LogInActivity ,MainActivity::class.java)
+//            intentToMainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+//            startActivity(intentToMainActivity)
+//            finish()
+//        }
+//        super.onStart()
+//    }
 }

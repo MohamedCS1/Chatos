@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.example.messenger.databinding.ActivitySignUpBinding
 import com.example.pojo.User
+import com.example.tools.LoadingProgress
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
@@ -29,6 +30,10 @@ class SignUpActivity : AppCompatActivity(),TextWatcher {
         FirebaseFirestore.getInstance()
     }
     val  currentUserDocRef get() =  fireStore.document("users/${mAuth.currentUser!!.uid}")
+
+    private val progressDialog by lazy {
+        LoadingProgress(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +53,7 @@ class SignUpActivity : AppCompatActivity(),TextWatcher {
 
     fun signUp()
     {
-        val email = binding.etEmailOrNumber.text.toString()
+        val email = binding.etEmailOrNumber.text.toString().trim()
         val password = binding.etPassword.text.toString()
         val name = binding.etName.text.toString()
 
@@ -77,10 +82,12 @@ class SignUpActivity : AppCompatActivity(),TextWatcher {
 
     fun createNewAccount(user: User)
     {
+        progressDialog.show()
         mAuth.createUserWithEmailAndPassword(user.email ,user.password).addOnCompleteListener(object :OnCompleteListener<AuthResult>{
             override fun onComplete(task: Task<AuthResult>) {
                 if (task.isSuccessful)
                 {
+                    progressDialog.hide()
                     sendEmailVerification()
                     currentUserDocRef.set(user)
                     val intentToMainActivity = Intent(this@SignUpActivity ,LogInActivity::class.java)
@@ -89,6 +96,7 @@ class SignUpActivity : AppCompatActivity(),TextWatcher {
                 }
                 else
                 {
+                    progressDialog.hide()
                     binding.tvHintFailure.text = task.exception?.message.toString()
                 }
             }
