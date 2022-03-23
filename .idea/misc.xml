@@ -4,8 +4,12 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/drawable/ic_chat_selected.xml" value="0.3225" />
+        <entry key="app/src/main/res/drawable/ic_chat_unselected.xml" value="0.2495" />
+        <entry key="app/src/main/res/drawable/ic_frends_selected.xml" value="0.2495" />
+        <entry key="app/src/main/res/drawable/ic_friends_selected.xml" value="0.2495" />
+        <entry key="app/src/main/res/drawable/test.xml" value="0.205" />
         <entry key="app/src/main/res/layout/activity_log_in.xml" value="0.340625" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.31979166666666664" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_sign_in.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_chat.xml" value="0.21614583333333334" />
