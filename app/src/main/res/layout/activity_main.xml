@@ -6,58 +6,103 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@color/my_green" />
+
+        <TextView
+            android:id="@+id/tv_title_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_5sdp"
+            android:layout_marginRight="@dimen/_5sdp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Chats"
+            android:textColor="@color/my_green"
+            android:textSize="@dimen/_20ssp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@color/my_green" />
+    </LinearLayout>
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="0dp"
+        android:background="@color/my_green"
+        app:layout_constraintBottom_toTopOf="@+id/view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
     <View
+        android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_2sdp"
-        android:elevation="@dimen/_2sdp"
         android:background="#3956FF00"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_nav_bar" />
+        android:elevation="@dimen/_2sdp"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_nav_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <LinearLayout
         android:id="@+id/bottom_nav_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_45sdp"
         android:layout_gravity="center"
-        android:gravity="center"
         android:background="#2196F3"
+        android:gravity="center"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:orientation="horizontal" >
+        app:layout_constraintStart_toStartOf="parent">
 
         <ImageView
             android:id="@+id/bu_chat"
             android:layout_width="@dimen/_20sdp"
             android:layout_height="wrap_content"
-            android:padding="@dimen/_8sdp"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackground"
-            android:src="@drawable/ic_chat_unselected"/>
+            android:padding="@dimen/_10sdp"
+            android:src="@drawable/ic_chat_unselected" />
+
         <ImageView
             android:id="@+id/bu_friends"
             android:layout_width="@dimen/_20sdp"
             android:layout_height="wrap_content"
-            android:padding="@dimen/_4sdp"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackground"
-            android:src="@drawable/ic_friends_unselected"/>
+            android:padding="@dimen/_6sdp"
+            android:src="@drawable/ic_friends_unselected" />
+
         <ImageView
             android:id="@+id/bu_explore"
             android:layout_width="@dimen/_20sdp"
             android:layout_height="wrap_content"
-            android:padding="@dimen/_8sdp"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackground"
-            android:src="@drawable/ic_expolre_unselected"/>
+            android:padding="@dimen/_10sdp"
+            android:src="@drawable/ic_expolre_unselected" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

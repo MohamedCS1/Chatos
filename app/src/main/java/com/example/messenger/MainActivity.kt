@@ -1,5 +1,6 @@
 package com.example.messenger
 
+import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -32,15 +33,6 @@ class MainActivity : AppCompatActivity() {
 
         onClickItemNavbar()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-        {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-        }
-        else
-        {
-
-        }
-
     }
 
     fun onClickItemNavbar(){
@@ -49,6 +41,7 @@ class MainActivity : AppCompatActivity() {
             binding.buChat.setImageResource(R.drawable.ic_chat_selected)
             binding.buFriends.setImageResource(R.drawable.ic_friends_unselected)
             binding.buExplore.setImageResource(R.drawable.ic_expolre_unselected)
+            binding.tvTitleToolbar.text = "Chats"
         }
 
         binding.buFriends.setOnClickListener {
@@ -56,6 +49,7 @@ class MainActivity : AppCompatActivity() {
             binding.buChat.setImageResource(R.drawable.ic_chat_unselected)
             binding.buFriends.setImageResource(R.drawable.ic_friends_selected)
             binding.buExplore.setImageResource(R.drawable.ic_expolre_unselected)
+            binding.tvTitleToolbar.text = "Friends"
         }
 
         binding.buExplore.setOnClickListener {
@@ -63,6 +57,7 @@ class MainActivity : AppCompatActivity() {
             binding.buChat.setImageResource(R.drawable.ic_chat_unselected)
             binding.buFriends.setImageResource(R.drawable.ic_friends_unselected)
             binding.buExplore.setImageResource(R.drawable.ic_expolre_selected)
+            binding.tvTitleToolbar.text = "Explore"
         }
     }
 
