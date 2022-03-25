@@ -36,11 +36,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onClickItemNavbar(){
+
+        setFragment(chatFragment)
+        binding.buChat.setImageResource(R.drawable.ic_chat_selected)
+        binding.buFriends.setImageResource(R.drawable.ic_friends_unselected)
+        binding.buExplore.setImageResource(R.drawable.ic_explore_unselected)
+        binding.tvTitleToolbar.text = "Chats"
+
         binding.buChat.setOnClickListener {
             setFragment(chatFragment)
             binding.buChat.setImageResource(R.drawable.ic_chat_selected)
             binding.buFriends.setImageResource(R.drawable.ic_friends_unselected)
-            binding.buExplore.setImageResource(R.drawable.ic_expolre_unselected)
+            binding.buExplore.setImageResource(R.drawable.ic_explore_unselected)
             binding.tvTitleToolbar.text = "Chats"
         }
 
@@ -48,7 +55,7 @@ class MainActivity : AppCompatActivity() {
             setFragment(friendsFragment)
             binding.buChat.setImageResource(R.drawable.ic_chat_unselected)
             binding.buFriends.setImageResource(R.drawable.ic_friends_selected)
-            binding.buExplore.setImageResource(R.drawable.ic_expolre_unselected)
+            binding.buExplore.setImageResource(R.drawable.ic_explore_unselected)
             binding.tvTitleToolbar.text = "Friends"
         }
 
@@ -56,7 +63,7 @@ class MainActivity : AppCompatActivity() {
             setFragment(exploreFragment)
             binding.buChat.setImageResource(R.drawable.ic_chat_unselected)
             binding.buFriends.setImageResource(R.drawable.ic_friends_unselected)
-            binding.buExplore.setImageResource(R.drawable.ic_expolre_selected)
+            binding.buExplore.setImageResource(R.drawable.ic_explore_selected)
             binding.tvTitleToolbar.text = "Explore"
         }
     }

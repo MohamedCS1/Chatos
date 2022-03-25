@@ -60,6 +60,10 @@ dependencies {
     //Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0")
 
+    //circle imageView
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+
 }
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
