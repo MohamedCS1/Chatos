@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/bu_create_groupe"
+            android:icon="@drawable/ic_groupe"
+            android:iconTint="@color/white"
+            android:title="Create a new group" />
+
+        <item
+            android:id="@+id/bu_settings"
+            android:icon="@drawable/ic_settings"
+            android:iconTint="@color/white"
+            android:title="Settings" />
+    </group>
+
+    <item android:title="general">
+        <menu>
+            <item
+                android:id="@+id/bu_donate"
+                android:icon="@drawable/ic_donate"
+                android:iconTint="@color/white"
+                android:title="Donation" />
+
+            <item
+                android:id="@+id/bu_faq"
+                android:icon="@drawable/ic_faq"
+                android:iconTint="@color/white"
+                android:title="Faq" />
+
+            <item
+                android:id="@+id/bu_languages"
+                android:icon="@drawable/ic_languages"
+                android:iconTint="@color/white"
+                android:title="Languages" />
+
+        </menu>
+    </item>
+
+</menu>

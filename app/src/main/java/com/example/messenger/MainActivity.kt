@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import com.example.fragments.ChatFragment
 import com.example.fragments.ExploreFragment
@@ -32,6 +33,10 @@ class MainActivity : AppCompatActivity() {
         exploreFragment = ExploreFragment()
 
         onClickItemNavbar()
+
+        binding.buMenu.setOnClickListener {
+            binding.drawerLayout.open()
+        }
 
     }
 
