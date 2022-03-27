@@ -2,23 +2,42 @@ package com.example.messenger
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import com.example.messenger.databinding.ActivityProfileBinding
+import com.example.tools.LoadingProgress
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import java.io.ByteArrayOutputStream
+import java.util.*
 
 class ProfileActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityProfileBinding
-    lateinit var arl: ActivityResultLauncher<Intent>
+    lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
+    lateinit var loadingProgress: LoadingProgress
+
+    private val storageInstance:FirebaseStorage by lazy {
+        FirebaseStorage.getInstance()
+    }
+
+    private val currentUserStorageRef:StorageReference get() = storageInstance.reference.child(FirebaseAuth.getInstance().currentUser!!.uid)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        loadingProgress = LoadingProgress(this)
 
         binding.profileImageBig.setOnClickListener {
             val intentImage = Intent().apply {
@@ -27,18 +46,47 @@ class ProfileActivity : AppCompatActivity() {
                 putExtra(Intent.EXTRA_MIME_TYPES , arrayOf("image/jpeg" ,"image/png"))
             }
 
-            arl.launch(intentImage)
+            activityResultLauncher.launch(intentImage)
         }
 
-        arl = registerForActivityResult(
+        binding.buToMain.setOnClickListener {
+            onBackPressed()
+        }
+
+        activityResultLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult() ,object :ActivityResultCallback<ActivityResult>{
                 override fun onActivityResult(result: ActivityResult?) {
                     if (result?.resultCode == Activity.RESULT_OK && result.data != null)
                     {
                         binding.profileImageBig.setImageURI(result.data!!.data)
+
+                        val imagePath = result.data!!.data
+                        compressImage(imagePath!!)
                     }
                 }
             })
+    }
 
+    fun compressImage(imageUri:Uri){
+        val outputStream = ByteArrayOutputStream()
+        MediaStore.Images.Media.getBitmap(this.contentResolver ,imageUri).compress(Bitmap.CompressFormat.JPEG ,30 ,outputStream)
+        upLoadProfileImageToFirebase(outputStream.toByteArray())
+    }
+    fun upLoadProfileImageToFirebase(imageByteArray:ByteArray)
+    {
+        loadingProgress.show()
+        val ref = currentUserStorageRef.child("ProfilePictures/${UUID.nameUUIDFromBytes(imageByteArray)}")
+        ref.putBytes(imageByteArray).addOnCompleteListener {
+            if (it.isSuccessful)
+            {
+                loadingProgress.hide()
+                Toast.makeText(this ,"Uploading Successfully" ,Toast.LENGTH_SHORT).show()
+            }
+            else
+            {
+                loadingProgress.hide()
+                Toast.makeText(this , it.exception?.message.toString(),Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }
