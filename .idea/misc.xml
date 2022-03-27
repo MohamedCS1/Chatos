@@ -9,8 +9,9 @@
         <entry key="app/src/main/res/drawable/ic_frends_selected.xml" value="0.2495" />
         <entry key="app/src/main/res/drawable/ic_friends_selected.xml" value="0.2495" />
         <entry key="app/src/main/res/drawable/ic_menu_camera.xml" value="0.273" />
+        <entry key="app/src/main/res/drawable/ic_photo_placeholder.xml" value="0.371" />
         <entry key="app/src/main/res/drawable/test.xml" value="0.205" />
-        <entry key="app/src/main/res/layout/activity_log_in.xml" value="0.340625" />
+        <entry key="app/src/main/res/layout/activity_log_in.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_main2.xml" value="0.2833333333333333" />
         <entry key="app/src/main/res/layout/activity_profile.xml" value="0.22" />

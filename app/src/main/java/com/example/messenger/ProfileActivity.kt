@@ -25,6 +25,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.util.*
 
 class ProfileActivity : AppCompatActivity() {
@@ -58,14 +59,7 @@ class ProfileActivity : AppCompatActivity() {
 
         loadingProgress = LoadingProgress(this)
 
-        appPref = AppSharedPreferences()
-
-        appPref.PrefManager(this)
-
-        Toast.makeText(this , appPref.getProfileImagePath() ,Toast.LENGTH_SHORT).show()
-
-        Glide.with(this).load("https://firebasestorage.googleapis.com/v0/b/messenger-d7eaf.appspot.com/o/eTV6cB4jeZUpv8xFwsxvxHlZEso1%2FProfilePictures%2F543e9eef-fb20-378a-916e-7e8ce08a889e?alt=media&token=195375cf-3a06-44e1-9fdd-e4118746aebb").placeholder(R.drawable.ic_shutdown).into(binding.profileImageBig)
-
+        retrieveImageFromStorage()
 
         binding.profileImageBig.setOnClickListener {
             val intentImage = Intent().apply {
@@ -95,6 +89,15 @@ class ProfileActivity : AppCompatActivity() {
             })
     }
 
+    fun retrieveImageFromStorage()
+    {
+        appPref = AppSharedPreferences()
+
+        appPref.PrefManager(this)
+
+        Glide.with(this).load(appPref.getProfileImagePath()).placeholder(R.drawable.ic_photo_placeholder).into(binding.profileImageBig)
+    }
+
     fun compressImage(imageUri:Uri){
         val outputStream = ByteArrayOutputStream()
         MediaStore.Images.Media.getBitmap(this.contentResolver ,imageUri).compress(Bitmap.CompressFormat.JPEG ,30 ,outputStream)
@@ -111,9 +114,20 @@ class ProfileActivity : AppCompatActivity() {
         ref.putBytes(imageByteArray).addOnCompleteListener {
             if (it.isSuccessful)
             {
-                onSuccess(ref.path)
-                loadingProgress.hide()
-                Toast.makeText(this ,"Uploading Successfully" ,Toast.LENGTH_SHORT).show()
+                ref.downloadUrl.addOnCompleteListener {
+                    task->
+                    if (task.isSuccessful)
+                    {
+                        onSuccess(task.result.toString())
+                        loadingProgress.hide()
+                        Toast.makeText(this ,"Uploading Successfully" ,Toast.LENGTH_SHORT).show()
+                    }
+                    else
+                    {
+                        loadingProgress.hide()
+                        Toast.makeText(this , task.exception?.message.toString(),Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
             else
             {

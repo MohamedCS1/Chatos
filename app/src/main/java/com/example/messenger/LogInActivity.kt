@@ -67,12 +67,29 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
             binding.etPassword.requestFocus()
             return
         }
-        emailIsVerifyAndLogIn(email, password)
+        signInWithEmailAndPassword(email ,password)
+
+
 
     }
 
+    private fun signInWithEmailAndPassword(email: String, password: String) {
+        progressDialog.show()
+        mAuth.signInWithEmailAndPassword(email ,password).addOnCompleteListener {
+            if(it.isSuccessful)
+            {
+                emailIsVerify()
+            }
+            else
+            {
+                progressDialog.hide()
+                binding.tvHintFailure.text = "${it.exception!!.message}"
+            }
+        }
+    }
+
     @OptIn(DelicateCoroutinesApi::class)
-    fun emailIsVerifyAndLogIn(email:String ,password:String)
+    fun emailIsVerify()
     {
        GlobalScope.launch(Dispatchers.Main) {
 
@@ -87,21 +104,11 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
                {
                    if (user!!.isEmailVerified)
                    {
-                       mAuth.signInWithEmailAndPassword(email ,password).addOnCompleteListener {
-                           if(it.isSuccessful)
-                           {
-                               progressDialog.hide()
-                               val intentToMainActivity = Intent(this@LogInActivity ,MainActivity::class.java)
-                               intentToMainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                               startActivity(intentToMainActivity)
-                               finish()
-                           }
-                           else
-                           {
-                               progressDialog.hide()
-                               binding.tvHintFailure.text = "${it.exception!!.message}"
-                           }
-                       }
+                       progressDialog.hide()
+                       val intentToMainActivity = Intent(this@LogInActivity ,MainActivity::class.java)
+                       intentToMainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                       startActivity(intentToMainActivity)
+                       finish()
                    }
                    else
                    {
