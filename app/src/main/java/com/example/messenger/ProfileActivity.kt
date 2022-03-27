@@ -15,6 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.example.messenger.databinding.ActivityProfileBinding
 import com.example.tools.LoadingProgress
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import java.io.ByteArrayOutputStream
@@ -25,6 +26,15 @@ class ProfileActivity : AppCompatActivity() {
     lateinit var binding: ActivityProfileBinding
     lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
     lateinit var loadingProgress: LoadingProgress
+
+    private val mAuth:FirebaseAuth by lazy {
+        FirebaseAuth.getInstance()
+    }
+    private val fireStore: FirebaseFirestore by lazy {
+        FirebaseFirestore.getInstance()
+    }
+    val  currentUserDocRef get() =  fireStore.document("users/${mAuth.currentUser!!.uid}")
+
 
     private val storageInstance:FirebaseStorage by lazy {
         FirebaseStorage.getInstance()
@@ -71,14 +81,19 @@ class ProfileActivity : AppCompatActivity() {
         val outputStream = ByteArrayOutputStream()
         MediaStore.Images.Media.getBitmap(this.contentResolver ,imageUri).compress(Bitmap.CompressFormat.JPEG ,30 ,outputStream)
         upLoadProfileImageToFirebase(outputStream.toByteArray())
+        {
+            path ->
+            currentUserDocRef.update("imagePath" ,path)
+        }
     }
-    fun upLoadProfileImageToFirebase(imageByteArray:ByteArray)
+    fun upLoadProfileImageToFirebase(imageByteArray:ByteArray ,onSuccess:(imagePath:String) -> Unit)
     {
         loadingProgress.show()
         val ref = currentUserStorageRef.child("ProfilePictures/${UUID.nameUUIDFromBytes(imageByteArray)}")
         ref.putBytes(imageByteArray).addOnCompleteListener {
             if (it.isSuccessful)
             {
+                onSuccess(ref.path)
                 loadingProgress.hide()
                 Toast.makeText(this ,"Uploading Successfully" ,Toast.LENGTH_SHORT).show()
             }
