@@ -12,12 +12,18 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
+import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
+import com.example.Glide.ChatosGlide
 import com.example.messenger.databinding.ActivityProfileBinding
+import com.example.sharedPreferences.AppSharedPreferences
 import com.example.tools.LoadingProgress
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.util.*
 
@@ -33,6 +39,9 @@ class ProfileActivity : AppCompatActivity() {
     private val fireStore: FirebaseFirestore by lazy {
         FirebaseFirestore.getInstance()
     }
+
+    lateinit var appPref:AppSharedPreferences
+
     val  currentUserDocRef get() =  fireStore.document("users/${mAuth.currentUser!!.uid}")
 
 
@@ -48,6 +57,15 @@ class ProfileActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         loadingProgress = LoadingProgress(this)
+
+        appPref = AppSharedPreferences()
+
+        appPref.PrefManager(this)
+
+        Toast.makeText(this , appPref.getProfileImagePath() ,Toast.LENGTH_SHORT).show()
+
+        Glide.with(this).load("https://firebasestorage.googleapis.com/v0/b/messenger-d7eaf.appspot.com/o/eTV6cB4jeZUpv8xFwsxvxHlZEso1%2FProfilePictures%2F543e9eef-fb20-378a-916e-7e8ce08a889e?alt=media&token=195375cf-3a06-44e1-9fdd-e4118746aebb").placeholder(R.drawable.ic_shutdown).into(binding.profileImageBig)
+
 
         binding.profileImageBig.setOnClickListener {
             val intentImage = Intent().apply {
@@ -82,8 +100,8 @@ class ProfileActivity : AppCompatActivity() {
         MediaStore.Images.Media.getBitmap(this.contentResolver ,imageUri).compress(Bitmap.CompressFormat.JPEG ,30 ,outputStream)
         upLoadProfileImageToFirebase(outputStream.toByteArray())
         {
-            path ->
-            currentUserDocRef.update("imagePath" ,path)
+            path -> currentUserDocRef.update("imagePath" ,path)
+            appPref.insertProfileImagePath(path)
         }
     }
     fun upLoadProfileImageToFirebase(imageByteArray:ByteArray ,onSuccess:(imagePath:String) -> Unit)
