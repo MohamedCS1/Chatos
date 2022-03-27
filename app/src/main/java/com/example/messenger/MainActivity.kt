@@ -1,5 +1,6 @@
 package com.example.messenger
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -38,6 +39,19 @@ class MainActivity : AppCompatActivity() {
             binding.drawerLayout.open()
         }
 
+        binding.profileImage.setOnClickListener {
+            startActivity(Intent(this ,ProfileActivity::class.java))
+        }
+
+    }
+
+    override fun onBackPressed() {
+        if (binding.drawerLayout.isOpen)
+        {
+            binding.drawerLayout.close()
+            return
+        }
+        super.onBackPressed()
     }
 
     fun onClickItemNavbar(){
