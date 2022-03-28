@@ -9,10 +9,13 @@ import android.view.MenuItem
 import android.view.View
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.fragments.ChatFragment
 import com.example.fragments.ExploreFragment
 import com.example.fragments.FriendsFragment
 import com.example.messenger.databinding.ActivityMainBinding
+import com.example.sharedPreferences.AppSharedPreferences
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.navigation.NavigationView
 
@@ -24,10 +27,16 @@ class MainActivity : AppCompatActivity() {
     lateinit var friendsFragment:FriendsFragment
     lateinit var exploreFragment: ExploreFragment
 
+
+    lateinit var appPref:AppSharedPreferences
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        retrieveImageFromStorage()
 
         chatFragment = ChatFragment()
         friendsFragment = FriendsFragment()
@@ -52,6 +61,16 @@ class MainActivity : AppCompatActivity() {
             return
         }
         super.onBackPressed()
+    }
+
+
+    fun retrieveImageFromStorage()
+    {
+        appPref = AppSharedPreferences()
+
+        appPref.PrefManager(this)
+
+        Glide.with(this).load(appPref.getProfileImagePath()).apply(RequestOptions.overrideOf(600,600)).placeholder(R.drawable.ic_photo_placeholder).into(binding.profileImage)
     }
 
     fun onClickItemNavbar(){

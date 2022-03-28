@@ -12,10 +12,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.net.toUri
-import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
-import com.example.Glide.ChatosGlide
 import com.example.messenger.databinding.ActivityProfileBinding
 import com.example.sharedPreferences.AppSharedPreferences
 import com.example.tools.LoadingProgress
@@ -23,9 +20,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
-import java.io.File
 import java.util.*
 
 class ProfileActivity : AppCompatActivity() {
