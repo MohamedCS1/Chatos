@@ -1,5 +1,6 @@
 package com.example.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,8 @@ import com.example.pojo.Person
 class PersonAdapter: RecyclerView.Adapter<PersonAdapter.PersonViewHolder>() {
 
     var arrayOfPersons = arrayListOf<Person>()
+    var setOnPersonClick:SetOnPersonClick? = null
+
     lateinit var context: Context
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PersonViewHolder {
         context = parent.context
@@ -25,6 +28,9 @@ class PersonAdapter: RecyclerView.Adapter<PersonAdapter.PersonViewHolder>() {
         holder.name.text = arrayOfPersons[position].name
         holder.lastMessage.text = arrayOfPersons[position].lastMessage
         Glide.with(context).load(arrayOfPersons[position].imagePath).into(holder.image)
+        holder.itemView.setOnClickListener {
+            setOnPersonClick!!.personValue(arrayOfPersons[position])
+        }
     }
 
     override fun getItemCount(): Int {
@@ -38,9 +44,20 @@ class PersonAdapter: RecyclerView.Adapter<PersonAdapter.PersonViewHolder>() {
         val lastMessage = itemView.findViewById<TextView>(R.id.person_last_message)
     }
 
+
+    fun setOnPersonClick(setOnPersonClick: SetOnPersonClick)
+    {
+        this.setOnPersonClick = setOnPersonClick
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
     fun setList(arrayPersons:ArrayList<Person>)
     {
         this.arrayOfPersons = arrayPersons
+        notifyDataSetChanged()
     }
 
+    interface SetOnPersonClick{
+        fun personValue(person: Person)
+    }
 }

@@ -5,15 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/person_image"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        tools:src="@tools:sample/avatars"
-        app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="8dp"
+        android:layout_margin="@dimen/_10sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp" />
+        tools:src="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/person_name"
@@ -25,20 +26,17 @@
         app:layout_constraintTop_toTopOf="@+id/person_image"
         app:layout_constraintStart_toEndOf="@+id/person_image"
         android:layout_marginStart="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/person_last_message" />
+        android:layout_marginBottom="8dp" />
 
     <TextView
         android:id="@+id/person_last_message"
         android:layout_width="285dp"
         android:layout_height="20dp"
-        tools:text="@tools:sample/lorem[4:10]"
+        android:layout_marginStart="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/person_image"
         app:layout_constraintStart_toEndOf="@+id/person_image"
-        android:layout_marginStart="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintHorizontal_bias="0.050" />
+        app:layout_constraintTop_toBottomOf="@+id/person_name"
+        tools:text="@tools:sample/lorem[4:10]" />
 
     <TextView
         android:id="@+id/textView3"
@@ -48,4 +46,13 @@
         app:layout_constraintTop_toTopOf="@+id/person_image"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="8dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        android:background="@color/my_green"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,6 +11,7 @@
         <entry key="app/src/main/res/drawable/ic_menu_camera.xml" value="0.273" />
         <entry key="app/src/main/res/drawable/ic_photo_placeholder.xml" value="0.371" />
         <entry key="app/src/main/res/drawable/test.xml" value="0.205" />
+        <entry key="app/src/main/res/layout/activity_chat.xml" value="0.29243266353142366" />
         <entry key="app/src/main/res/layout/activity_log_in.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_main2.xml" value="0.2833333333333333" />
@@ -29,7 +30,7 @@
         <entry key="app/src/main/res/layout/nav_header.xml" value="0.25" />
         <entry key="app/src/main/res/layout/nav_header_main.xml" value="0.2833333333333333" />
         <entry key="app/src/main/res/layout/recycler_view_item.xml" value="0.27960666951688756" />
-        <entry key="app/src/main/res/layout/rv_person_item.xml" value="0.75" />
+        <entry key="app/src/main/res/layout/rv_person_item.xml" value="0.5" />
         <entry key="app/src/main/res/menu/activity_main_drawer.xml" value="0.2765625" />
         <entry key="app/src/main/res/menu/bottom_navigation_menu.xml" value="0.31979166666666664" />
         <entry key="app/src/main/res/menu/drawer_menu.xml" value="0.5" />
