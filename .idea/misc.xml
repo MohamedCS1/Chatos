@@ -4,8 +4,13 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/drawable/background_appbar_chat.xml" value="0.3145" />
+        <entry key="app/src/main/res/drawable/background_edittext_chat_message.xml" value="0.3425" />
+        <entry key="app/src/main/res/drawable/ic_add_image_message.xml" value="0.3425" />
+        <entry key="app/src/main/res/drawable/ic_back.xml" value="0.3425" />
         <entry key="app/src/main/res/drawable/ic_chat_selected.xml" value="0.3225" />
         <entry key="app/src/main/res/drawable/ic_chat_unselected.xml" value="0.2495" />
+        <entry key="app/src/main/res/drawable/ic_email.xml" value="0.3425" />
+        <entry key="app/src/main/res/drawable/ic_explore_selected.xml" value="0.3425" />
         <entry key="app/src/main/res/drawable/ic_expolre_unselected.xml" value="0.301" />
         <entry key="app/src/main/res/drawable/ic_frends_selected.xml" value="0.2495" />
         <entry key="app/src/main/res/drawable/ic_friends_selected.xml" value="0.2495" />
@@ -13,7 +18,7 @@
         <entry key="app/src/main/res/drawable/ic_menu_camera.xml" value="0.273" />
         <entry key="app/src/main/res/drawable/ic_photo_placeholder.xml" value="0.371" />
         <entry key="app/src/main/res/drawable/test.xml" value="0.205" />
-        <entry key="app/src/main/res/layout/activity_chat.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_chat.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_log_in.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_main2.xml" value="0.2833333333333333" />

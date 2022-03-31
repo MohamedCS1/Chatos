@@ -69,9 +69,8 @@ class ChatFragment : Fragment() {
                     return
                 }
                 value?.documents?.forEach {
-                    arrayOfPersons.add(Person(it["imagePath"].toString() ,it["name"].toString() ,
-                        it.get("lastMessage").toString()
-                    ))
+                    arrayOfPersons.add(Person(it.id ,it["name"].toString() ,it["imagePath"].toString()  ,
+                        it.get("lastMessage").toString()))
                 }
                 personAdapter.setList(arrayOfPersons)
             }
