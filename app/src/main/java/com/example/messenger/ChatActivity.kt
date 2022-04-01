@@ -20,14 +20,22 @@ import androidx.core.view.marginRight
 import com.bumptech.glide.Glide
 import com.example.messenger.databinding.ActivityChatBinding
 import com.example.pojo.Person
+import com.example.sharedPreferences.AppSharedPreferences
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 
 
 class ChatActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityChatBinding
     lateinit var context: Context
+    lateinit var appPref: AppSharedPreferences
+    lateinit var person:Person
 
-    @RequiresApi(Build.VERSION_CODES.P)
+    private val fireStoreInstance:FirebaseFirestore by lazy {
+        FirebaseFirestore.getInstance()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityChatBinding.inflate(layoutInflater)
@@ -35,17 +43,61 @@ class ChatActivity : AppCompatActivity() {
 
         context = this
 
+        appPref = AppSharedPreferences()
+
+        appPref.PrefManager(this)
+
         val bundle = intent.extras
 
-        val person = bundle?.get("person") as Person
+        person = bundle?.get("person") as Person
+
+        createChatChannel()
 
         bottomToolbarSendMessageAnimation()
+
+        buChatTollBarSelected()
+
         Toast.makeText(this ,person.uid ,Toast.LENGTH_SHORT).show()
+
+        binding.buSendMessage.setOnClickListener {
+            if (binding.edittextSendMessage.text.isNotBlank() && binding.edittextSendMessage.text.isNotEmpty())
+            {
+                sendMessage(binding.edittextSendMessage.text.toString())
+            }
+        }
 
 
         binding.tvUsername.text = person.name
         Glide.with(this).load(person.imagePath).placeholder(R.drawable.ic_photo_placeholder).into(binding.imageviewPhotoProfile)
 
+    }
+
+    fun sendMessage(Message:String)
+    {
+
+    }
+
+    fun createChatChannel()
+    {
+        val currentUserId = appPref.getUID()
+        val newChatChannel = fireStoreInstance.collection("users").document()
+
+        fireStoreInstance.collection("users")
+            .document(person.uid)
+            .collection("sharedChat")
+            .document(currentUserId)
+            .set(mapOf("channelID" to newChatChannel.id))
+
+        fireStoreInstance.collection("users")
+            .document(currentUserId)
+            .collection("sharedChat")
+            .document(person.uid)
+            .set(mapOf("channelID" to newChatChannel.id))
+
+    }
+
+    fun buChatTollBarSelected()
+    {
         binding.toolBarBuChat.setTextColor(Color.parseColor("#51BA65"))
         binding.toolBarBuChat.setBackgroundResource(R.drawable.shape_circle)
         binding.toolBarBuFiles.setTextColor(Color.parseColor("#FFFFFFFF"))
@@ -64,13 +116,13 @@ class ChatActivity : AppCompatActivity() {
             binding.toolBarBuChat.setTextColor(Color.parseColor("#FFFFFFFF"))
             binding.toolBarBuChat.setBackgroundResource(R.color.my_green)
         }
-
     }
+
 
     fun bottomToolbarSendMessageAnimation()
     {
 
-        binding.icSendMessage.visibility = View.INVISIBLE
+        binding.buSendMessage.visibility = View.INVISIBLE
 
         val margin = resources.getDimension(R.dimen.text_margin).toInt()
         val layoutParams = CoordinatorLayout.LayoutParams(
@@ -86,13 +138,13 @@ class ChatActivity : AppCompatActivity() {
                 if (s!!.isNotBlank() && s.isNotEmpty())
                 {
                     layoutParams.setMargins(0,0,margin ,0)
-                    binding.icSendMessage.visibility = View.VISIBLE
+                    binding.buSendMessage.visibility = View.VISIBLE
                     binding.edittextSendMessage.layoutParams = layoutParams
                 }
                 else
                 {
                     layoutParams.setMargins(0, 0, 0, 0)
-                    binding.icSendMessage.visibility = View.INVISIBLE
+                    binding.buSendMessage.visibility = View.INVISIBLE
                     binding.edittextSendMessage.layoutParams = layoutParams
                 }
             }

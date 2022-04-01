@@ -17,6 +17,8 @@ class AppSharedPreferences {
 
     private val keyProfileImagePath = "profileImagePath"
 
+    private val KeyUID = "UID"
+
     @SuppressLint("CommitPrefEdits")
     var context: Context? = null
     @SuppressLint("CommitPrefEdits")
@@ -27,6 +29,17 @@ class AppSharedPreferences {
     }
 
 
+    fun insertUID(UID:String)
+    {
+        editor?.putString(KeyUID,UID)
+        editor?.apply()
+    }
+
+
+    fun getUID():String
+    {
+        return pref?.getString(KeyUID,"").toString()
+    }
 
     fun insertProfileImagePath(profileImagePath:String)
     {

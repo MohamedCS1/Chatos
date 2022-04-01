@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.messenger.databinding.ActivityLogInBinding
+import com.example.sharedPreferences.AppSharedPreferences
 import com.example.tools.LoadingProgress
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.*
@@ -18,6 +19,7 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
 
     lateinit var binding: ActivityLogInBinding
     lateinit var mAuth: FirebaseAuth
+    lateinit var appPref: AppSharedPreferences
 
     private val progressDialog by lazy {
         LoadingProgress(this)
@@ -28,8 +30,8 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
         binding = ActivityLogInBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-
+        appPref = AppSharedPreferences()
+        appPref.PrefManager(this)
 
         binding.etEmailOrNumber.addTextChangedListener(this)
         binding.etPassword.addTextChangedListener(this)
@@ -104,6 +106,7 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
                {
                    if (user!!.isEmailVerified)
                    {
+                       appPref.insertUID(user.uid)
                        progressDialog.hide()
                        val intentToMainActivity = Intent(this@LogInActivity ,MainActivity::class.java)
                        intentToMainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
@@ -147,15 +150,15 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
     override fun afterTextChanged(s: Editable?) {
     }
 
-//    override fun onStart() {
-//
-//        if (mAuth.currentUser?.uid != null)
-//        {
-//            val intentToMainActivity = Intent(this@LogInActivity ,MainActivity::class.java)
-//            intentToMainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-//            startActivity(intentToMainActivity)
-//            finish()
-//        }
-//        super.onStart()
-//    }
+    override fun onStart() {
+
+        if (appPref.getUID().isNotEmpty() && appPref.getUID().isNotBlank())
+        {
+            val intentToMainActivity = Intent(this@LogInActivity ,MainActivity::class.java)
+            intentToMainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            startActivity(intentToMainActivity)
+            finish()
+        }
+        super.onStart()
+    }
 }

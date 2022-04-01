@@ -148,7 +148,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/ic_send_message"
+            android:id="@+id/bu_send_message"
             android:layout_width="@dimen/_38sdp"
             android:layout_height="@dimen/_38sdp"
             android:layout_gravity="right|center"
