@@ -1,28 +1,22 @@
 package com.example.messenger
 
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.view.marginRight
 import com.bumptech.glide.Glide
 import com.example.messenger.databinding.ActivityChatBinding
+import com.example.pojo.Message
 import com.example.pojo.Person
 import com.example.sharedPreferences.AppSharedPreferences
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
+import java.util.*
 
 
 class ChatActivity : AppCompatActivity() {
@@ -35,6 +29,8 @@ class ChatActivity : AppCompatActivity() {
     private val fireStoreInstance:FirebaseFirestore by lazy {
         FirebaseFirestore.getInstance()
     }
+
+    private val chatChannelsCollectionRef = fireStoreInstance.collection("chatChannels")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +48,15 @@ class ChatActivity : AppCompatActivity() {
         person = bundle?.get("person") as Person
 
         createChatChannel()
+        {
+            channelId ->   binding.buSendMessage.setOnClickListener {
+            if (binding.edittextSendMessage.text.isNotBlank() && binding.edittextSendMessage.text.isNotEmpty())
+            {
+                sendMessage(channelId,Message(binding.edittextSendMessage.text.toString() ,appPref.getUID() ,Calendar.getInstance().time))
+            }
+        }
+
+        }
 
         bottomToolbarSendMessageAnimation()
 
@@ -59,12 +64,7 @@ class ChatActivity : AppCompatActivity() {
 
         Toast.makeText(this ,person.uid ,Toast.LENGTH_SHORT).show()
 
-        binding.buSendMessage.setOnClickListener {
-            if (binding.edittextSendMessage.text.isNotBlank() && binding.edittextSendMessage.text.isNotEmpty())
-            {
-                sendMessage(binding.edittextSendMessage.text.toString())
-            }
-        }
+
 
 
         binding.tvUsername.text = person.name
@@ -72,30 +72,45 @@ class ChatActivity : AppCompatActivity() {
 
     }
 
-    fun sendMessage(Message:String)
+    fun sendMessage(channelId:String ,message:Message)
     {
-
+        chatChannelsCollectionRef.document(channelId).collection("messages").add(message)
     }
 
-    fun createChatChannel()
+    fun createChatChannel(onComplete:(channelId:String) -> Unit)
     {
         val currentUserId = appPref.getUID()
-        val newChatChannel = fireStoreInstance.collection("users").document()
-
-        fireStoreInstance.collection("users")
-            .document(person.uid)
-            .collection("sharedChat")
-            .document(currentUserId)
-            .set(mapOf("channelID" to newChatChannel.id))
+        val chatChannel = fireStoreInstance.collection("users").document()
 
         fireStoreInstance.collection("users")
             .document(currentUserId)
             .collection("sharedChat")
             .document(person.uid)
-            .set(mapOf("channelID" to newChatChannel.id))
+            .get().addOnSuccessListener {
+                document ->
+                if (document.exists())
+                {
+                    onComplete(document["channelId"].toString())
+                    return@addOnSuccessListener
+                }
+
+
+        fireStoreInstance.collection("users")
+            .document(person.uid)
+            .collection("sharedChat")
+            .document(currentUserId)
+            .set(mapOf("channelId" to chatChannel.id))
+
+        fireStoreInstance.collection("users")
+            .document(currentUserId)
+            .collection("sharedChat")
+            .document(person.uid)
+            .set(mapOf("channelId" to chatChannel.id))
+
+        onComplete(chatChannel.id)
 
     }
-
+}
     fun buChatTollBarSelected()
     {
         binding.toolBarBuChat.setTextColor(Color.parseColor("#51BA65"))
