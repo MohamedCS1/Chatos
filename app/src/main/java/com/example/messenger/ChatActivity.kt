@@ -20,6 +20,7 @@ import com.example.pojo.Person
 import com.example.pojo.ReceiveMessage
 import com.example.sharedPreferences.AppSharedPreferences
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import java.util.*
 
 
@@ -41,6 +42,8 @@ class ChatActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val lm = LinearLayoutManager(this)
 
         context = this
 
@@ -64,10 +67,15 @@ class ChatActivity : AppCompatActivity() {
                 sendMessage(channelId,Message(binding.edittextSendMessage.text.toString() ,appPref.getUID() ,Calendar.getInstance().time))
                 binding.edittextSendMessage.setText(" ")
             }
-        }
 
         }
 
+
+        }
+        binding.edittextSendMessage.setOnClickListener {
+            Toast.makeText(this , "Any" ,Toast.LENGTH_SHORT).show()
+            lm.scrollToPositionWithOffset(0, 0)
+        }
         bottomToolbarSendMessageAnimation()
 
         buChatTollBarSelected()
@@ -77,8 +85,8 @@ class ChatActivity : AppCompatActivity() {
         binding.tvUsername.text = person.name
         Glide.with(this).load(person.imagePath).placeholder(R.drawable.ic_photo_placeholder).into(binding.imageviewPhotoProfile)
 
+        binding.rvChat.layoutManager = lm
         binding.rvChat.adapter = messageAdapter
-        binding.rvChat.layoutManager = LinearLayoutManager(this)
     }
 
     fun sendMessage(channelId:String ,message:Message)
@@ -176,8 +184,9 @@ class ChatActivity : AppCompatActivity() {
     fun getMessageFromFireBase(channelId: String)
     {
         val arrayOfReceiveMessage = arrayListOf<ReceiveMessage>()
-        val query = chatChannelsCollectionRef.document(channelId).collection("messages")
+        val query = chatChannelsCollectionRef.document(channelId).collection("messages").orderBy("date" ,Query.Direction.DESCENDING)
         query.addSnapshotListener { querySnapshot, error ->
+            messageAdapter.arrayOfMessages.clear()
             querySnapshot!!.documents.forEach {
                 document ->
                 arrayOfReceiveMessage.add(ReceiveMessage(document.toObject(Message::class.java)!!,document.id))
