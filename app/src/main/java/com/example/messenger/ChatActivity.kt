@@ -2,13 +2,12 @@ package com.example.messenger
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.LinearGradient
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -20,9 +19,7 @@ import com.example.pojo.Message
 import com.example.pojo.Person
 import com.example.pojo.ReceiveMessage
 import com.example.sharedPreferences.AppSharedPreferences
-import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QuerySnapshot
 import java.util.*
 
 
@@ -179,11 +176,12 @@ class ChatActivity : AppCompatActivity() {
     fun getMessageFromFireBase(channelId: String)
     {
         val arrayOfReceiveMessage = arrayListOf<ReceiveMessage>()
-        val query = chatChannelsCollectionRef.document(channelId).collection("message")
+        val query = chatChannelsCollectionRef.document(channelId).collection("messages")
         query.addSnapshotListener { querySnapshot, error ->
             querySnapshot!!.documents.forEach {
                 document ->
                 arrayOfReceiveMessage.add(ReceiveMessage(document.toObject(Message::class.java)!!,document.id))
+                Log.d("chat" ,ReceiveMessage(document.toObject(Message::class.java)!!,document.id).toString())
             }
             messageAdapter.setList(arrayOfReceiveMessage)
         }

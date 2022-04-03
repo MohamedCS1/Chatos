@@ -13,7 +13,7 @@ class MessageAdapter: RecyclerView.Adapter<MessageAdapter.MessageViewHolder>() {
     var arrayOfMessages = arrayListOf<ReceiveMessage>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
-        return MessageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.message_item ,null ,false))
+        return MessageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.message_item ,parent ,false))
     }
 
     override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {

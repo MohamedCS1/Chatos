@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_gravity="right"
+    android:gravity="right"
+    android:layout_margin="@dimen/_5sdp">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_gravity="right"
-        android:gravity="right"
-        android:layout_margin="@dimen/_5sdp">
         <TextView
             android:id="@+id/tv_message"
             android:layout_width="wrap_content"
@@ -27,6 +24,5 @@
             android:textColor="@color/black"
             android:textSize="@dimen/_10ssp"
             android:text="10:20"/>
-    </LinearLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>
