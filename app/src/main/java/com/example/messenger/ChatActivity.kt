@@ -64,7 +64,7 @@ class ChatActivity : AppCompatActivity() {
             binding.buSendMessage.setOnClickListener {
             if (binding.edittextSendMessage.text.isNotBlank() && binding.edittextSendMessage.text.isNotEmpty())
             {
-                sendMessage(channelId,Message(binding.edittextSendMessage.text.toString() ,appPref.getUID() ,Calendar.getInstance().time))
+                sendMessage(channelId,Message(binding.edittextSendMessage.text.toString() ,appPref.getUID() ,person.uid ,Calendar.getInstance().time))
                 binding.edittextSendMessage.setText(" ")
             }
 
@@ -85,7 +85,6 @@ class ChatActivity : AppCompatActivity() {
         binding.tvUsername.text = person.name
         Glide.with(this).load(person.imagePath).placeholder(R.drawable.ic_photo_placeholder).into(binding.imageviewPhotoProfile)
 
-        binding.rvChat.layoutManager = lm
         binding.rvChat.adapter = messageAdapter
     }
 

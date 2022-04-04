@@ -3,21 +3,21 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_gravity="right"
-    android:gravity="right"
+    android:layout_gravity="end"
+    android:gravity="end"
     android:layout_margin="@dimen/_5sdp">
 
         <TextView
             android:id="@+id/tv_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hello How Are you to day ?"
+            android:text="Hello How Are you to day ? Hello How Are you to day ? Hello How Are you to day ? Hello How Are you to day ?"
             android:textColor="@color/black"
             android:textStyle="bold"
-            android:maxWidth="@dimen/_150sdp"
+            android:maxWidth="@dimen/_250sdp"
             android:textSize="@dimen/_12ssp"
             android:padding="@dimen/_7sdp"
-            android:background="@drawable/bacground_message"/>
+            android:background="@drawable/bacground_message_sender"/>
         <TextView
             android:id="@+id/tv_date_message"
             android:layout_width="wrap_content"

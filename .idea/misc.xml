@@ -5,6 +5,8 @@
       <map>
         <entry key="../../../../layout/custom_preview.xml" value="0.3984375" />
         <entry key="app/src/main/res/drawable/bacground_message.xml" value="0.3495" />
+        <entry key="app/src/main/res/drawable/bacground_message_receiver.xml" value="0.31" />
+        <entry key="app/src/main/res/drawable/bacground_message_sender.xml" value="0.31" />
         <entry key="app/src/main/res/drawable/background_appbar_chat.xml" value="0.3145" />
         <entry key="app/src/main/res/drawable/background_edittext_chat_message.xml" value="0.3425" />
         <entry key="app/src/main/res/drawable/c.xml" value="0.324" />
@@ -39,6 +41,7 @@
         <entry key="app/src/main/res/layout/fragment_slideshow.xml" value="0.2833333333333333" />
         <entry key="app/src/main/res/layout/loading_progress.xml" value="0.75" />
         <entry key="app/src/main/res/layout/message_item.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/message_item_receiver.xml" value="0.25181701581872595" />
         <entry key="app/src/main/res/layout/nav_header.xml" value="0.25" />
         <entry key="app/src/main/res/layout/nav_header_main.xml" value="0.2833333333333333" />
         <entry key="app/src/main/res/layout/recycler_view_item.xml" value="0.27960666951688756" />

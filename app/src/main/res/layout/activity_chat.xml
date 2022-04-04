@@ -144,7 +144,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_margin="@dimen/_5sdp"
+        android:background="@color/white"
         android:orientation="horizontal">
 
         <ImageView
@@ -152,6 +152,7 @@
             android:layout_width="@dimen/_38sdp"
             android:layout_height="@dimen/_38sdp"
             android:layout_gravity="right|center"
+            android:layout_margin="@dimen/_5sdp"
             android:src="@drawable/ic_send_message" />
         <EditText
             android:id="@+id/edittext_send_message"
@@ -159,6 +160,7 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/_5sdp"
             android:hint="Type something"
+            android:layout_margin="@dimen/_5sdp"
             android:drawableStart="@drawable/ic_add_image_message"
             android:drawablePadding="@dimen/_10sdp"
             android:textStyle="bold"
