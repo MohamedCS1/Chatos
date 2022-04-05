@@ -51,7 +51,7 @@ class ChatActivity : AppCompatActivity() {
 
         appPref.PrefManager(this)
 
-        messageAdapter = MessageAdapter()
+        messageAdapter = MessageAdapter(appPref.getUID())
 
         val bundle = intent.extras
 

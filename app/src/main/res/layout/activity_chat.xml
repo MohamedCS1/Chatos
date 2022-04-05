@@ -136,38 +136,43 @@
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:reverseLayout="true"
-            android:paddingBottom="@dimen/_40sdp"
+            android:paddingBottom="@dimen/_45sdp"
             android:src="@drawable/photo_profile"
             />
     </androidx.core.widget.NestedScrollView>
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
+        android:layout_gravity="bottom|center"
         android:background="@color/white"
         android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/bu_send_message"
-            android:layout_width="@dimen/_38sdp"
-            android:layout_height="@dimen/_38sdp"
-            android:layout_gravity="right|center"
-            android:layout_margin="@dimen/_5sdp"
-            android:src="@drawable/ic_send_message" />
-        <EditText
-            android:id="@+id/edittext_send_message"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/_5sdp"
-            android:hint="Type something"
-            android:layout_margin="@dimen/_5sdp"
-            android:drawableStart="@drawable/ic_add_image_message"
-            android:drawablePadding="@dimen/_10sdp"
-            android:textStyle="bold"
-            android:maxHeight="@dimen/_100sdp"
-            android:gravity="left|center"
-            android:layout_gravity="center"
-            android:background="@drawable/background_edittext_chat_message"/>
+       <androidx.coordinatorlayout.widget.CoordinatorLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_margin="@dimen/_5sdp">
+           <ImageView
+               android:id="@+id/bu_send_message"
+               android:layout_width="@dimen/_38sdp"
+               android:layout_height="@dimen/_38sdp"
+               android:layout_gravity="end|center"
+               android:src="@drawable/ic_send_message" />
+           <EditText
+               android:id="@+id/edittext_send_message"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:padding="@dimen/_5sdp"
+               android:hint="Type something"
+               android:foregroundGravity="center"
+               app:layout_anchorGravity="center"
+               android:drawableStart="@drawable/ic_add_image_message"
+               android:drawablePadding="@dimen/_10sdp"
+               android:textStyle="bold"
+               android:maxHeight="@dimen/_100sdp"
+               android:gravity="start|center"
+               android:layout_gravity="center"
+               android:background="@drawable/background_edittext_chat_message"/>
 
+       </androidx.coordinatorlayout.widget.CoordinatorLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
