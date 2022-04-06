@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Messenger">
         <activity
+            android:name=".PublicProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".ChatActivity"
             android:exported="false" />
         <activity
@@ -17,7 +20,7 @@
             android:exported="false" />
         <activity
             android:name=".SignUpActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".LogInActivity"
             android:exported="true">
@@ -29,9 +32,7 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="true">
-
-        </activity>
+            android:exported="true"></activity>
     </application>
 
 </manifest>

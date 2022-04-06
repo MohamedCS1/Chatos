@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/photo_profile"
+    android:scaleType="centerCrop"
+    tools:context=".PublicProfileActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/background_edittext_chat_message"
+        android:layout_marginTop="@dimen/_70sdp"
+        android:backgroundTint="@color/white"
+        android:orientation="vertical"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mohamed Mezenner"
+            android:gravity="center"
+            android:layout_gravity="center|top"
+            android:layout_marginTop="@dimen/_70sdp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="@dimen/_20sdp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Los Angeles ,CA"
+            android:gravity="center"
+            android:layout_gravity="center|top"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:textColor="#86000000"
+            android:textStyle="bold"
+            android:textSize="@dimen/_10sdp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="I'm a positive person ,I love to travel and eat .\n\nAlways available for chat"
+            android:gravity="center"
+            android:layout_gravity="center|top"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:textColor="#86000000"
+            android:textStyle="bold"
+            android:textSize="@dimen/_10sdp"/>
+
+    </LinearLayout>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="@dimen/_80sdp"
+        android:layout_height="@dimen/_80sdp"
+        android:src="@drawable/photo_profile"
+        android:layout_gravity="center|top"
+        android:layout_marginTop="@dimen/_35sdp"/>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
