@@ -29,14 +29,14 @@ class AppSharedPreferences {
     }
 
 
-    fun insertUID(UID:String)
+    fun insertCurrentUserUID(UID:String)
     {
         editor?.putString(KeyUID,UID)
         editor?.apply()
     }
 
 
-    fun getUID():String
+    fun getCurrentUserUID():String
     {
         return pref?.getString(KeyUID,"").toString()
     }

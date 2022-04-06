@@ -8,6 +8,7 @@
         <entry key="app/src/main/res/drawable/bacground_message_receiver.xml" value="0.31" />
         <entry key="app/src/main/res/drawable/bacground_message_sender.xml" value="0.31" />
         <entry key="app/src/main/res/drawable/background_appbar_chat.xml" value="0.3145" />
+        <entry key="app/src/main/res/drawable/background_bottom_sheet.xml" value="0.3495" />
         <entry key="app/src/main/res/drawable/background_edittext_chat_message.xml" value="0.3425" />
         <entry key="app/src/main/res/drawable/c.xml" value="0.324" />
         <entry key="app/src/main/res/drawable/ic_add_image_message.xml" value="0.3425" />
@@ -32,6 +33,7 @@
         <entry key="app/src/main/res/layout/activity_sign_in.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.25" />
         <entry key="app/src/main/res/layout/app_bar_main.xml" value="0.2833333333333333" />
+        <entry key="app/src/main/res/layout/bottom_sheet_layout.xml" value="0.3039760581445062" />
         <entry key="app/src/main/res/layout/content_main.xml" value="0.2682291666666667" />
         <entry key="app/src/main/res/layout/fragment_chat.xml" value="0.21614583333333334" />
         <entry key="app/src/main/res/layout/fragment_explore.xml" value="0.21614583333333334" />

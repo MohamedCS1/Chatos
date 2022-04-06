@@ -106,7 +106,7 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
                {
                    if (user!!.isEmailVerified)
                    {
-                       appPref.insertUID(user.uid)
+                       appPref.insertCurrentUserUID(user.uid)
                        progressDialog.hide()
                        val intentToMainActivity = Intent(this@LogInActivity ,MainActivity::class.java)
                        intentToMainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
@@ -152,7 +152,7 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
 
     override fun onStart() {
 
-        if (appPref.getUID().isNotEmpty() && appPref.getUID().isNotBlank())
+        if (appPref.getCurrentUserUID().isNotEmpty() && appPref.getCurrentUserUID().isNotBlank())
         {
             val intentToMainActivity = Intent(this@LogInActivity ,MainActivity::class.java)
             intentToMainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)

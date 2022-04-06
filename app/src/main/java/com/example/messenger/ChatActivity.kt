@@ -15,10 +15,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.adapters.MessageAdapter
 import com.example.messenger.databinding.ActivityChatBinding
+import com.example.messenger.databinding.BottomSheetLayoutBinding
 import com.example.pojo.Message
 import com.example.pojo.Person
 import com.example.pojo.ReceiveMessage
 import com.example.sharedPreferences.AppSharedPreferences
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import java.util.*
@@ -29,8 +32,8 @@ class ChatActivity : AppCompatActivity() {
     lateinit var binding: ActivityChatBinding
     lateinit var context: Context
     lateinit var appPref: AppSharedPreferences
-    lateinit var person:Person
     lateinit var messageAdapter:MessageAdapter
+    lateinit var lm: LinearLayoutManager
 
     private val fireStoreInstance:FirebaseFirestore by lazy {
         FirebaseFirestore.getInstance()
@@ -38,12 +41,21 @@ class ChatActivity : AppCompatActivity() {
 
     private val chatChannelsCollectionRef = fireStoreInstance.collection("chatChannels")
 
+    lateinit var currentUserUID:String
+    lateinit var currentFriend:Person
+
+    lateinit var bottomSheet:CoordinatorLayout
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val lm = LinearLayoutManager(this)
+        createBottomSheet()
+
+        lm = LinearLayoutManager(this)
+
+        lm.reverseLayout = true
 
         context = this
 
@@ -51,11 +63,13 @@ class ChatActivity : AppCompatActivity() {
 
         appPref.PrefManager(this)
 
-        messageAdapter = MessageAdapter(appPref.getUID())
+        currentUserUID = appPref.getCurrentUserUID()
+
+        messageAdapter = MessageAdapter(currentUserUID)
 
         val bundle = intent.extras
 
-        person = bundle?.get("person") as Person
+        currentFriend = bundle?.get("person") as Person
 
         createChatChannel()
         {
@@ -64,7 +78,7 @@ class ChatActivity : AppCompatActivity() {
             binding.buSendMessage.setOnClickListener {
             if (binding.edittextSendMessage.text.isNotBlank() && binding.edittextSendMessage.text.isNotEmpty())
             {
-                sendMessage(channelId,Message(binding.edittextSendMessage.text.toString() ,appPref.getUID() ,person.uid ,Calendar.getInstance().time))
+                sendMessage(channelId,Message(binding.edittextSendMessage.text.toString() ,currentUserUID ,currentFriend.uid ,Calendar.getInstance().time))
                 binding.edittextSendMessage.setText(" ")
             }
 
@@ -74,18 +88,18 @@ class ChatActivity : AppCompatActivity() {
         }
         binding.edittextSendMessage.setOnClickListener {
             Toast.makeText(this , "Any" ,Toast.LENGTH_SHORT).show()
-            lm.scrollToPositionWithOffset(0, 0)
         }
         bottomToolbarSendMessageAnimation()
 
         buChatTollBarSelected()
 
-        Toast.makeText(this ,person.uid ,Toast.LENGTH_SHORT).show()
+        Toast.makeText(this ,currentFriend.uid ,Toast.LENGTH_SHORT).show()
 
-        binding.tvUsername.text = person.name
-        Glide.with(this).load(person.imagePath).placeholder(R.drawable.ic_photo_placeholder).into(binding.imageviewPhotoProfile)
+        binding.tvUsername.text = currentFriend.name
+        Glide.with(this).load(currentFriend.imagePath).placeholder(R.drawable.ic_photo_placeholder).into(binding.imageviewPhotoProfile)
 
         binding.rvChat.adapter = messageAdapter
+        binding.rvChat.layoutManager = lm
     }
 
     fun sendMessage(channelId:String ,message:Message)
@@ -95,13 +109,12 @@ class ChatActivity : AppCompatActivity() {
 
     fun createChatChannel(onComplete:(channelId:String) -> Unit)
     {
-        val currentUserId = appPref.getUID()
         val chatChannel = fireStoreInstance.collection("users").document()
 
         fireStoreInstance.collection("users")
-            .document(currentUserId)
+            .document(currentUserUID)
             .collection("sharedChat")
-            .document(person.uid)
+            .document(currentFriend.uid)
             .get().addOnSuccessListener {
                 document ->
                 if (document.exists()) {
@@ -109,15 +122,15 @@ class ChatActivity : AppCompatActivity() {
                     return@addOnSuccessListener
                 }
         fireStoreInstance.collection("users")
-            .document(person.uid)
+            .document(currentFriend.uid)
             .collection("sharedChat")
-            .document(currentUserId)
+            .document(currentUserUID)
             .set(mapOf("channelId" to chatChannel.id))
 
         fireStoreInstance.collection("users")
-            .document(currentUserId)
+            .document(currentUserUID)
             .collection("sharedChat")
-            .document(person.uid)
+            .document(currentFriend.uid)
             .set(mapOf("channelId" to chatChannel.id))
                 onComplete(chatChannel.id)
             }
@@ -191,8 +204,25 @@ class ChatActivity : AppCompatActivity() {
                 arrayOfReceiveMessage.add(ReceiveMessage(document.toObject(Message::class.java)!!,document.id))
                 Log.d("chat" ,ReceiveMessage(document.toObject(Message::class.java)!!,document.id).toString())
             }
+            binding.nestedScrollViewChat.fullScroll(View.FOCUS_DOWN)
             messageAdapter.setList(arrayOfReceiveMessage)
         }
     }
 
+    fun createBottomSheet()
+    {
+        bottomSheet = findViewById(R.id.bottomSheet)
+        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        binding.buMenuBottomSheet.setOnClickListener(View.OnClickListener {
+            if (bottomSheetBehavior.state.equals(BottomSheetBehavior.STATE_HIDDEN))
+            {
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+
+            }else
+            {
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            }
+        })
+    }
 }

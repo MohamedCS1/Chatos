@@ -2,11 +2,11 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/chat_coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
     tools:context=".ChatActivity">
-
 
 
     <com.google.android.material.appbar.AppBarLayout
@@ -18,51 +18,51 @@
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:elevation="0dp"
             android:background="@drawable/background_appbar_chat"
+            android:elevation="0dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_collapseMode="parallax"
+                android:layout_marginTop="@dimen/_50sdp"
                 android:layout_marginBottom="@dimen/_7sdp"
-                android:layout_marginTop="@dimen/_50sdp">
+                android:orientation="horizontal"
+                app:layout_collapseMode="parallax">
 
-                    <TextView
-                        android:id="@+id/toolBarBuChat"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:textColor="@color/my_green"
-                        android:paddingLeft="@dimen/_20sdp"
-                        android:paddingRight="@dimen/_20sdp"
-                        android:paddingTop="@dimen/_3sdp"
-                        android:paddingBottom="@dimen/_3sdp"
-                        android:layout_marginLeft="@dimen/_20sdp"
-                        android:layout_marginTop="@dimen/_3sdp"
-                        android:layout_marginRight="@dimen/_10sdp"
-                        android:layout_marginBottom="@dimen/_3sdp"
-                        android:gravity="center"
-                        android:text="chat"
-                        android:textSize="@dimen/_15sdp" />
+                <TextView
+                    android:id="@+id/toolBarBuChat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:layout_marginBottom="@dimen/_3sdp"
+                    android:gravity="center"
+                    android:paddingLeft="@dimen/_20sdp"
+                    android:paddingTop="@dimen/_3sdp"
+                    android:paddingRight="@dimen/_20sdp"
+                    android:paddingBottom="@dimen/_3sdp"
+                    android:text="chat"
+                    android:textColor="@color/my_green"
+                    android:textSize="@dimen/_15sdp" />
 
-                    <TextView
-                        android:id="@+id/toolBarBuFiles"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:textColor="@color/white"
-                        android:paddingLeft="@dimen/_20sdp"
-                        android:paddingRight="@dimen/_20sdp"
-                        android:paddingTop="@dimen/_3sdp"
-                        android:paddingBottom="@dimen/_3sdp"
-                        android:layout_marginTop="@dimen/_3sdp"
-                        android:layout_marginBottom="@dimen/_3sdp"
-                        android:gravity="center"
-                        android:text="Files"
-                        android:textSize="@dimen/_15sdp" />
+                <TextView
+                    android:id="@+id/toolBarBuFiles"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:layout_marginBottom="@dimen/_3sdp"
+                    android:gravity="center"
+                    android:paddingLeft="@dimen/_20sdp"
+                    android:paddingTop="@dimen/_3sdp"
+                    android:paddingRight="@dimen/_20sdp"
+                    android:paddingBottom="@dimen/_3sdp"
+                    android:text="Files"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_15sdp" />
 
             </LinearLayout>
 
@@ -70,61 +70,67 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_50sdp"
                 android:background="@drawable/background_appbar_chat"
-                android:gravity="center"
                 android:elevation="0dp"
+                android:gravity="center"
                 app:layout_collapseMode="pin">
-          <androidx.coordinatorlayout.widget.CoordinatorLayout
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:layout_margin="@dimen/_10sdp">
-              <de.hdodenhof.circleimageview.CircleImageView
-                  android:id="@+id/imageview_photo_profile"
-                  android:layout_width="@dimen/_30sdp"
-                  android:layout_height="@dimen/_30sdp"
-                  android:src="@drawable/photo_profile" />
-              <TextView
-                  android:id="@+id/tv_username"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_gravity="center|left"
-                  android:layout_marginLeft="@dimen/_45sdp"
-                  android:text="Mohamed Mezenner"
-                  android:textColor="@color/white"
-                  android:layout_marginRight="@dimen/_10sdp"
 
-                  android:textSize="@dimen/_16ssp"
-                  android:gravity="center"
-                  android:textStyle="bold" />
+                <androidx.coordinatorlayout.widget.CoordinatorLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_10sdp">
 
-              <LinearLayout
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_gravity="center|right"
-                  android:layout_marginLeft="@dimen/_10sdp"
-                  android:orientation="horizontal">
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/imageview_photo_profile"
+                        android:layout_width="@dimen/_30sdp"
+                        android:layout_height="@dimen/_30sdp"
+                        android:src="@drawable/photo_profile" />
 
-                  <ImageView
-                      android:layout_width="@dimen/_20sdp"
-                      android:layout_height="@dimen/_20sdp"
-                      android:layout_gravity="center|right"
-                      android:layout_marginRight="@dimen/_10sdp"
-                      android:layout_marginLeft="@dimen/_10sdp"
-                      android:src="@drawable/ic_phone"
-                      app:tint="@color/white" />
+                    <TextView
+                        android:id="@+id/tv_username"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center|left"
+                        android:layout_marginLeft="@dimen/_45sdp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:gravity="center"
+                        android:text="Mohamed Mezenner"
 
-                  <ImageView
-                      android:layout_width="@dimen/_20sdp"
-                      android:layout_height="@dimen/_20sdp"
-                      android:src="@drawable/ic_menu_verticale"
-                      app:tint="@color/white" />
-              </LinearLayout>
-          </androidx.coordinatorlayout.widget.CoordinatorLayout>
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_16ssp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center|right"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="@dimen/_20sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:layout_gravity="center|right"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:layout_marginRight="@dimen/_10sdp"
+                            android:src="@drawable/ic_phone"
+                            app:tint="@color/white" />
+
+                        <ImageView
+                            android:id="@+id/bu_menu_bottom_sheet"
+                            android:layout_width="@dimen/_20sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:src="@drawable/ic_menu_verticale"
+                            app:tint="@color/white" />
+                    </LinearLayout>
+                </androidx.coordinatorlayout.widget.CoordinatorLayout>
             </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
+
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollViewChat"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
@@ -134,12 +140,12 @@
             android:id="@+id/rv_chat"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:reverseLayout="true"
             android:paddingBottom="@dimen/_45sdp"
             android:src="@drawable/photo_profile"
-            />
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:reverseLayout="true" />
     </androidx.core.widget.NestedScrollView>
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -147,32 +153,35 @@
         android:background="@color/white"
         android:orientation="horizontal">
 
-       <androidx.coordinatorlayout.widget.CoordinatorLayout
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:layout_margin="@dimen/_5sdp">
-           <ImageView
-               android:id="@+id/bu_send_message"
-               android:layout_width="@dimen/_38sdp"
-               android:layout_height="@dimen/_38sdp"
-               android:layout_gravity="end|center"
-               android:src="@drawable/ic_send_message" />
-           <EditText
-               android:id="@+id/edittext_send_message"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:padding="@dimen/_5sdp"
-               android:hint="Type something"
-               android:foregroundGravity="center"
-               app:layout_anchorGravity="center"
-               android:drawableStart="@drawable/ic_add_image_message"
-               android:drawablePadding="@dimen/_10sdp"
-               android:textStyle="bold"
-               android:maxHeight="@dimen/_100sdp"
-               android:gravity="start|center"
-               android:layout_gravity="center"
-               android:background="@drawable/background_edittext_chat_message"/>
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_5sdp">
 
-       </androidx.coordinatorlayout.widget.CoordinatorLayout>
+            <ImageView
+                android:id="@+id/bu_send_message"
+                android:layout_width="@dimen/_38sdp"
+                android:layout_height="@dimen/_38sdp"
+                android:layout_gravity="end|center"
+                android:src="@drawable/ic_send_message" />
+
+            <EditText
+                android:id="@+id/edittext_send_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/background_edittext_chat_message"
+                android:drawableStart="@drawable/ic_add_image_message"
+                android:drawablePadding="@dimen/_10sdp"
+                android:foregroundGravity="center"
+                android:gravity="start|center"
+                android:hint="Type something"
+                android:maxHeight="@dimen/_100sdp"
+                android:padding="@dimen/_5sdp"
+                android:textStyle="bold"
+                app:layout_anchorGravity="center" />
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <include layout="@layout/bottom_sheet_layout"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

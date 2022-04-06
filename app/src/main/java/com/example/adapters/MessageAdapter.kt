@@ -58,4 +58,5 @@ class MessageAdapter(val currentId:String): RecyclerView.Adapter<MessageAdapter.
         notifyDataSetChanged()
     }
 
+
 }
