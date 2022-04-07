@@ -16,13 +16,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.adapters.MessageAdapter
 import com.example.messenger.databinding.ActivityChatBinding
-import com.example.messenger.databinding.BottomSheetLayoutBinding
 import com.example.pojo.Message
 import com.example.pojo.Person
 import com.example.pojo.ReceiveMessage
 import com.example.sharedPreferences.AppSharedPreferences
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import java.util.*
@@ -51,6 +49,8 @@ class ChatActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.nestedScrollViewChat.fullScroll(View.FOCUS_UP)
 
         createBottomSheet()
 
@@ -87,14 +87,14 @@ class ChatActivity : AppCompatActivity() {
                 binding.edittextSendMessage.setText(" ")
             }
 
-        }
-
-
+            }
         }
         binding.edittextSendMessage.setOnClickListener {
-            Toast.makeText(this , "Any" ,Toast.LENGTH_SHORT).show()
+            binding.nestedScrollViewChat.post {
+                binding.nestedScrollViewChat.fullScroll(View.FOCUS_DOWN)
+            }
         }
-        bottomToolbarSendMessageAnimation()
+        bottombarSendMessageAnimation()
 
         buChatTollBarSelected()
 
@@ -163,7 +163,7 @@ class ChatActivity : AppCompatActivity() {
     }
 
 
-    fun bottomToolbarSendMessageAnimation()
+    fun bottombarSendMessageAnimation()
     {
 
         binding.buSendMessage.visibility = View.INVISIBLE
@@ -209,8 +209,11 @@ class ChatActivity : AppCompatActivity() {
                 arrayOfReceiveMessage.add(ReceiveMessage(document.toObject(Message::class.java)!!,document.id))
                 Log.d("chat" ,ReceiveMessage(document.toObject(Message::class.java)!!,document.id).toString())
             }
-            binding.nestedScrollViewChat.fullScroll(View.FOCUS_DOWN)
             messageAdapter.setList(arrayOfReceiveMessage)
+
+            binding.nestedScrollViewChat.post {
+                binding.nestedScrollViewChat.fullScroll(View.FOCUS_DOWN)
+            }
         }
     }
 

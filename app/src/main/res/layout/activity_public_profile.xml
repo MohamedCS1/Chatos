@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,7 +7,7 @@
     android:background="@color/my_green"
     android:scaleType="centerCrop"
     tools:context=".PublicProfileActivity">
-    <ScrollView
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
@@ -165,30 +165,30 @@
                 android:layout_marginTop="@dimen/_5sdp"
                 android:layout_marginBottom="@dimen/_5sdp"/>
         </LinearLayout>
-    </ScrollView>
-
-
-    <de.hdodenhof.circleimageview.CircleImageView
+        <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="@dimen/_80sdp"
         android:layout_height="@dimen/_80sdp"
         android:src="@drawable/photo_profile"
         android:layout_gravity="center|top"
         android:layout_marginTop="@dimen/_25sdp"/>
 
-    <ImageView
-        android:id="@+id/bu_back"
-        android:layout_width="@dimen/_20sdp"
-        android:layout_height="@dimen/_20sdp"
-        android:src="@drawable/ic_back"
-        android:layout_marginStart="@dimen/_25sdp"
-        android:layout_marginTop="@dimen/_25sdp"/>
+        <ImageView
+            android:id="@+id/bu_back"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:src="@drawable/ic_back"
+            android:layout_marginStart="@dimen/_25sdp"
+            android:layout_marginTop="@dimen/_25sdp"/>
 
-    <ImageView
-        android:layout_width="@dimen/_20sdp"
-        android:layout_height="@dimen/_20sdp"
-        android:src="@drawable/ic_menu_verticale"
-        android:layout_marginEnd="@dimen/_25sdp"
-        app:tint="@color/white"
-        android:layout_marginTop="@dimen/_25sdp"
-        android:layout_gravity="end"/>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <ImageView
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:src="@drawable/ic_menu_verticale"
+            android:layout_marginEnd="@dimen/_25sdp"
+            app:tint="@color/white"
+            android:layout_marginTop="@dimen/_25sdp"
+            android:layout_gravity="end"/>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+</ScrollView>
