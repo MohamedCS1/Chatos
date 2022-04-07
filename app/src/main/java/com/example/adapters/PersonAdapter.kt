@@ -26,7 +26,7 @@ class PersonAdapter: RecyclerView.Adapter<PersonAdapter.PersonViewHolder>() {
     override fun onBindViewHolder(holder: PersonViewHolder, position: Int) {
         holder.name.text = arrayOfPersons[position].name
         holder.lastMessage.text = arrayOfPersons[position].lastMessage
-        Glide.with(context).load(arrayOfPersons[position].imagePath).placeholder(R.drawable.ic_photo_placeholder).into(holder.image)
+        Glide.with(context).load(arrayOfPersons[position].photoProfilePath).placeholder(R.drawable.ic_photo_placeholder).into(holder.image)
         holder.itemView.setOnClickListener {
             setOnPersonClick!!.personValue(arrayOfPersons[position])
         }

@@ -73,7 +73,10 @@ class ChatActivity : AppCompatActivity() {
         currentFriend = bundle?.get("person") as Person
 
         binding.imageviewPhotoProfile.setOnClickListener {
-            startActivity(Intent(this ,PublicProfileActivity::class.java))
+            val intent = Intent(this ,PublicProfileActivity::class.java)
+            intent.putExtra("photoProfilePath" ,currentFriend.photoProfilePath)
+            intent.putExtra("currentFriendName" ,currentFriend.name)
+            startActivity(intent)
         }
 
         createChatChannel()
@@ -84,7 +87,7 @@ class ChatActivity : AppCompatActivity() {
             if (binding.edittextSendMessage.text.isNotBlank() && binding.edittextSendMessage.text.isNotEmpty())
             {
                 sendMessage(channelId,Message(binding.edittextSendMessage.text.toString() ,currentUserUID ,currentFriend.uid ,Calendar.getInstance().time))
-                binding.edittextSendMessage.setText(" ")
+                binding.edittextSendMessage.setText("")
             }
 
             }
@@ -101,7 +104,7 @@ class ChatActivity : AppCompatActivity() {
         Toast.makeText(this ,currentFriend.uid ,Toast.LENGTH_SHORT).show()
 
         binding.tvUsername.text = currentFriend.name
-        Glide.with(this).load(currentFriend.imagePath).placeholder(R.drawable.ic_photo_placeholder).into(binding.imageviewPhotoProfile)
+        Glide.with(this).load(currentFriend.photoProfilePath).placeholder(R.drawable.ic_photo_placeholder).into(binding.imageviewPhotoProfile)
 
         binding.rvChat.adapter = messageAdapter
         binding.rvChat.layoutManager = lm
