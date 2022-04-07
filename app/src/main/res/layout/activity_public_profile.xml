@@ -4,55 +4,191 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/photo_profile"
+    android:background="@color/my_green"
     android:scaleType="centerCrop"
     tools:context=".PublicProfileActivity">
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/background_edittext_chat_message"
-        android:layout_marginTop="@dimen/_70sdp"
-        android:backgroundTint="@color/white"
-        android:orientation="vertical"
-        >
-        <TextView
-            android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Mohamed Mezenner"
-            android:gravity="center"
-            android:layout_gravity="center|top"
+            android:background="@drawable/background_edittext_chat_message"
             android:layout_marginTop="@dimen/_70sdp"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:textSize="@dimen/_20sdp"/>
+            android:backgroundTint="@color/white"
+            android:layout_gravity="bottom"
+            android:orientation="vertical"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mohamed Mezenner"
+                android:gravity="center"
+                android:layout_gravity="center|top"
+                android:layout_marginTop="@dimen/_70sdp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="@dimen/_20sdp"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Los Angeles ,CA"
-            android:gravity="center"
-            android:layout_gravity="center|top"
-            android:layout_marginTop="@dimen/_5sdp"
-            android:textColor="#86000000"
-            android:textStyle="bold"
-            android:textSize="@dimen/_10sdp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="I'm a positive person ,I love to travel and eat .\n\nAlways available for chat"
-            android:gravity="center"
-            android:layout_gravity="center|top"
-            android:layout_marginTop="@dimen/_20sdp"
-            android:textColor="#86000000"
-            android:textStyle="bold"
-            android:textSize="@dimen/_10sdp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Los Angeles ,CA"
+                android:gravity="center"
+                android:layout_gravity="center|top"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:textColor="#7F7F7F"
+                android:textStyle="bold"
+                android:textSize="@dimen/_10sdp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="I'm a positive person ,I love to travel and eat.\nAlways available for chat"
+                android:gravity="center"
+                android:layout_gravity="center|top"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:textColor="#7F7F7F"
+                android:textStyle="bold"
+                android:textSize="@dimen/_10sdp"/>
 
-    </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/_30sdp">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_marginEnd="@dimen/_20sdp">
+                    <ImageView
+                        android:layout_width="@dimen/_35sdp"
+                        android:layout_height="@dimen/_35sdp"
+                        android:src="@drawable/ic_logo"
+                        android:background="@drawable/background_circle_stroke"
+                        app:tint="@color/my_green" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Message"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/_10ssp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <ImageView
+                        android:layout_width="@dimen/_35sdp"
+                        android:layout_height="@dimen/_35sdp"
+                        android:src="@drawable/ic_phone"
+                        android:padding="@dimen/_5sdp"
+                        android:background="@drawable/background_circle_stroke"
+                        app:tint="@color/my_green" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Audio"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/_10ssp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:gravity="center">
+                    <ImageView
+                        android:layout_width="@dimen/_35sdp"
+                        android:layout_height="@dimen/_35sdp"
+                        android:src="@drawable/ic_call_video"
+                        android:background="@drawable/background_circle_stroke"
+                        android:padding="@dimen/_5sdp"
+                        app:tint="@color/my_green" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Video"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/_10ssp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_marginStart="@dimen/_20sdp">
+                    <ImageView
+                        android:layout_width="@dimen/_35sdp"
+                        android:layout_height="@dimen/_35sdp"
+                        android:src="@drawable/ic_save_friend"
+                        android:background="@drawable/background_circle_stroke"
+                        android:padding="@dimen/_5sdp"
+                        app:tint="@color/my_green" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Save"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/_10ssp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="@dimen/_120sdp"
+                android:layout_height="@dimen/_120sdp"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/_40sdp"
+                android:src="@drawable/ic_qr_code"
+                android:padding="@dimen/_7sdp"
+                android:background="@drawable/background_qr_code"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/_13ssp"
+                android:text="QR CODE"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginBottom="@dimen/_5sdp"/>
+        </LinearLayout>
+    </ScrollView>
+
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="@dimen/_80sdp"
         android:layout_height="@dimen/_80sdp"
         android:src="@drawable/photo_profile"
         android:layout_gravity="center|top"
-        android:layout_marginTop="@dimen/_35sdp"/>
+        android:layout_marginTop="@dimen/_25sdp"/>
+
+    <ImageView
+        android:id="@+id/bu_back"
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="@dimen/_20sdp"
+        android:src="@drawable/ic_back"
+        android:layout_marginStart="@dimen/_25sdp"
+        android:layout_marginTop="@dimen/_25sdp"/>
+
+    <ImageView
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="@dimen/_20sdp"
+        android:src="@drawable/ic_menu_verticale"
+        android:layout_marginEnd="@dimen/_25sdp"
+        app:tint="@color/white"
+        android:layout_marginTop="@dimen/_25sdp"
+        android:layout_gravity="end"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

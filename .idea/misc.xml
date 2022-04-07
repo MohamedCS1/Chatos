@@ -9,7 +9,10 @@
         <entry key="app/src/main/res/drawable/bacground_message_sender.xml" value="0.31" />
         <entry key="app/src/main/res/drawable/background_appbar_chat.xml" value="0.3145" />
         <entry key="app/src/main/res/drawable/background_bottom_sheet.xml" value="0.3495" />
+        <entry key="app/src/main/res/drawable/background_circle_stroke.xml" value="0.356" />
         <entry key="app/src/main/res/drawable/background_edittext_chat_message.xml" value="0.3425" />
+        <entry key="app/src/main/res/drawable/background_public_profil_activity.xml" value="0.345" />
+        <entry key="app/src/main/res/drawable/background_qr_code.xml" value="0.345" />
         <entry key="app/src/main/res/drawable/blur.xml" value="0.3495" />
         <entry key="app/src/main/res/drawable/c.xml" value="0.324" />
         <entry key="app/src/main/res/drawable/ic_add_image_message.xml" value="0.3425" />
@@ -32,7 +35,7 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_main2.xml" value="0.2833333333333333" />
         <entry key="app/src/main/res/layout/activity_profile.xml" value="0.22" />
-        <entry key="app/src/main/res/layout/activity_public_profile.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_public_profile.xml" value="0.23867753623188406" />
         <entry key="app/src/main/res/layout/activity_sign_in.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.25" />
         <entry key="app/src/main/res/layout/app_bar_main.xml" value="0.2833333333333333" />
@@ -56,6 +59,9 @@
         <entry key="app/src/main/res/menu/drawer_menu.xml" value="0.5" />
       </map>
     </option>
+  </component>
+  <component name="ProjectPlainTextFileTypeManager">
+    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/ic_qr_code.xml" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />

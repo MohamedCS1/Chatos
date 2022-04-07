@@ -1,6 +1,7 @@
 package com.example.messenger
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
@@ -70,6 +71,10 @@ class ChatActivity : AppCompatActivity() {
         val bundle = intent.extras
 
         currentFriend = bundle?.get("person") as Person
+
+        binding.imageviewPhotoProfile.setOnClickListener {
+            startActivity(Intent(this ,PublicProfileActivity::class.java))
+        }
 
         createChatChannel()
         {
