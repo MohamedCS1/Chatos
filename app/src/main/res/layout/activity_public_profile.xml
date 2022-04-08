@@ -215,7 +215,7 @@
             android:layout_gravity="end"
             android:layout_marginTop="@dimen/_25sdp"
             android:layout_marginEnd="@dimen/_25sdp"
-            android:src="@drawable/ic_menu_verticale"
+            android:src="@drawable/ic_menu_vertical"
             app:tint="@color/white" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

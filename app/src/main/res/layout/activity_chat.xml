@@ -35,9 +35,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/_20sdp"
+                    android:layout_marginStart="@dimen/_20sdp"
                     android:layout_marginTop="@dimen/_3sdp"
-                    android:layout_marginRight="@dimen/_10sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
                     android:layout_marginBottom="@dimen/_3sdp"
                     android:gravity="center"
                     android:paddingLeft="@dimen/_20sdp"
@@ -46,7 +46,8 @@
                     android:paddingBottom="@dimen/_3sdp"
                     android:text="chat"
                     android:textColor="@color/my_green"
-                    android:textSize="@dimen/_15sdp" />
+                    android:textSize="@dimen/_15sdp"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/toolBarBuFiles"
@@ -62,7 +63,8 @@
                     android:paddingBottom="@dimen/_3sdp"
                     android:text="Files"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/_15sdp" />
+                    android:textSize="@dimen/_15sdp"
+                    tools:ignore="HardcodedText" />
 
             </LinearLayout>
 
@@ -90,21 +92,22 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center|left"
-                        android:layout_marginLeft="@dimen/_45sdp"
-                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginStart="@dimen/_45sdp"
+                        android:layout_marginEnd="@dimen/_10sdp"
                         android:gravity="center"
                         android:text="Mohamed Mezenner"
-
                         android:textColor="@color/white"
                         android:textSize="@dimen/_16ssp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:ignore="HardcodedText,RtlHardcoded" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center|right"
-                        android:layout_marginLeft="@dimen/_10sdp"
-                        android:orientation="horizontal">
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:orientation="horizontal"
+                        tools:ignore="RtlHardcoded">
 
                         <ImageView
                             android:layout_width="@dimen/_20sdp"
@@ -119,7 +122,7 @@
                             android:id="@+id/bu_menu_bottom_sheet"
                             android:layout_width="@dimen/_20sdp"
                             android:layout_height="@dimen/_20sdp"
-                            android:src="@drawable/ic_menu_verticale"
+                            android:src="@drawable/ic_menu_vertical"
                             app:tint="@color/white" />
                     </LinearLayout>
                 </androidx.coordinatorlayout.widget.CoordinatorLayout>
@@ -176,7 +179,8 @@
                 android:maxHeight="@dimen/_100sdp"
                 android:padding="@dimen/_5sdp"
                 android:textStyle="normal"
-                app:layout_anchorGravity="center" />
+                app:layout_anchorGravity="center"
+                tools:ignore="HardcodedText" />
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

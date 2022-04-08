@@ -63,6 +63,7 @@ class ChatFragment : Fragment() {
         val arrayOfPersons = arrayListOf<Person>()
         fireStore.collection("users/").addSnapshotListener(object :EventListener<QuerySnapshot>{
             override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
+                personAdapter.arrayOfPersons.clear()
                 if (error != null) {
                     Toast.makeText(requireContext(), error.message.toString(), Toast.LENGTH_SHORT)
                         .show()
