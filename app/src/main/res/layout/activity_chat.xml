@@ -178,7 +178,7 @@
                 android:hint="Type something"
                 android:maxHeight="@dimen/_100sdp"
                 android:padding="@dimen/_5sdp"
-                android:textStyle="bold"
+                android:textStyle="normal"
                 app:layout_anchorGravity="center" />
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>

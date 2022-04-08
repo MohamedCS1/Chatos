@@ -34,8 +34,8 @@
         <entry key="app/src/main/res/layout/activity_log_in.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_main2.xml" value="0.2833333333333333" />
-        <entry key="app/src/main/res/layout/activity_profile.xml" value="0.22" />
-        <entry key="app/src/main/res/layout/activity_public_profile.xml" value="0.23867753623188406" />
+        <entry key="app/src/main/res/layout/activity_profile.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/activity_public_profile.xml" value="0.5" />
         <entry key="app/src/main/res/layout/activity_sign_in.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.25" />
         <entry key="app/src/main/res/layout/app_bar_main.xml" value="0.2833333333333333" />
@@ -43,6 +43,7 @@
         <entry key="app/src/main/res/layout/content_main.xml" value="0.2682291666666667" />
         <entry key="app/src/main/res/layout/fragment_chat.xml" value="0.21614583333333334" />
         <entry key="app/src/main/res/layout/fragment_explore.xml" value="0.21614583333333334" />
+        <entry key="app/src/main/res/layout/fragment_friends.xml" value="0.3039760581445062" />
         <entry key="app/src/main/res/layout/fragment_frindes.xml" value="0.21614583333333334" />
         <entry key="app/src/main/res/layout/fragment_gallery.xml" value="0.2833333333333333" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.2833333333333333" />
@@ -50,6 +51,7 @@
         <entry key="app/src/main/res/layout/loading_progress.xml" value="0.75" />
         <entry key="app/src/main/res/layout/message_item.xml" value="0.33" />
         <entry key="app/src/main/res/layout/message_item_receiver.xml" value="0.25181701581872595" />
+        <entry key="app/src/main/res/layout/message_item_sender.xml" value="0.5" />
         <entry key="app/src/main/res/layout/nav_header.xml" value="0.25" />
         <entry key="app/src/main/res/layout/nav_header_main.xml" value="0.2833333333333333" />
         <entry key="app/src/main/res/layout/recycler_view_item.xml" value="0.27960666951688756" />

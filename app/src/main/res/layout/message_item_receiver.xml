@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:text="Hello How Are you to day ? Hello How Are you to day ? Hello How Are you to day ? Hello How Are you to day ?"
         android:textColor="@color/black"
-        android:textStyle="bold"
+        android:textStyle="normal"
         android:maxWidth="@dimen/_250sdp"
         android:textSize="@dimen/_12ssp"
         android:padding="@dimen/_7sdp"
