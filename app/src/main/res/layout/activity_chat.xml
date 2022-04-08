@@ -129,24 +129,20 @@
     </com.google.android.material.appbar.AppBarLayout>
 
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/nestedScrollViewChat"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_chat"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:paddingBottom="@dimen/_45sdp"
             android:src="@drawable/photo_profile"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:reverseLayout="true" />
-    </androidx.core.widget.NestedScrollView>
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+            app:reverseLayout="true"/>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/bar_send_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
@@ -163,6 +159,7 @@
                 android:layout_width="@dimen/_38sdp"
                 android:layout_height="@dimen/_38sdp"
                 android:layout_gravity="end|center"
+                android:focusableInTouchMode="false"
                 android:src="@drawable/ic_send_message" />
 
             <EditText

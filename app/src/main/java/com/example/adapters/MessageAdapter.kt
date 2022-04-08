@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.messenger.R
 import com.example.pojo.ReceiveMessage
@@ -24,6 +26,7 @@ class MessageAdapter(val currentId:String): RecyclerView.Adapter<MessageAdapter.
         {
             return MessageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.message_item_receiver ,parent ,false))
         }
+
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -39,6 +42,16 @@ class MessageAdapter(val currentId:String): RecyclerView.Adapter<MessageAdapter.
     override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
         holder.message.text = arrayOfMessages[position].message.message
         holder.date.text = android.text.format.DateFormat.format("hh:mm a" ,arrayOfMessages[position].message.date).toString()
+        holder.itemView.setOnClickListener {
+            if (holder.date.visibility == View.VISIBLE)
+            {
+                holder.date.visibility = View.GONE
+            }
+            else
+            {
+                holder.date.visibility = View.VISIBLE
+            }
+        }
     }
 
     override fun getItemCount(): Int {

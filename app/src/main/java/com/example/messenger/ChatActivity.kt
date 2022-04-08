@@ -7,7 +7,9 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
+import android.view.View.OnTouchListener
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -50,7 +52,6 @@ class ChatActivity : AppCompatActivity() {
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.nestedScrollViewChat.fullScroll(View.FOCUS_UP)
 
         createBottomSheet()
 
@@ -92,11 +93,6 @@ class ChatActivity : AppCompatActivity() {
 
             }
         }
-        binding.edittextSendMessage.setOnClickListener {
-            binding.nestedScrollViewChat.post {
-                binding.nestedScrollViewChat.fullScroll(View.FOCUS_DOWN)
-            }
-        }
         bottombarSendMessageAnimation()
 
         buChatTollBarSelected()
@@ -108,6 +104,8 @@ class ChatActivity : AppCompatActivity() {
 
         binding.rvChat.adapter = messageAdapter
         binding.rvChat.layoutManager = lm
+
+
     }
 
     fun sendMessage(channelId:String ,message:Message)
@@ -187,6 +185,7 @@ class ChatActivity : AppCompatActivity() {
                     layoutParams.setMargins(0,0,margin ,0)
                     binding.buSendMessage.visibility = View.VISIBLE
                     binding.edittextSendMessage.layoutParams = layoutParams
+
                 }
                 else
                 {
@@ -199,6 +198,8 @@ class ChatActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {
             }
         })
+
+
     }
 
     fun getMessageFromFireBase(channelId: String)
@@ -214,9 +215,8 @@ class ChatActivity : AppCompatActivity() {
             }
             messageAdapter.setList(arrayOfReceiveMessage)
 
-            binding.nestedScrollViewChat.post {
-                binding.nestedScrollViewChat.fullScroll(View.FOCUS_DOWN)
-            }
+            binding.rvChat.scrollToPosition(0)
+
         }
     }
 
@@ -226,7 +226,7 @@ class ChatActivity : AppCompatActivity() {
         val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         binding.buMenuBottomSheet.setOnClickListener(View.OnClickListener {
-            if (bottomSheetBehavior.state.equals(BottomSheetBehavior.STATE_HIDDEN))
+            if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_HIDDEN)
             {
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 

@@ -5,7 +5,9 @@
     android:orientation="vertical"
     android:layout_gravity="start"
     android:gravity="start"
-    android:layout_margin="@dimen/_5sdp">
+    android:layout_marginStart="@dimen/_5sdp"
+    android:layout_marginBottom="@dimen/_4sdp"
+    android:layout_marginTop="@dimen/_4sdp">
 
     <TextView
         android:id="@+id/tv_message"
@@ -23,6 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
+        android:visibility="gone"
         android:textSize="@dimen/_10ssp"
         android:text="10:20"/>
 
