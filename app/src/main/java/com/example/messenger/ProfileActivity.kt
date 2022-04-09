@@ -105,7 +105,7 @@ class ProfileActivity : AppCompatActivity() {
     fun upLoadProfileImageToFirebase(imageByteArray:ByteArray ,onSuccess:(imagePath:String) -> Unit)
     {
         loadingProgress.show()
-        val ref = currentUserStorageRef.child("ProfilePictures/${UUID.nameUUIDFromBytes(imageByteArray)}")
+        val ref = currentUserStorageRef.child("ProfilePictures")
         ref.putBytes(imageByteArray).addOnCompleteListener {
             if (it.isSuccessful)
             {

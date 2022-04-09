@@ -1,28 +1,42 @@
 package com.example.messenger
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.adapters.MessageAdapter
 import com.example.messenger.databinding.ActivityChatBinding
+import com.example.pojo.ImageMessage
 import com.example.pojo.Message
 import com.example.pojo.Person
 import com.example.pojo.ReceiveMessage
 import com.example.sharedPreferences.AppSharedPreferences
+import com.example.tools.LoadingProgress
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import java.io.ByteArrayOutputStream
 import java.util.*
 
 
@@ -30,18 +44,32 @@ class ChatActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityChatBinding
     lateinit var context: Context
-    lateinit var appPref: AppSharedPreferences
+    private lateinit var appPref: AppSharedPreferences
     lateinit var messageAdapter:MessageAdapter
     lateinit var lm: LinearLayoutManager
+
+    lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
+
+
 
     private val fireStoreInstance:FirebaseFirestore by lazy {
         FirebaseFirestore.getInstance()
     }
+    private val storageInstance: FirebaseStorage by lazy {
+        FirebaseStorage.getInstance()
+    }
+
+    private val currentUserStorageRef: StorageReference get() = storageInstance.reference.child(FirebaseAuth.getInstance().currentUser!!.uid)
+
+    lateinit var currentChannelId:String
 
     private val chatChannelsCollectionRef = fireStoreInstance.collection("chatChannels")
 
     lateinit var currentUserUID:String
     lateinit var currentFriend:Person
+
+    lateinit var loadingProgress: LoadingProgress
+
 
     lateinit var bottomSheet:CoordinatorLayout
 
@@ -50,12 +78,7 @@ class ChatActivity : AppCompatActivity() {
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-        createBottomSheet()
-
-        lm = LinearLayoutManager(this)
-
-        lm.reverseLayout = true
+        loadingProgress = LoadingProgress(this)
 
         context = this
 
@@ -65,7 +88,9 @@ class ChatActivity : AppCompatActivity() {
 
         currentUserUID = appPref.getCurrentUserUID()
 
-        messageAdapter = MessageAdapter(currentUserUID)
+        createBottomSheet()
+
+        initializingRecyclerView()
 
         val bundle = intent.extras
 
@@ -81,6 +106,7 @@ class ChatActivity : AppCompatActivity() {
         createChatChannel()
         {
             channelId ->
+            currentChannelId = channelId
             getMessageFromFireBase(channelId)
             binding.buSendMessage.setOnClickListener {
             if (binding.edittextSendMessage.text.isNotBlank() && binding.edittextSendMessage.text.isNotEmpty())
@@ -95,20 +121,93 @@ class ChatActivity : AppCompatActivity() {
 
         buChatTollBarSelected()
 
-        Toast.makeText(this ,currentFriend.uid ,Toast.LENGTH_SHORT).show()
-
         binding.tvUsername.text = currentFriend.name
         Glide.with(this).load(currentFriend.photoProfilePath).placeholder(R.drawable.ic_photo_placeholder).into(binding.imageviewPhotoProfile)
 
-        binding.rvChat.adapter = messageAdapter
-        binding.rvChat.layoutManager = lm
+        binding.buSendImage.setOnClickListener {
+            val intentImage = Intent().apply {
+                type = "image/*"
+                action = Intent.ACTION_GET_CONTENT
+                putExtra(Intent.EXTRA_MIME_TYPES , arrayOf("image/jpeg" ,"image/png"))
+            }
 
+            activityResultLauncher.launch(intentImage)
+        }
+
+        activityResultLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult() ,object :
+                ActivityResultCallback<ActivityResult> {
+                override fun onActivityResult(result: ActivityResult?) {
+                    if (result?.resultCode == Activity.RESULT_OK && result.data != null)
+                    {
+                        val imagePath = result.data!!.data
+                        compressImage(imagePath!!)
+                    }
+                }
+            })
+
+    }
+
+    fun compressImage(imageUri: Uri){
+        val outputStream = ByteArrayOutputStream()
+        MediaStore.Images.Media.getBitmap(this.contentResolver ,imageUri).compress(Bitmap.CompressFormat.JPEG ,30 ,outputStream)
+        upLoadProfileImageToFirebase(outputStream.toByteArray())
+        {
+                path -> sendImageMessage(currentChannelId , ImageMessage(path ,currentUserUID ,Calendar.getInstance().time))
+        }
+    }
+
+    fun upLoadProfileImageToFirebase(imageByteArray:ByteArray ,onSuccess:(imagePath:String) -> Unit)
+    {
+        loadingProgress.show()
+        val ref = currentUserStorageRef.child("images/${UUID.nameUUIDFromBytes(imageByteArray)}")
+        ref.putBytes(imageByteArray).addOnCompleteListener {
+            if (it.isSuccessful)
+            {
+                ref.downloadUrl.addOnCompleteListener {
+                        task->
+                    if (task.isSuccessful)
+                    {
+                        onSuccess(task.result.toString())
+                        loadingProgress.hide()
+                        Toast.makeText(this ,"Uploading Successfully" , Toast.LENGTH_SHORT).show()
+                    }
+                    else
+                    {
+                        loadingProgress.hide()
+                        Toast.makeText(this , task.exception?.message.toString(), Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            else
+            {
+                loadingProgress.hide()
+                Toast.makeText(this , it.exception?.message.toString(), Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+    fun initializingRecyclerView()
+    {
+        lm = LinearLayoutManager(this)
+
+        lm.reverseLayout = true
+
+        messageAdapter = MessageAdapter(currentUserUID)
+
+        binding.rvChat.adapter = messageAdapter
+
+        binding.rvChat.layoutManager = lm
 
     }
 
     fun sendMessage(channelId:String ,message:Message)
     {
         chatChannelsCollectionRef.document(channelId).collection("messages").add(message)
+    }
+
+    fun sendImageMessage(channelId:String ,imageMessage:ImageMessage)
+    {
+        chatChannelsCollectionRef.document(channelId).collection("messages").add(imageMessage)
     }
 
     fun createChatChannel(onComplete:(channelId:String) -> Unit)
