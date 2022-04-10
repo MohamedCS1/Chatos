@@ -24,10 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.adapters.MessageAdapter
 import com.example.messenger.databinding.ActivityChatBinding
-import com.example.pojo.ImageMessage
-import com.example.pojo.Message
-import com.example.pojo.Person
-import com.example.pojo.ReceiveMessage
+import com.example.pojo.*
 import com.example.sharedPreferences.AppSharedPreferences
 import com.example.tools.LoadingProgress
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -111,7 +108,7 @@ class ChatActivity : AppCompatActivity() {
             binding.buSendMessage.setOnClickListener {
             if (binding.edittextSendMessage.text.isNotBlank() && binding.edittextSendMessage.text.isNotEmpty())
             {
-                sendMessage(channelId,Message(binding.edittextSendMessage.text.toString() ,currentUserUID ,currentFriend.uid ,Calendar.getInstance().time))
+                sendMessage(channelId,TextMessage(binding.edittextSendMessage.text.toString() ,currentUserUID ,currentFriend.uid ,Calendar.getInstance().time))
                 binding.edittextSendMessage.setText("")
             }
 
@@ -153,7 +150,7 @@ class ChatActivity : AppCompatActivity() {
         MediaStore.Images.Media.getBitmap(this.contentResolver ,imageUri).compress(Bitmap.CompressFormat.JPEG ,30 ,outputStream)
         upLoadProfileImageToFirebase(outputStream.toByteArray())
         {
-                path -> sendImageMessage(currentChannelId , ImageMessage(path ,currentUserUID ,Calendar.getInstance().time))
+                path -> sendMessage(currentChannelId , ImageMessage(path ,currentUserUID ,currentFriend.uid ,Calendar.getInstance().time))
         }
     }
 
@@ -200,15 +197,11 @@ class ChatActivity : AppCompatActivity() {
 
     }
 
-    fun sendMessage(channelId:String ,message:Message)
+    fun sendMessage(channelId:String, message:Message)
     {
         chatChannelsCollectionRef.document(channelId).collection("messages").add(message)
     }
 
-    fun sendImageMessage(channelId:String ,imageMessage:ImageMessage)
-    {
-        chatChannelsCollectionRef.document(channelId).collection("messages").add(imageMessage)
-    }
 
     fun createChatChannel(onComplete:(channelId:String) -> Unit)
     {
@@ -291,14 +284,10 @@ class ChatActivity : AppCompatActivity() {
                     binding.edittextSendMessage.layoutParams = layoutParams
                 }
             }
-
             override fun afterTextChanged(s: Editable?) {
             }
         })
-
-
     }
-
     fun getMessageFromFireBase(channelId: String)
     {
         val arrayOfReceiveMessage = arrayListOf<ReceiveMessage>()
@@ -307,16 +296,22 @@ class ChatActivity : AppCompatActivity() {
             messageAdapter.arrayOfMessages.clear()
             querySnapshot!!.documents.forEach {
                 document ->
-                arrayOfReceiveMessage.add(ReceiveMessage(document.toObject(Message::class.java)!!,document.id))
-                Log.d("chat" ,ReceiveMessage(document.toObject(Message::class.java)!!,document.id).toString())
+                if (document["type"] == MessageType.TEXT)
+                {
+                    arrayOfReceiveMessage.add(ReceiveMessage(document.toObject(TextMessage::class.java)!!,document.id))
+                    Log.d("chat" ,ReceiveMessage(document.toObject(TextMessage::class.java)!!,document.id).toString())
+                }
+                else
+                {
+                    arrayOfReceiveMessage.add(ReceiveMessage(document.toObject(ImageMessage::class.java)!!,document.id))
+                    Log.d("chat" ,ReceiveMessage(document.toObject(TextMessage::class.java)!!,document.id).toString())
+                }
             }
             messageAdapter.setList(arrayOfReceiveMessage)
 
             binding.rvChat.scrollToPosition(0)
-
         }
     }
-
     fun createBottomSheet()
     {
         bottomSheet = findViewById(R.id.bottomSheet)

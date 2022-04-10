@@ -1,3 +1,3 @@
 package com.example.pojo
 
-data class ReceiveMessage(val message: Message ,val messageId:String)
+data class ReceiveMessage(val Message: Message, val messageId:String)

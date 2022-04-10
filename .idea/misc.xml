@@ -49,6 +49,8 @@
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.2833333333333333" />
         <entry key="app/src/main/res/layout/fragment_slideshow.xml" value="0.2833333333333333" />
         <entry key="app/src/main/res/layout/loading_progress.xml" value="0.75" />
+        <entry key="app/src/main/res/layout/message_image_item_receiver.xml" value="0.2665457842248413" />
+        <entry key="app/src/main/res/layout/message_image_item_sender.xml" value="0.2665457842248413" />
         <entry key="app/src/main/res/layout/message_item.xml" value="0.33" />
         <entry key="app/src/main/res/layout/message_item_receiver.xml" value="0.25181701581872595" />
         <entry key="app/src/main/res/layout/message_item_sender.xml" value="0.5" />
