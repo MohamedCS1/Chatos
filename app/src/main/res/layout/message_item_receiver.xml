@@ -19,7 +19,7 @@
         android:maxWidth="@dimen/_250sdp"
         android:textSize="@dimen/_12ssp"
         android:padding="@dimen/_7sdp"
-        android:background="@drawable/bacground_message_receiver"/>
+        android:background="@drawable/background_message_receiver"/>
     <TextView
         android:id="@+id/tv_date_message"
         android:layout_width="wrap_content"

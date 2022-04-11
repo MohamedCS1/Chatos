@@ -11,7 +11,7 @@
         android:id="@+id/imageMessage"
         android:layout_width="@dimen/_150sdp"
         android:layout_height="@dimen/_150sdp"
-        android:background="@color/my_green"
+        android:background="@drawable/background_message_sender"
         android:padding="@dimen/_10sdp"/>
     <TextView
         android:id="@+id/tv_date_message"
