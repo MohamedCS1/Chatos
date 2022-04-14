@@ -5,14 +5,15 @@ import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.util.Patterns
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import com.example.messenger.databinding.ActivityLogInBinding
 import com.example.sharedPreferences.AppSharedPreferences
 import com.example.tools.LoadingProgress
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.*
 
 class LogInActivity : AppCompatActivity() ,TextWatcher{
@@ -23,6 +24,10 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
 
     private val progressDialog by lazy {
         LoadingProgress(this)
+    }
+
+    private val fireStore:FirebaseFirestore by lazy {
+        FirebaseFirestore.getInstance()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -107,11 +112,35 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
                    if (user!!.isEmailVerified)
                    {
                        appPref.insertCurrentUserUID(user.uid)
-                       progressDialog.hide()
-                       val intentToMainActivity = Intent(this@LogInActivity ,MainActivity::class.java)
-                       intentToMainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                       startActivity(intentToMainActivity)
-                       finish()
+                       FirebaseMessaging.getInstance().token.addOnCompleteListener {
+                           task->
+                           if (!task.isSuccessful)
+                           {
+                               binding.tvHintFailure.text = "Something went wrong. Please try again."
+                               progressDialog.hide()
+                               return@addOnCompleteListener
+                           }
+                           val token = task.result
+                           Log.d("token" ,token)
+                           fireStore.collection("users").document(appPref.getCurrentUserUID()).update(mapOf("token" to(token)))
+                               .addOnCompleteListener {
+                                   if (!it.isSuccessful)
+                                   {
+                                       binding.tvHintFailure.text = "Something went wrong. Please try again."
+                                       progressDialog.hide()
+                                   }
+                                   else
+                                   {
+
+                                       progressDialog.hide()
+                                       val intentToMainActivity = Intent(this@LogInActivity ,MainActivity::class.java)
+                                       intentToMainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                       startActivity(intentToMainActivity)
+                                       finish()
+                                   }
+                               }
+                       }
+
                    }
                    else
                    {
