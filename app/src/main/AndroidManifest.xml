@@ -10,11 +10,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Messenger">
         <activity
+            android:name=".SearchActivity"
+            android:exported="false"/>
+        <activity
             android:name=".PublicProfileActivity"
             android:exported="false" />
         <activity
             android:name=".ChatActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".ProfileActivity"
             android:exported="false" />
@@ -33,7 +36,9 @@
         <activity
             android:name=".MainActivity"
             android:exported="true">
+
         </activity>
+
         <service
             android:name="com.example.services.MyFirebaseMessagingService"
             android:exported="false">

@@ -19,6 +19,8 @@ class AppSharedPreferences {
 
     private val KeyUID = "UID"
 
+    private val KeyCurrentUserName = "UserName"
+
     @SuppressLint("CommitPrefEdits")
     var context: Context? = null
     @SuppressLint("CommitPrefEdits")
@@ -47,13 +49,21 @@ class AppSharedPreferences {
         editor?.apply()
     }
 
-
-
     fun getProfileImagePath():String
     {
         return pref?.getString(keyProfileImagePath,"").toString()
     }
 
+    fun insertCurrentUserName(userName:String)
+    {
+        editor?.putString(KeyCurrentUserName,userName)
+        editor?.apply()
+    }
+
+    fun getCurrentUserName():String
+    {
+        return pref?.getString(KeyCurrentUserName,"").toString()
+    }
 
     fun clearSession() {
         editor!!.clear()

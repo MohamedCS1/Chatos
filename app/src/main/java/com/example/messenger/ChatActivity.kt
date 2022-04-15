@@ -108,7 +108,7 @@ class ChatActivity : AppCompatActivity() {
             binding.buSendMessage.setOnClickListener {
             if (binding.edittextSendMessage.text.isNotBlank() && binding.edittextSendMessage.text.isNotEmpty())
             {
-                sendMessage(channelId,TextMessage(binding.edittextSendMessage.text.toString() ,currentUserUID ,currentFriend.uid ,Calendar.getInstance().time))
+                sendMessage(channelId,TextMessage(binding.edittextSendMessage.text.toString() ,currentUserUID ,currentFriend.uid ,appPref.getCurrentUserName() ,currentFriend.name ,Calendar.getInstance().time))
                 binding.edittextSendMessage.setText("")
             }
 
@@ -150,7 +150,7 @@ class ChatActivity : AppCompatActivity() {
         MediaStore.Images.Media.getBitmap(this.contentResolver ,imageUri).compress(Bitmap.CompressFormat.JPEG ,30 ,outputStream)
         upLoadProfileImageToFirebase(outputStream.toByteArray())
         {
-                path -> sendMessage(currentChannelId , ImageMessage(path ,currentUserUID ,currentFriend.uid ,Calendar.getInstance().time))
+                path -> sendMessage(currentChannelId , ImageMessage(path ,currentUserUID ,currentFriend.uid ,appPref.getCurrentUserName() ,currentFriend.name ,Calendar.getInstance().time))
         }
     }
 

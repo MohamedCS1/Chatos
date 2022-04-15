@@ -7,12 +7,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adapters.PersonAdapter
 import com.example.messenger.ChatActivity
 import com.example.messenger.R
+import com.example.messenger.SearchActivity
 import com.example.pojo.Person
 import com.example.sharedPreferences.AppSharedPreferences
 import com.google.firebase.firestore.*

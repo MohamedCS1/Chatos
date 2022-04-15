@@ -22,5 +22,7 @@
         <item name="windowMinWidthMinor">0%</item>
     </style>
 
-
+    <style name="noAnimTheme" parent="android:Theme">
+        <item name="android:windowAnimationStyle">@null</item>
+    </style>
 </resources>

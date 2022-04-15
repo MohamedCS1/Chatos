@@ -15,9 +15,12 @@ import com.example.fragments.ChatFragment
 import com.example.fragments.ExploreFragment
 import com.example.fragments.FriendsFragment
 import com.example.messenger.databinding.ActivityMainBinding
+import com.example.pojo.User
 import com.example.sharedPreferences.AppSharedPreferences
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FirebaseFirestore
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,14 +30,32 @@ class MainActivity : AppCompatActivity() {
     lateinit var friendsFragment:FriendsFragment
     lateinit var exploreFragment: ExploreFragment
 
-
     lateinit var appPref:AppSharedPreferences
 
+    private val fireStore:FirebaseFirestore by lazy {
+        FirebaseFirestore.getInstance()
+    }
+
+    private val currentUserDocRef:DocumentReference get() = fireStore.document("users/${appPref.getCurrentUserUID()}")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        appPref = AppSharedPreferences()
+
+        appPref.PrefManager(this)
+
+        currentUserDocRef.get().addOnSuccessListener {
+            appPref.insertCurrentUserName(it.toObject(User::class.java)!!.name)
+            appPref.insertProfileImagePath(it.toObject(User::class.java)!!.imagePath)
+        }
+        binding.buSearch.setOnClickListener {
+            startActivity(Intent(this ,SearchActivity::class.java))
+            overridePendingTransition(0 ,0)
+        }
+
 
         retrieveImageFromStorage()
 
@@ -66,9 +87,7 @@ class MainActivity : AppCompatActivity() {
 
     fun retrieveImageFromStorage()
     {
-        appPref = AppSharedPreferences()
 
-        appPref.PrefManager(this)
 
         Glide.with(this).load(appPref.getProfileImagePath()).apply(RequestOptions.overrideOf(600,600)).placeholder(R.drawable.ic_photo_placeholder).into(binding.profileImage)
     }
