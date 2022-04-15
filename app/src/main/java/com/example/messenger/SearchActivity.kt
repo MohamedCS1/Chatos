@@ -44,7 +44,11 @@ class SearchActivity : AppCompatActivity() {
                 binding.buClearText.visibility = View.INVISIBLE
             }
         })
-
     }
+//
+//    fun initializeRecyclerView()
+//    {
+//
+//    }
 
 }

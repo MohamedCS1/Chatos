@@ -3,47 +3,47 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:focusableInTouchMode="true"
-    tools:context=".SignUpActivity">
-
+    tools:context=".InfoUserActivity">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:paddingBottom="@dimen/_30sdp">
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imageView"
-            android:layout_width="@dimen/_150sdp"
-            android:layout_height="@dimen/_150sdp"
+            android:layout_width="@dimen/_100sdp"
+            android:layout_height="@dimen/_100sdp"
             android:layout_marginTop="@dimen/_20sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:src="@drawable/ic_logo"/>
+            android:src="@drawable/ic_add_image"
+            app:civ_border_color="@color/my_green"
+            app:civ_border_width="@dimen/_3sdp" />
+
 
         <EditText
-            android:id="@+id/et_name"
+            android:id="@+id/et_job"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/_20sdp"
             android:layout_marginLeft="@dimen/_20sdp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="44dp"
             android:background="@drawable/background_qr_code"
             android:padding="@dimen/_12sdp"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:hint="Name"
+            android:inputType="text"
+            android:hint="Enter your job"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
-        <EditText
-            android:id="@+id/etEmailOrNumber"
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:id="@+id/spinner_gender"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/_20sdp"
@@ -51,76 +51,61 @@
             android:layout_marginTop="44dp"
             android:background="@drawable/background_qr_code"
             android:padding="@dimen/_12sdp"
-            android:ems="10"
             android:inputType="text"
-            android:hint="Phone Number or Email"
+            android:entries="@array/array_gender"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/et_name" />
+            app:layout_constraintTop_toBottomOf="@+id/et_job" />
 
-        <EditText
+        <com.hbb20.CountryCodePicker
             android:id="@+id/et_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/_20sdp"
-            android:layout_marginLeft="@dimen/_20sdp"
             android:layout_marginTop="44dp"
             android:background="@drawable/background_qr_code"
             android:padding="@dimen/_12sdp"
-            android:ems="10"
             android:inputType="textPassword"
-            android:hint="Password"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etEmailOrNumber" />
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/buSignUp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_25sdp"
-            app:cardBackgroundColor="#27000000"
-            app:cardCornerRadius="@dimen/_10sdp"
+            app:ccp_showFullName="true"
+            app:ccp_showPhoneCode="false"
             android:layout_marginRight="@dimen/_20sdp"
             android:layout_marginLeft="@dimen/_20sdp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:cardElevation="@null"
-            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_hint_failure">
+            app:layout_constraintTop_toBottomOf="@+id/spinner_gender" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/bu_finish"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_20sdp"
+            android:layout_marginRight="@dimen/_20sdp"
+            app:cardBackgroundColor="#51BA65"
+            app:cardCornerRadius="@dimen/_10sdp"
+            app:cardElevation="@null"
+            android:layout_marginTop="44dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/et_password">
 
             <TextView
-                android:id="@+id/tv_bu_signIn"
+                android:id="@+id/tv_bu_CreateNewAccount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/_20sdp"
                 android:layout_marginTop="@dimen/_5sdp"
                 android:layout_marginRight="@dimen/_20sdp"
                 android:layout_marginBottom="@dimen/_5sdp"
-                android:text="SIGN UP"
-                android:padding="@dimen/_5sdp"
                 android:gravity="center"
-                android:layout_gravity="center"
+                android:padding="@dimen/_5sdp"
+                android:text="Finish"
                 android:textColor="#FFFFFF"
-                android:textSize="@dimen/_15ssp" />
+                android:textSize="@dimen/_15ssp"
+                android:textStyle="bold" />
         </androidx.cardview.widget.CardView>
-
-        <TextView
-            android:id="@+id/tv_hint_failure"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_margin="@dimen/_20sdp"
-            android:textColor="#E91E1E"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/bu_LogIn"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/et_password" />
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

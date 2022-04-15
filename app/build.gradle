@@ -78,6 +78,10 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.13.0'
     kapt 'com.github.bumptech.glide:compiler:4.13.0'
 
+    // country dialog
+    implementation 'com.hbb20:ccp:2.5.4'
+
+
     apply plugin: 'kotlin-kapt'
 
 }
