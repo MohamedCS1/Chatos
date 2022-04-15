@@ -4,16 +4,49 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/green"
     tools:context=".SearchActivity">
 
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/searchView"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:background="@color/my_green"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/bu_back"
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_marginLeft="@dimen/_15sdp"
+            android:src="@drawable/ic_back" />
+
+        <EditText
+            android:id="@+id/et_search"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_33sdp"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/_45sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:background="@drawable/background_edittext_chat_message"
+            android:paddingStart="@dimen/_15sdp"
+            android:hint="Search "
+            android:isScrollContainer="true"
+            tools:ignore="RtlSymmetry" />
+
+
+        <ImageView
+            android:id="@+id/bu_clear_text"
+            android:layout_width="@dimen/_15sdp"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_marginEnd="@dimen/_15sdp"
+            android:layout_gravity="end"
+            app:tint="#FFFFFF"
+            android:visibility="invisible"
+            android:src="@drawable/ic_clear_text" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
@@ -21,6 +54,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchView" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
