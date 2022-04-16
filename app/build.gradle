@@ -81,6 +81,10 @@ dependencies {
     // country dialog
     implementation 'com.hbb20:ccp:2.5.4'
 
+    //animation
+    implementation 'com.airbnb.android:lottie:5.0.3'
+
+
 
     apply plugin: 'kotlin-kapt'
 

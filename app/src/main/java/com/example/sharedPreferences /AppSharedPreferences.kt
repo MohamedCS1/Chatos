@@ -21,6 +21,14 @@ class AppSharedPreferences {
 
     private val KeyCurrentUserName = "UserName"
 
+    private val KeyJob = "KeyJob"
+
+    private val KeyGender = "KerGender"
+
+    private val KeyCountry = "KeyCountry"
+
+    private val KeyEmail = "KeyEmail"
+
     @SuppressLint("CommitPrefEdits")
     var context: Context? = null
     @SuppressLint("CommitPrefEdits")
@@ -63,6 +71,51 @@ class AppSharedPreferences {
     fun getCurrentUserName():String
     {
         return pref?.getString(KeyCurrentUserName,"").toString()
+    }
+
+
+    fun insertUserJob(job:String)
+    {
+        editor?.putString(KeyJob,job)
+        editor?.apply()
+    }
+
+    fun getUserJob():String
+    {
+        return pref?.getString(KeyJob,"").toString()
+    }
+
+    fun insertUserGender(gender:String)
+    {
+        editor?.putString(KeyGender,gender)
+        editor?.apply()
+    }
+
+    fun getUserGender():String
+    {
+        return pref?.getString(KeyGender,"").toString()
+    }
+
+    fun insertUserCountry(country:String)
+    {
+        editor?.putString(KeyCountry,country)
+        editor?.apply()
+    }
+
+    fun getUserCountry():String
+    {
+        return pref?.getString(KeyCountry,"").toString()
+    }
+
+    fun insertUserEmail(email:String)
+    {
+        editor?.putString(KeyEmail,email)
+        editor?.apply()
+    }
+
+    fun getUserEmail():String
+    {
+        return pref?.getString(KeyEmail,"").toString()
     }
 
     fun clearSession() {

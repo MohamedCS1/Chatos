@@ -131,9 +131,9 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
                                    }
                                    else
                                    {
-
+                                       appPref.insertUserEmail(binding.etEmailOrNumber.text.toString())
                                        progressDialog.hide()
-                                       val intentToMainActivity = Intent(this@LogInActivity ,MainActivity::class.java)
+                                       val intentToMainActivity = Intent(this@LogInActivity ,InfoUserActivity::class.java)
                                        intentToMainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                                        startActivity(intentToMainActivity)
                                        finish()
@@ -183,7 +183,7 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
 
         if (appPref.getCurrentUserUID().isNotEmpty() && appPref.getCurrentUserUID().isNotBlank())
         {
-            val intentToMainActivity = Intent(this@LogInActivity ,MainActivity::class.java)
+            val intentToMainActivity = Intent(this@LogInActivity ,InfoUserActivity::class.java)
             intentToMainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intentToMainActivity)
             finish()

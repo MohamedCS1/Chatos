@@ -29,16 +29,13 @@ class ProfileActivity : AppCompatActivity() {
     lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
     lateinit var loadingProgress: LoadingProgress
 
-    private val mAuth:FirebaseAuth by lazy {
-        FirebaseAuth.getInstance()
-    }
     private val fireStore: FirebaseFirestore by lazy {
         FirebaseFirestore.getInstance()
     }
 
     lateinit var appPref:AppSharedPreferences
 
-    val  currentUserDocRef get() =  fireStore.document("users/${mAuth.currentUser!!.uid}")
+    val  currentUserDocRef get() =  fireStore.document("users/${appPref.getCurrentUserUID()}")
 
 
     private val storageInstance:FirebaseStorage by lazy {
@@ -52,9 +49,17 @@ class ProfileActivity : AppCompatActivity() {
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        appPref = AppSharedPreferences()
+
+        appPref.PrefManager(this)
+
         loadingProgress = LoadingProgress(this)
 
         retrieveImageFromStorage()
+
+        binding.tvUserJob.text = appPref.getUserJob()
+        binding.tvUserName.text = appPref.getCurrentUserName()
+        binding.tvUserEmail.text = appPref.getUserEmail()
 
         binding.profileImageBig.setOnClickListener {
             val intentImage = Intent().apply {
@@ -86,9 +91,7 @@ class ProfileActivity : AppCompatActivity() {
 
     fun retrieveImageFromStorage()
     {
-        appPref = AppSharedPreferences()
 
-        appPref.PrefManager(this)
 
         Glide.with(this).load(appPref.getProfileImagePath()).placeholder(R.drawable.ic_photo_placeholder).into(binding.profileImageBig)
     }
