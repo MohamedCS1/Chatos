@@ -92,7 +92,7 @@ class InfoUserActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             loadingProgress.show()
-            currentUserDocRef.update(mapOf("Job" to binding.etJob.text.toString() ,"gender" to binding.spinnerGender.selectedItem.toString() ,"country" to binding.countryPicker.selectedCountryName.toString())).addOnCompleteListener {
+            currentUserDocRef.update(mapOf("job" to binding.etJob.text.toString() ,"gender" to binding.spinnerGender.selectedItem.toString() ,"country" to binding.countryPicker.selectedCountryName.toString())).addOnCompleteListener {
                 if (it.isSuccessful)
                 {
                     appPref.insertUserJob(binding.etJob.text.toString())

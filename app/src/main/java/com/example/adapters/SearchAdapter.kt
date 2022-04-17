@@ -11,10 +11,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.messenger.R
 import com.example.pojo.Person
+import com.example.pojo.User
 
 class SearchAdapter :RecyclerView.Adapter<SearchAdapter.PersonViewHolder>(){
-    var arrayOfPersons = arrayListOf<Person>()
-    var setOnPersonClick:SetOnPersonClick? = null
+    var arrayOfPersons = arrayListOf<User>()
+    var setOnUserClick:SetOnUserClick? = null
 
 
     lateinit var context: Context
@@ -25,10 +26,10 @@ class SearchAdapter :RecyclerView.Adapter<SearchAdapter.PersonViewHolder>(){
 
     override fun onBindViewHolder(holder: PersonViewHolder, position: Int) {
         holder.name.text = arrayOfPersons[position].name
-//        holder.lastMessage.text = arrayOfPersons[position].lastMessage
-        Glide.with(context).load(arrayOfPersons[position].photoProfilePath).placeholder(R.drawable.ic_photo_placeholder).into(holder.image)
+        holder.job.text = arrayOfPersons[position].job
+        Glide.with(context).load(arrayOfPersons[position].imagePath).placeholder(R.drawable.ic_photo_placeholder).into(holder.image)
         holder.itemView.setOnClickListener {
-            setOnPersonClick!!.personValue(arrayOfPersons[position])
+            setOnUserClick!!.userValue(arrayOfPersons[position])
         }
     }
 
@@ -40,24 +41,38 @@ class SearchAdapter :RecyclerView.Adapter<SearchAdapter.PersonViewHolder>(){
     {
         val image = itemView.findViewById<ImageView>(R.id.person_image)
         val name = itemView.findViewById<TextView>(R.id.person_name)
-        val job = itemView.findViewById<TextView>(R.id.person_job)
+        val job = itemView.findViewById<TextView>(R.id.person_last_message)
     }
 
 
-    fun setOnPersonClick(setOnPersonClick: SetOnPersonClick)
+    fun setOnPersonClick(setOnUserClick: SetOnUserClick)
     {
-        this.setOnPersonClick = setOnPersonClick
+        this.setOnUserClick = setOnUserClick
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setList(arrayPersons:ArrayList<Person>)
+    fun addUser(user: User)
+    {
+        arrayOfPersons.add(user)
+        notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun clearArray()
+    {
+        this.arrayOfPersons.clear()
+        notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun setList(arrayPersons:ArrayList<User>)
     {
         this.arrayOfPersons = arrayPersons
         notifyDataSetChanged()
     }
 
-    interface SetOnPersonClick{
-        fun personValue(person: Person)
+    interface SetOnUserClick{
+        fun userValue(user: User)
     }
 
 }
