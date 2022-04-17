@@ -4,35 +4,31 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="@dimen/_176sdp"
-    android:gravity="top"
-    android:layout_marginTop="@dimen/_20sdp"
+    android:gravity="center"
     android:background="#FFFFFF">
 
 
-       <ImageView
+       <de.hdodenhof.circleimageview.CircleImageView
+           android:id="@+id/nav_header_photoProfile"
            android:layout_width="@dimen/_135sdp"
-           android:layout_height="@dimen/_100sdp"
+           android:layout_height="@dimen/_90sdp"
            android:layout_gravity="center"
-           android:src="@drawable/ic_logo" />
+           android:layout_marginTop="@dimen/_20sdp"
+           app:civ_border_width="@dimen/_2sdp"
+           app:civ_border_color="@color/my_green"
+           android:src="@drawable/photo_profile" />
 
 
     <TextView
+        android:id="@+id/nav_header_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="MohamedCS"
-        android:layout_marginLeft="@dimen/_20sdp"
+        android:text="mezmoh530@gmail.com"
         android:textStyle="bold"
+        android:layout_gravity="center"
+        android:gravity="center"
         android:layout_marginTop="@dimen/_10sdp"
         android:textColor="@color/black"
-        android:textSize="@dimen/_16ssp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="+214552938510"
-        android:textColor="@color/black"
-        android:layout_marginLeft="@dimen/_20sdp"
-        android:textStyle="bold|italic"
         android:textSize="@dimen/_16ssp"/>
 
 </LinearLayout>

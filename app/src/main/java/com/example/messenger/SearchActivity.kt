@@ -1,6 +1,7 @@
 package com.example.messenger
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -79,6 +80,14 @@ class SearchActivity : AppCompatActivity() {
                     return
                 }
                 binding.buClearText.visibility = View.INVISIBLE
+            }
+        })
+        searchAdapter.setOnPersonClick(object :SearchAdapter.SetOnUserClick{
+            override fun userValue(user: User) {
+                Toast.makeText(this@SearchActivity ,"Clicked" ,Toast.LENGTH_SHORT).show()
+                val intentToPublicProfile = Intent(this@SearchActivity ,PublicProfileActivity::class.java)
+                intentToPublicProfile.putExtra("currentFriend" ,user)
+                startActivity(intentToPublicProfile)
             }
         })
     }

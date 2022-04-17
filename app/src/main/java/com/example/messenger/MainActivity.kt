@@ -5,8 +5,10 @@ import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -21,6 +23,7 @@ import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
+import de.hdodenhof.circleimageview.CircleImageView
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,6 +32,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var chatFragment:ChatFragment
     lateinit var friendsFragment:FriendsFragment
     lateinit var exploreFragment: ExploreFragment
+
+    lateinit var navHeaderPhotoProfile:CircleImageView
 
     lateinit var appPref:AppSharedPreferences
 
@@ -46,6 +51,14 @@ class MainActivity : AppCompatActivity() {
         appPref = AppSharedPreferences()
 
         appPref.PrefManager(this)
+
+        val navView = findViewById<NavigationView>(R.id.nav_view).getHeaderView(0)
+
+        navHeaderPhotoProfile = navView.findViewById<CircleImageView>(R.id.nav_header_photoProfile)
+
+        val navHeadEmail = navView.findViewById<TextView>(R.id.nav_header_email)
+
+        navHeadEmail.text = appPref.getUserEmail()
 
         currentUserDocRef.get().addOnSuccessListener {
             appPref.insertCurrentUserName(it.toObject(User::class.java)!!.name)
@@ -88,7 +101,7 @@ class MainActivity : AppCompatActivity() {
     fun retrieveImageFromStorage()
     {
 
-
+        Glide.with(this).load(appPref.getProfileImagePath()).apply(RequestOptions.overrideOf(600,600)).placeholder(R.drawable.ic_photo_placeholder).into(navHeaderPhotoProfile)
         Glide.with(this).load(appPref.getProfileImagePath()).apply(RequestOptions.overrideOf(600,600)).placeholder(R.drawable.ic_photo_placeholder).into(binding.profileImage)
     }
 
@@ -121,7 +134,7 @@ class MainActivity : AppCompatActivity() {
             binding.buChat.setImageResource(R.drawable.ic_chat_unselected)
             binding.buFriends.setImageResource(R.drawable.ic_friends_unselected)
             binding.buExplore.setImageResource(R.drawable.ic_explore_selected)
-            binding.tvTitleToolbar.text = "Explore"
+            binding.tvTitleToolbar.text = "People You May Know"
         }
     }
 

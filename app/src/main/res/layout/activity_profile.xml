@@ -307,7 +307,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_2sdp"
                 android:background="#1B000000"
-                android:layout_marginTop="@dimen/_100sdp"/>
+                android:layout_marginTop="@dimen/_20sdp"/>
+
 
             <LinearLayout
                 android:layout_width="match_parent"

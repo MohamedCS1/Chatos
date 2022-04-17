@@ -23,9 +23,11 @@
         <entry key="app/src/main/res/drawable/ic_chat_unselected.xml" value="0.2495" />
         <entry key="app/src/main/res/drawable/ic_email.xml" value="0.3425" />
         <entry key="app/src/main/res/drawable/ic_explore_selected.xml" value="0.3425" />
+        <entry key="app/src/main/res/drawable/ic_explore_unselected.xml" value="0.3205" />
         <entry key="app/src/main/res/drawable/ic_expolre_unselected.xml" value="0.301" />
         <entry key="app/src/main/res/drawable/ic_frends_selected.xml" value="0.2495" />
         <entry key="app/src/main/res/drawable/ic_friends_selected.xml" value="0.2495" />
+        <entry key="app/src/main/res/drawable/ic_friends_unselected.xml" value="0.3205" />
         <entry key="app/src/main/res/drawable/ic_menu.xml" value="0.3145" />
         <entry key="app/src/main/res/drawable/ic_menu_camera.xml" value="0.273" />
         <entry key="app/src/main/res/drawable/ic_photo_placeholder.xml" value="0.371" />

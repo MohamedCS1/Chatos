@@ -34,6 +34,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/tv_user_country"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|top"
@@ -45,6 +46,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/tv_user_job"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|top"
@@ -162,7 +164,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Save"
+                        android:text="Friend"
                         android:textColor="@color/black"
                         android:textSize="@dimen/_10ssp"
                         android:textStyle="bold" />
