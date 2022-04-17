@@ -51,7 +51,25 @@ class SearchActivity : AppCompatActivity() {
 
             @SuppressLint("NotifyDataSetChanged")
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                searchAdapter.clearArray()
+                if (s!!.isEmpty())
+                {
+                    Toast.makeText(this@SearchActivity ,"Empty" ,Toast.LENGTH_SHORT).show()
+                    searchAdapter.clearArray()
+                }
+                else
+                {
+                    fireStore.collection("users")
+                        .orderBy("name").get().addOnSuccessListener {
+                            it.documents.forEach {
+                                if (it.toObject(User::class.java)!!.name.lowercase().contains(s.toString().lowercase()))
+                                {
+                                    searchAdapter.addUser(it.toObject(User::class.java)!!)
+                                }
+                            }
+                        }
 
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {
