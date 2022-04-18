@@ -50,7 +50,7 @@ class ChatFragment : Fragment() {
     ): View? {
         val view =  inflater.inflate(R.layout.fragment_chat, container, false)
         appPref = AppSharedPreferences()
-        appPref.PrefManager(requireContext())
+        appPref.PrefManager(activity?.baseContext)
         addChatListener()
         val rv = view.findViewById<RecyclerView>(R.id.rv_person)
         rv.layoutManager = LinearLayoutManager(requireContext())
@@ -69,6 +69,7 @@ class ChatFragment : Fragment() {
 
     fun addChatListener()
     {
+        Log.d("currentChatFragment" ,"Listining")
 
 //        val arrayOfPersons = arrayListOf<Person>()
         val arrayOfFriends = arrayListOf<Person>()
@@ -82,6 +83,7 @@ class ChatFragment : Fragment() {
                 }
                 value?.documents?.forEach {
                     fireStore.document("users/${it.id}").get().addOnSuccessListener {
+                        Log.d("currentChatFragment" ,it.toString())
                         arrayOfFriends.add(Person(it.id ,it["name"].toString() ,it["imagePath"].toString()  ,it.get("lastMessage").toString()))
                     }.addOnCompleteListener {
                         personAdapter.setList(arrayOfFriends)

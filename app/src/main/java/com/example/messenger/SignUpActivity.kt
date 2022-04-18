@@ -77,7 +77,7 @@ class SignUpActivity : AppCompatActivity(),TextWatcher {
             binding.etPassword.requestFocus()
             return
         }
-        createNewAccount(User(name ,email ,password ,"" ,"" ,"" ,""))
+        createNewAccount(User("",name ,email ,password ,"" ,"" ,"" ,""))
     }
 
     fun createNewAccount(user: User)

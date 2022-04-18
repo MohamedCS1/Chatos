@@ -28,7 +28,7 @@
                 android:layout_gravity="center|top"
                 android:layout_marginTop="@dimen/_50sdp"
                 android:gravity="center"
-                android:text="Mohamed Mezenner"
+                android:text="Chatos User"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_20sdp"
                 android:textStyle="bold" />
@@ -38,9 +38,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|top"
-                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_10sdp"
                 android:gravity="center"
-                android:text="Los Angeles ,CA"
                 android:textColor="#7F7F7F"
                 android:textSize="@dimen/_10sdp"
                 android:textStyle="bold" />
@@ -52,7 +51,6 @@
                 android:layout_gravity="center|top"
                 android:layout_marginTop="@dimen/_15sdp"
                 android:gravity="center"
-                android:text="I'm a positive person ,I love to travel and eat.\nAlways available for chat"
                 android:textColor="#7F7F7F"
                 android:textSize="@dimen/_10sdp"
                 android:textStyle="bold" />
@@ -65,6 +63,7 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
+                    android:id="@+id/button_new_message_"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/_20sdp"
@@ -143,32 +142,6 @@
                         android:textStyle="bold" />
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_20sdp"
-                    android:gravity="center"
-                    android:padding="@dimen/_5sdp"
-                    android:clickable="true"
-                    android:background="?attr/selectableItemBackground"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="@dimen/_35sdp"
-                        android:layout_height="@dimen/_35sdp"
-                        android:background="@drawable/background_circle_stroke"
-                        android:padding="@dimen/_5sdp"
-                        android:src="@drawable/ic_save_friend"
-                        app:tint="@color/my_green" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Friend"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/_10ssp"
-                        android:textStyle="bold" />
-                </LinearLayout>
             </LinearLayout>
 
             <ImageView

@@ -5,16 +5,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.adapters.SearchAdapter
 import com.example.messenger.databinding.ActivitySearchBinding
 import com.example.pojo.User
 import com.google.firebase.firestore.FirebaseFirestore
-import java.util.*
 
 class SearchActivity : AppCompatActivity() {
 
@@ -55,7 +52,6 @@ class SearchActivity : AppCompatActivity() {
                 searchAdapter.clearArray()
                 if (s!!.isEmpty())
                 {
-                    Toast.makeText(this@SearchActivity ,"Empty" ,Toast.LENGTH_SHORT).show()
                     searchAdapter.clearArray()
                 }
                 else
@@ -65,7 +61,7 @@ class SearchActivity : AppCompatActivity() {
                             it.documents.forEach {
                                 if (it.toObject(User::class.java)!!.name.lowercase().contains(s.toString().lowercase()))
                                 {
-                                    searchAdapter.addUser(it.toObject(User::class.java)!!)
+                                    searchAdapter.addUser(User(it.id ,it["name"].toString() ,it["email"].toString() ,it["password"].toString() ,it["imagePath"].toString() ,it["job"].toString() ,it["country"].toString() ,it["gender"].toString()))
                                 }
                             }
                         }
@@ -84,7 +80,6 @@ class SearchActivity : AppCompatActivity() {
         })
         searchAdapter.setOnPersonClick(object :SearchAdapter.SetOnUserClick{
             override fun userValue(user: User) {
-                Toast.makeText(this@SearchActivity ,"Clicked" ,Toast.LENGTH_SHORT).show()
                 val intentToPublicProfile = Intent(this@SearchActivity ,PublicProfileActivity::class.java)
                 intentToPublicProfile.putExtra("currentFriend" ,user)
                 startActivity(intentToPublicProfile)
