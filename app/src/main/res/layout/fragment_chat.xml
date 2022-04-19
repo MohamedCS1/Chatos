@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.example.fragments.ChatFragment">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -9,5 +10,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:listitem="@layout/rv_person_item" />
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/progress_animation_view"
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="wrap_content"
+        app:lottie_autoPlay="true"
+        app:lottie_rawRes="@raw/users_searching"
+        app:lottie_loop="true"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/_80sdp"/>
 
 </FrameLayout>

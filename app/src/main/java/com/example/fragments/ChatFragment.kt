@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieAnimationView
 import com.example.adapters.PersonAdapter
 import com.example.messenger.ChatActivity
 import com.example.messenger.R
@@ -34,6 +35,8 @@ class ChatFragment : Fragment() {
 
     lateinit var appPref:AppSharedPreferences
 
+    lateinit var animationView:LottieAnimationView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -49,6 +52,9 @@ class ChatFragment : Fragment() {
         val view =  inflater.inflate(R.layout.fragment_chat, container, false)
         appPref = AppSharedPreferences()
         appPref.PrefManager(activity?.baseContext)
+
+        animationView = view.findViewById(R.id.progress_animation_view)
+
         addChatListener()
         val rv = view.findViewById<RecyclerView>(R.id.rv_person)
         rv.layoutManager = LinearLayoutManager(requireContext())
@@ -85,6 +91,7 @@ class ChatFragment : Fragment() {
                         arrayOfFriends.add(User(it.id ,it["name"].toString() ,it["email"].toString() ,it["password"].toString() ,it["imagePath"].toString() ,it["job"].toString() ,it["country"].toString() ,it["gender"].toString()))
                     }.addOnCompleteListener {
                         personAdapter.setList(arrayOfFriends)
+                        animationView.visibility = View.GONE
                     }
                 }
             }
