@@ -84,7 +84,7 @@ dependencies {
     //animation
     implementation 'com.airbnb.android:lottie:5.0.3'
 
-
+    implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
 
     apply plugin: 'kotlin-kapt'
 

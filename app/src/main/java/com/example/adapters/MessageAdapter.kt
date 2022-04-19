@@ -2,15 +2,16 @@ package com.example.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterInside
+import com.example.messenger.MessageImageDisplayActivity
 import com.example.messenger.R
 import com.example.pojo.ImageMessage
 import com.example.pojo.MessageType
@@ -82,7 +83,9 @@ class MessageAdapter(val currentId:String): RecyclerView.Adapter<MessageAdapter.
         else if (arrayOfMessages[position].Message.type == MessageType.IMAGE)
         {
             val imageMessage = arrayOfMessages[position].Message as ImageMessage
-            Glide.with(context).load(imageMessage.imagePath).placeholder(R.drawable.ic_photo_placeholder).into(holder.image)
+            Glide.with(context).load(imageMessage.imagePath).override(800, 1080)
+                .placeholder(R.drawable.ic_photo_placeholder).transform(CenterInside(),com.bumptech.glide.load.resource.bitmap.RoundedCorners(27)).into(holder.image)
+
         }
         holder.itemView.setOnClickListener {
             if (holder.date.visibility == View.VISIBLE)
@@ -92,6 +95,13 @@ class MessageAdapter(val currentId:String): RecyclerView.Adapter<MessageAdapter.
             else
             {
                 holder.date.visibility = View.VISIBLE
+            }
+            if (arrayOfMessages[position].Message.type == MessageType.IMAGE)
+            {
+                val imageMessage = arrayOfMessages[position].Message as ImageMessage
+                val intentToImageDisplay = Intent(context ,MessageImageDisplayActivity::class.java)
+                intentToImageDisplay.putExtra("imagePath" ,imageMessage.imagePath)
+                context.startActivity(intentToImageDisplay)
             }
         }
     }

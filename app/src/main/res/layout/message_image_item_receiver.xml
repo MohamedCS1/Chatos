@@ -9,10 +9,10 @@
     android:gravity="top|start">
     <ImageView
         android:id="@+id/imageMessage"
-        android:layout_width="@dimen/_150sdp"
-        android:layout_height="@dimen/_150sdp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:background="@drawable/background_message_receiver"
-        android:padding="@dimen/_10sdp"/>
+        android:padding="@dimen/_2sdp"/>
     <TextView
         android:id="@+id/tv_date_message"
         android:layout_width="wrap_content"
