@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
 
         val navView = findViewById<NavigationView>(R.id.nav_view).getHeaderView(0)
 
-        navHeaderPhotoProfile = navView.findViewById<CircleImageView>(R.id.nav_header_photoProfile)
+        navHeaderPhotoProfile = navView.findViewById(R.id.nav_header_photoProfile)
 
         val navHeadEmail = navView.findViewById<TextView>(R.id.nav_header_email)
 
@@ -62,7 +62,6 @@ class MainActivity : AppCompatActivity() {
 
         currentUserDocRef.get().addOnSuccessListener {
             appPref.insertCurrentUserName(it.toObject(User::class.java)!!.name)
-            appPref.insertProfileImagePath(it.toObject(User::class.java)!!.imagePath)
         }
         binding.buSearch.setOnClickListener {
             startActivity(Intent(this ,SearchActivity::class.java))
@@ -136,6 +135,11 @@ class MainActivity : AppCompatActivity() {
             binding.buExplore.setImageResource(R.drawable.ic_explore_selected)
             binding.tvTitleToolbar.text = "People You May Know"
         }
+    }
+
+    override fun onStart() {
+        retrieveImageFromStorage()
+        super.onStart()
     }
 
     private fun setFragment(fragment: Fragment) {

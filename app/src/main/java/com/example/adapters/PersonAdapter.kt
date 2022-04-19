@@ -10,13 +10,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.messenger.R
-import com.example.pojo.Person
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
+import com.example.pojo.User
 
 class PersonAdapter: RecyclerView.Adapter<PersonAdapter.PersonViewHolder>() {
 
-    var arrayOfPersons = arrayListOf<Person>()
+    var arrayOfPersons = arrayListOf<User>()
     var setOnPersonClick:SetOnPersonClick? = null
 
 
@@ -28,8 +26,8 @@ class PersonAdapter: RecyclerView.Adapter<PersonAdapter.PersonViewHolder>() {
 
     override fun onBindViewHolder(holder: PersonViewHolder, position: Int) {
         holder.name.text = arrayOfPersons[position].name
-        holder.lastMessage.text = arrayOfPersons[position].lastMessage
-        Glide.with(context).load(arrayOfPersons[position].photoProfilePath).placeholder(R.drawable.ic_photo_placeholder).into(holder.image)
+//        holder.lastMessage.text = arrayOfPersons[position].lastMessage
+        Glide.with(context).load(arrayOfPersons[position].imagePath).placeholder(R.drawable.ic_photo_placeholder).into(holder.image)
         holder.itemView.setOnClickListener {
             setOnPersonClick!!.personValue(arrayOfPersons[position])
         }
@@ -53,13 +51,13 @@ class PersonAdapter: RecyclerView.Adapter<PersonAdapter.PersonViewHolder>() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setList(arrayPersons:ArrayList<Person>)
+    fun setList(arrayPersons:ArrayList<User>)
     {
         this.arrayOfPersons = arrayPersons
         notifyDataSetChanged()
     }
 
     interface SetOnPersonClick{
-        fun personValue(person: Person)
+        fun personValue(User: User)
     }
 }

@@ -7,15 +7,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adapters.PersonAdapter
 import com.example.messenger.ChatActivity
 import com.example.messenger.R
-import com.example.messenger.SearchActivity
-import com.example.pojo.Person
+import com.example.pojo.User
 import com.example.sharedPreferences.AppSharedPreferences
 import com.google.firebase.firestore.*
 
@@ -57,9 +55,9 @@ class ChatFragment : Fragment() {
         rv.adapter = personAdapter
 
         personAdapter.setOnPersonClick(object :PersonAdapter.SetOnPersonClick{
-            override fun personValue(person: Person) {
+            override fun personValue(user: User) {
                 val intentToChatActivity = Intent(requireContext() ,ChatActivity::class.java)
-                intentToChatActivity.putExtra("person" ,person)
+                intentToChatActivity.putExtra("person" ,user)
                 startActivity(intentToChatActivity)
             }
         })
@@ -72,7 +70,7 @@ class ChatFragment : Fragment() {
         Log.d("currentChatFragment" ,"Listining")
 
 //        val arrayOfPersons = arrayListOf<Person>()
-        val arrayOfFriends = arrayListOf<Person>()
+        val arrayOfFriends = arrayListOf<User>()
         fireStore.collection("users").document(appPref.getCurrentUserUID()).collection("sharedChat").addSnapshotListener(object :EventListener<QuerySnapshot>{
             override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
 
@@ -84,7 +82,7 @@ class ChatFragment : Fragment() {
                 value?.documents?.forEach {
                     fireStore.document("users/${it.id}").get().addOnSuccessListener {
                         Log.d("currentChatFragment" ,it.toString())
-                        arrayOfFriends.add(Person(it.id ,it["name"].toString() ,it["imagePath"].toString()  ,it.get("lastMessage").toString()))
+                        arrayOfFriends.add(User(it.id ,it["name"].toString() ,it["email"].toString() ,it["password"].toString() ,it["imagePath"].toString() ,it["job"].toString() ,it["country"].toString() ,it["gender"].toString()))
                     }.addOnCompleteListener {
                         personAdapter.setList(arrayOfFriends)
                     }

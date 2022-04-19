@@ -81,7 +81,7 @@ class SearchActivity : AppCompatActivity() {
         searchAdapter.setOnPersonClick(object :SearchAdapter.SetOnUserClick{
             override fun userValue(user: User) {
                 val intentToPublicProfile = Intent(this@SearchActivity ,PublicProfileActivity::class.java)
-                intentToPublicProfile.putExtra("currentFriend" ,user)
+                intentToPublicProfile.putExtra("person" ,user)
                 startActivity(intentToPublicProfile)
             }
         })

@@ -91,8 +91,6 @@ class ProfileActivity : AppCompatActivity() {
 
     fun retrieveImageFromStorage()
     {
-
-
         Glide.with(this).load(appPref.getProfileImagePath()).placeholder(R.drawable.ic_photo_placeholder).into(binding.profileImageBig)
     }
 

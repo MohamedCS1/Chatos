@@ -63,7 +63,7 @@ class ChatActivity : AppCompatActivity() {
     private val chatChannelsCollectionRef = fireStoreInstance.collection("chatChannels")
 
     lateinit var currentUserUID:String
-    lateinit var currentFriend:Person
+    lateinit var currentFriend:User
 
     lateinit var loadingProgress: LoadingProgress
 
@@ -91,12 +91,11 @@ class ChatActivity : AppCompatActivity() {
 
         val bundle = intent.extras
 
-        currentFriend = bundle?.get("person") as Person
+        currentFriend = bundle?.get("person") as User
 
         binding.imageviewPhotoProfile.setOnClickListener {
             val intent = Intent(this ,PublicProfileActivity::class.java)
-            intent.putExtra("photoProfilePath" ,currentFriend.photoProfilePath)
-            intent.putExtra("currentFriendName" ,currentFriend.name)
+            intent.putExtra("person" ,currentFriend)
             startActivity(intent)
         }
 
@@ -119,7 +118,7 @@ class ChatActivity : AppCompatActivity() {
         buChatTollBarSelected()
 
         binding.tvUsername.text = currentFriend.name
-        Glide.with(this).load(currentFriend.photoProfilePath).placeholder(R.drawable.ic_photo_placeholder).into(binding.imageviewPhotoProfile)
+        Glide.with(this).load(currentFriend.imagePath).placeholder(R.drawable.ic_photo_placeholder).into(binding.imageviewPhotoProfile)
 
         binding.buSendImage.setOnClickListener {
             val intentImage = Intent().apply {

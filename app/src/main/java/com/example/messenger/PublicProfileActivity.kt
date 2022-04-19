@@ -36,7 +36,7 @@ class PublicProfileActivity : AppCompatActivity() {
 
         currentUserUID = appPref.getCurrentUserUID()
 
-        people = bundle?.get("currentFriend") as User
+        people = bundle?.get("person") as User
 
         Toast.makeText(this ,people.uid+" "+currentUserUID ,Toast.LENGTH_SHORT).show()
 
