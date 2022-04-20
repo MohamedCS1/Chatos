@@ -49,7 +49,7 @@ class SearchActivity : AppCompatActivity() {
 
             @SuppressLint("NotifyDataSetChanged")
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                searchAdapter.clearArray()
+
                 if (s!!.isEmpty())
                 {
                     searchAdapter.clearArray()
@@ -58,6 +58,7 @@ class SearchActivity : AppCompatActivity() {
                 {
                     fireStore.collection("users")
                         .orderBy("name").get().addOnSuccessListener {
+                            searchAdapter.clearArray()
                             it.documents.forEach {
                                 if (it.toObject(User::class.java)!!.name.lowercase().contains(s.toString().lowercase()))
                                 {

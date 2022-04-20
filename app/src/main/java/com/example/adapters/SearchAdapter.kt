@@ -59,7 +59,7 @@ class SearchAdapter :RecyclerView.Adapter<SearchAdapter.PersonViewHolder>(){
     @SuppressLint("NotifyDataSetChanged")
     fun clearArray()
     {
-        this.arrayOfPersons.clear()
+        arrayOfPersons.clear()
         notifyDataSetChanged()
     }
 
