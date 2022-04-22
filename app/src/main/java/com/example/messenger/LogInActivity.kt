@@ -7,14 +7,22 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.util.Patterns
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.messenger.databinding.ActivityLogInBinding
 import com.example.sharedPreferences.AppSharedPreferences
 import com.example.tools.LoadingProgress
+import com.facebook.*
+import com.facebook.CallbackManager.Factory.create
+import com.facebook.appevents.AppEventsLogger
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
+import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.*
+
 
 class LogInActivity : AppCompatActivity() ,TextWatcher{
 
@@ -30,10 +38,17 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
         FirebaseFirestore.getInstance()
     }
 
+    lateinit var authStateListener:FirebaseAuth.AuthStateListener
+
+    val  currentUserDocRef get() =  fireStore.document("users/${mAuth.currentUser!!.uid}")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLogInBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(application);
 
         appPref = AppSharedPreferences()
         appPref.PrefManager(this)
@@ -50,6 +65,15 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
 
         binding.buCreateNewAccount.setOnClickListener {
             startActivity(Intent(this ,SignUpActivity::class.java))
+        }
+        binding.buFacebookLogin.setOnClickListener {
+            facebookLogin()
+        }
+
+        authStateListener = object :FirebaseAuth.AuthStateListener{
+            override fun onAuthStateChanged(p0: FirebaseAuth) {
+                TODO("Not yet implemented")
+            }
         }
 
     }
@@ -177,6 +201,55 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
     }
 
     override fun afterTextChanged(s: Editable?) {
+    }
+
+    fun facebookLogin(){
+
+        val callbackManager =  CallbackManager.Factory.create()
+
+        LoginManager.getInstance().registerCallback(callbackManager,
+            object : FacebookCallback<LoginResult> {
+                override fun onCancel() {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onError(error: FacebookException) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onSuccess(result: LoginResult) {
+                    handleFacebookToken(result.accessToken)
+                }
+
+            })
+    }
+
+    fun handleFacebookToken(accessToken: AccessToken)
+    {
+        val credential = FacebookAuthProvider.getCredential(accessToken.token)
+        mAuth.signInWithCredential(credential).addOnCompleteListener {
+            if (it.isSuccessful)
+            {
+                val user = mAuth.currentUser
+                currentUserDocRef.set(
+                    com.example.pojo.User(
+                        "",
+                        user?.displayName.toString(),
+                        user?.email.toString(),
+                        "",
+                        user?.photoUrl.toString(),
+                        "",
+                        "",
+                        ""
+                    )
+                )
+                appPref.insertProfileImagePath(user?.photoUrl.toString())
+            }
+            else
+            {
+                Toast.makeText(baseContext,"something went wrong try again" ,Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     override fun onStart() {
