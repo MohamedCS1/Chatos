@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/background_random_people_item"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_margin="@dimen/_5sdp"
+    android:padding="@dimen/_10ssp">
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/rp_photoProfile"
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="@dimen/_100sdp"
+        app:civ_border_color="@color/my_green"
+        app:civ_border_width="@dimen/_2sdp"
+        android:layout_margin="@dimen/_5sdp"
+        android:src="@drawable/ic_photo_placeholder"/>
+    <TextView
+        android:id="@+id/rp_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Moh Amd"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_15ssp"/>
+    <TextView
+        android:id="@+id/rp_job"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="software engineer"
+        android:textColor="#7F7F7F"
+        android:textSize="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/rp_country"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="from : Algeria"
+        android:textColor="#7F7F7F"
+        android:textSize="@dimen/_8sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:textStyle="bold"/>
+</LinearLayout>

@@ -94,6 +94,7 @@ class ChatFragment : Fragment() {
                         animationView.visibility = View.GONE
                     }
                 }
+
             }
 
 
