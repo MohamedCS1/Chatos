@@ -1,12 +1,15 @@
 package com.example.messenger
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.example.messenger.databinding.ActivityPublicProfileBinding
+import com.example.messenger.databinding.LoadingProgressBinding
 import com.example.pojo.User
 import com.example.sharedPreferences.AppSharedPreferences
+import com.example.tools.LoadingProgress
 import com.google.firebase.firestore.FirebaseFirestore
 
 class PublicProfileActivity : AppCompatActivity() {
@@ -58,6 +61,7 @@ class PublicProfileActivity : AppCompatActivity() {
     }
 
     fun createChatChannel() {
+        LoadingProgress(this).show()
         val chatChannel = fireStoreInstance.collection("users").document()
 
         fireStoreInstance.collection("users")
@@ -78,7 +82,19 @@ class PublicProfileActivity : AppCompatActivity() {
                     .document(currentUserUID)
                     .collection("sharedChat")
                     .document(people.uid)
-                    .set(mapOf("channelId" to chatChannel.id))
+                    .set(mapOf("channelId" to chatChannel.id)).addOnCompleteListener {
+                        if (it.isSuccessful)
+                        {
+                            LoadingProgress(this).show()
+                            startActivity(Intent(this ,MainActivity::class.java))
+                            finish()
+                        }
+                        else
+                        {
+                            LoadingProgress(this).show()
+                            Toast.makeText(baseContext,"something went wrong try again" ,Toast.LENGTH_SHORT).show()
+                        }
+                    }
             }
     }
 }

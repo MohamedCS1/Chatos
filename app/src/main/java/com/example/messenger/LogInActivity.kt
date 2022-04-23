@@ -1,5 +1,6 @@
 package com.example.messenger
 
+import android.R
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -7,21 +8,22 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.util.Patterns
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.messenger.databinding.ActivityLogInBinding
 import com.example.sharedPreferences.AppSharedPreferences
 import com.example.tools.LoadingProgress
 import com.facebook.*
-import com.facebook.CallbackManager.Factory.create
 import com.facebook.appevents.AppEventsLogger
-import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
+import com.facebook.login.widget.LoginButton
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.*
+import java.util.*
 
 
 class LogInActivity : AppCompatActivity() ,TextWatcher{
@@ -47,6 +49,8 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
         binding = ActivityLogInBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        loginFacebook()
+
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(application);
 
@@ -65,15 +69,6 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
 
         binding.buCreateNewAccount.setOnClickListener {
             startActivity(Intent(this ,SignUpActivity::class.java))
-        }
-        binding.buFacebookLogin.setOnClickListener {
-            facebookLogin()
-        }
-
-        authStateListener = object :FirebaseAuth.AuthStateListener{
-            override fun onAuthStateChanged(p0: FirebaseAuth) {
-                TODO("Not yet implemented")
-            }
         }
 
     }
@@ -203,47 +198,82 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
     override fun afterTextChanged(s: Editable?) {
     }
 
-    fun facebookLogin(){
+    fun loginFacebook(){
 
         val callbackManager =  CallbackManager.Factory.create()
 
-        LoginManager.getInstance().registerCallback(callbackManager,
-            object : FacebookCallback<LoginResult> {
-                override fun onCancel() {
-                    TODO("Not yet implemented")
-                }
 
-                override fun onError(error: FacebookException) {
-                    TODO("Not yet implemented")
-                }
+        val EMAIL = "email"
 
-                override fun onSuccess(result: LoginResult) {
-                    handleFacebookToken(result.accessToken)
-                }
+        binding.loginButton.setPermissions(listOf(EMAIL))
 
-            })
+        binding.loginButton.registerCallback(callbackManager, object : FacebookCallback<LoginResult?> {
+
+            override fun onCancel() {
+
+            }
+
+            override fun onError(exception: FacebookException) {
+            }
+
+            override fun onSuccess(result: LoginResult?) {
+                handleFacebookToken(result?.accessToken!!)
+            }
+        })
     }
 
     fun handleFacebookToken(accessToken: AccessToken)
     {
         val credential = FacebookAuthProvider.getCredential(accessToken.token)
         mAuth.signInWithCredential(credential).addOnCompleteListener {
+            progressDialog.show()
             if (it.isSuccessful)
             {
                 val user = mAuth.currentUser
+                appPref.insertCurrentUserUID(user!!.uid)
+                appPref.insertUserEmail(user.email.toString())
+                appPref.insertProfileImagePath(user.photoUrl.toString())
                 currentUserDocRef.set(
                     com.example.pojo.User(
                         "",
-                        user?.displayName.toString(),
-                        user?.email.toString(),
+                        user.displayName.toString(),
+                        user.email.toString(),
                         "",
-                        user?.photoUrl.toString(),
+                        user.photoUrl.toString(),
                         "",
                         "",
-                        ""
+                        "",
                     )
-                )
-                appPref.insertProfileImagePath(user?.photoUrl.toString())
+                ).addOnCompleteListener {
+                    if (it.isSuccessful)
+                    {
+                        FirebaseMessaging.getInstance().token.addOnCompleteListener {
+                            task->
+                            val token = task.result
+                            Log.d("token" ,token)
+                            fireStore.collection("users").document(appPref.getCurrentUserUID()).update(mapOf("token" to(token)))
+                                .addOnCompleteListener {
+                                    if (!it.isSuccessful)
+                                    {
+                                        appPref.insertProfileImagePath(user.email.toString())
+                                        progressDialog.hide()
+                                    }
+                                    else
+                                    {
+                                        progressDialog.hide()
+                                        val intentToMainActivity = Intent(this@LogInActivity ,InfoUserActivity::class.java)
+                                        intentToMainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                        startActivity(intentToMainActivity)
+                                        finish()
+                                    }
+                                }
+                        }
+                    }
+                    else
+                    {
+                        Toast.makeText(baseContext,"something went wrong try again" ,Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
             else
             {
