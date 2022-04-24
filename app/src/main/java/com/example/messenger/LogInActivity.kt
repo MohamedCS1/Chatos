@@ -83,6 +83,66 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
 
     }
 
+
+    fun googleAuth()
+    {
+        oneTapClient = Identity.getSignInClient(this)
+        signInRequest = BeginSignInRequest.builder()
+            .setPasswordRequestOptions(BeginSignInRequest.PasswordRequestOptions.builder()
+                .setSupported(true)
+                .build())
+            .setGoogleIdTokenRequestOptions(
+                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                    .setSupported(true)
+                    .setServerClientId(getString(com.firebase.ui.auth.R.string.default_web_client_id))
+                    .setFilterByAuthorizedAccounts(false)
+                    .build())
+            .setAutoSelectEnabled(true)
+            .build()
+
+        oneTapClient.beginSignIn(signInRequest)
+            .addOnSuccessListener(this) { result ->
+                try {
+                    startIntentSenderForResult(
+                        result.pendingIntent.intentSender, REQ_ONE_TAP,
+                        null, 0, 0, 0, null)
+                } catch (e: IntentSender.SendIntentException) {
+                    Toast.makeText(baseContext,"something went wrong 0" ,Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener(this) { e ->
+                Toast.makeText(baseContext,e.toString() ,Toast.LENGTH_SHORT).show()
+                Log.e("any" ,e.toString())
+
+            }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQ_ONE_TAP -> {
+                try {
+                    val credential = oneTapClient.getSignInCredentialFromIntent(data)
+                    val idToken = credential.googleIdToken
+                    val username = credential.id
+                    val password = credential.password
+                    val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
+                    mAuth.signInWithCredential(firebaseCredential)
+                        .addOnCompleteListener(this) { task ->
+                            if (task.isSuccessful) {
+
+                            } else {
+
+                            }
+                        }
+                    Log.d("any" ,"$idToken / $username / $password")
+                } catch (e: ApiException) {
+                    Toast.makeText(baseContext,"something went wrong 2" ,Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
     fun logIn()
     {
         val email = binding.etEmailOrNumber.text.toString().trim()
