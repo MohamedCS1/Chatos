@@ -1,14 +1,13 @@
 package com.example.messenger
 
-import android.R
 import android.content.Intent
+import android.content.IntentSender
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.util.Patterns
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.messenger.databinding.ActivityLogInBinding
@@ -17,16 +16,25 @@ import com.example.tools.LoadingProgress
 import com.facebook.*
 import com.facebook.appevents.AppEventsLogger
 import com.facebook.login.LoginResult
-import com.facebook.login.widget.LoginButton
+import com.google.android.gms.auth.api.identity.BeginSignInRequest
+import com.google.android.gms.auth.api.identity.Identity
+import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.*
-import java.util.*
 
 
 class LogInActivity : AppCompatActivity() ,TextWatcher{
+
+    private val REQ_ONE_TAP: Int = 2
+    private lateinit var oneTapClient: SignInClient
+    private lateinit var signInRequest: BeginSignInRequest
 
     lateinit var binding: ActivityLogInBinding
     lateinit var mAuth: FirebaseAuth
@@ -39,8 +47,6 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
     private val fireStore:FirebaseFirestore by lazy {
         FirebaseFirestore.getInstance()
     }
-
-    lateinit var authStateListener:FirebaseAuth.AuthStateListener
 
     val  currentUserDocRef get() =  fireStore.document("users/${mAuth.currentUser!!.uid}")
 
@@ -69,6 +75,10 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
 
         binding.buCreateNewAccount.setOnClickListener {
             startActivity(Intent(this ,SignUpActivity::class.java))
+        }
+
+        binding.buGoogleLogin.setOnClickListener {
+            googleAuth()
         }
 
     }
