@@ -20,12 +20,12 @@ import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.FacebookAuthProvider
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.FirebaseException
+import com.google.firebase.auth.*
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.*
+import java.util.concurrent.TimeUnit
 
 
 class LogInActivity : AppCompatActivity() ,TextWatcher{
@@ -64,6 +64,7 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
 
         mAuth = FirebaseAuth.getInstance()
 
+        phoneAuth()
         binding.buLogIn.setOnClickListener {
             logInWithEmailAndPassword()
         }
@@ -205,6 +206,37 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
                 Log.e("any" ,e.toString())
 
             }
+    }
+
+    private fun phoneAuth()
+    {
+        val phoneNumber = "+2130552938510"
+        val smsCode = "123456"
+
+        val firebaseAuthSettings = mAuth.firebaseAuthSettings
+        firebaseAuthSettings.setAutoRetrievedSmsCodeForPhoneNumber(phoneNumber, smsCode)
+
+        val options = PhoneAuthOptions.newBuilder(mAuth)
+            .setPhoneNumber(phoneNumber)
+            .setTimeout(60L, TimeUnit.SECONDS)
+            .setActivity(this)
+            .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+
+                    Toast.makeText(this@LogInActivity ,credential.smsCode.toString() ,Toast.LENGTH_SHORT).show()
+                    Log.d("CurrentAuth" ,credential.smsCode.toString())
+                }
+
+                override fun onVerificationFailed(p0: FirebaseException) {
+                    Toast.makeText(this@LogInActivity ,p0.message.toString() ,Toast.LENGTH_SHORT).show()
+                    Log.d("CurrentAuth" ,p0.message.toString())
+                    println(p0.message.toString())
+
+                }
+
+            })
+            .build()
+        PhoneAuthProvider.verifyPhoneNumber(options)
     }
 
     private fun loginFacebookInitializing(){

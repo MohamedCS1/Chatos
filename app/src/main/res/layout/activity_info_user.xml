@@ -9,7 +9,6 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:paddingBottom="@dimen/_30sdp">
 
         <de.hdodenhof.circleimageview.CircleImageView
