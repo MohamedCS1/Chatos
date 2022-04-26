@@ -19,8 +19,6 @@ import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
@@ -55,11 +53,6 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
         binding = ActivityLogInBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        loginFacebook()
-
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        AppEventsLogger.activateApp(application);
-
         appPref = AppSharedPreferences()
         appPref.PrefManager(this)
 
@@ -67,22 +60,119 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
         binding.etPassword.addTextChangedListener(this)
         binding.buLogIn.isEnabled = false
 
+        loginFacebookInitializing()
+
         mAuth = FirebaseAuth.getInstance()
 
         binding.buLogIn.setOnClickListener {
-            logIn()
-        }
-
-        binding.buCreateNewAccount.setOnClickListener {
-            startActivity(Intent(this ,SignUpActivity::class.java))
+            logInWithEmailAndPassword()
         }
 
         binding.buGoogleLogin.setOnClickListener {
             googleAuth()
         }
 
+        binding.buCreateNewAccount.setOnClickListener {
+            startActivity(Intent(this ,SignUpActivity::class.java))
+        }
+
+    }
+    fun logInWithEmailAndPassword()
+    {
+        val email = binding.etEmailOrNumber.text.toString().trim()
+        val password = binding.etPassword.text.toString()
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches())
+        {
+            binding.etEmailOrNumber.error = "Please enter a valid email"
+            binding.etEmailOrNumber.requestFocus()
+            return
+        }
+
+        if (password.length < 6)
+        {
+            binding.etPassword.error = "Password 6 char required"
+            binding.etPassword.requestFocus()
+            return
+        }
+        signInWithEmailAndPassword(email ,password)
+
     }
 
+    private fun signInWithEmailAndPassword(email: String, password: String) {
+        progressDialog.show()
+        mAuth.signInWithEmailAndPassword(email ,password).addOnCompleteListener {
+            if(it.isSuccessful)
+            {
+                emailIsVerify()
+            }
+            else
+            {
+                progressDialog.hide()
+                binding.tvHintFailure.text = "${it.exception!!.message}"
+            }
+        }
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    fun emailIsVerify()
+    {
+        GlobalScope.launch(Dispatchers.Main) {
+
+            val user = mAuth.currentUser
+
+            val reloadFirebase = async { user!!.reload() }
+
+            reloadFirebase.await().addOnCompleteListener {
+                if (it.isSuccessful)
+                {
+                    if (user!!.isEmailVerified)
+                    {
+                        appPref.insertCurrentUserUID(user.uid)
+                        FirebaseMessaging.getInstance().token.addOnCompleteListener {
+                                task->
+                            if (!task.isSuccessful)
+                            {
+                                binding.tvHintFailure.text = "Something went wrong. Please try again."
+                                progressDialog.hide()
+                                return@addOnCompleteListener
+                            }
+                            val token = task.result
+                            Log.d("token" ,token)
+                            fireStore.collection("users").document(appPref.getCurrentUserUID()).update(mapOf("token" to(token)))
+                                .addOnCompleteListener {
+                                    if (!it.isSuccessful)
+                                    {
+                                        binding.tvHintFailure.text = "Something went wrong. Please try again."
+                                        progressDialog.hide()
+                                    }
+                                    else
+                                    {
+                                        appPref.insertUserEmail(binding.etEmailOrNumber.text.toString())
+                                        progressDialog.hide()
+                                        val intentToMainActivity = Intent(this@LogInActivity ,InfoUserActivity::class.java)
+                                        intentToMainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                        startActivity(intentToMainActivity)
+                                        finish()
+                                    }
+                                }
+                        }
+
+                    }
+                    else
+                    {
+                        progressDialog.hide()
+                        binding.tvHintFailure.text = "Please check your email to verify it"
+                    }
+                }
+                else
+                {
+                    progressDialog.hide()
+                    binding.tvHintFailure.text = "Please check your internet"
+                }
+            }
+        }
+    }
 
     fun googleAuth()
     {
@@ -117,161 +207,12 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
             }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            REQ_ONE_TAP -> {
-                try {
-                    val credential = oneTapClient.getSignInCredentialFromIntent(data)
-                    val idToken = credential.googleIdToken
-                    val username = credential.id
-                    val password = credential.password
-                    val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
-                    mAuth.signInWithCredential(firebaseCredential)
-                        .addOnCompleteListener(this) { task ->
-                            if (task.isSuccessful) {
+    private fun loginFacebookInitializing(){
 
-                            } else {
-
-                            }
-                        }
-                    Log.d("any" ,"$idToken / $username / $password")
-                } catch (e: ApiException) {
-                    Toast.makeText(baseContext,"something went wrong 2" ,Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
-
-    fun logIn()
-    {
-        val email = binding.etEmailOrNumber.text.toString().trim()
-        val password = binding.etPassword.text.toString()
-
-
-
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches())
-        {
-            binding.etEmailOrNumber.error = "Please enter a valid email"
-            binding.etEmailOrNumber.requestFocus()
-            return
-        }
-
-        if (password.length < 6)
-        {
-            binding.etPassword.error = "Password 6 char required"
-            binding.etPassword.requestFocus()
-            return
-        }
-        signInWithEmailAndPassword(email ,password)
-
-
-
-    }
-
-    private fun signInWithEmailAndPassword(email: String, password: String) {
-        progressDialog.show()
-        mAuth.signInWithEmailAndPassword(email ,password).addOnCompleteListener {
-            if(it.isSuccessful)
-            {
-                emailIsVerify()
-            }
-            else
-            {
-                progressDialog.hide()
-                binding.tvHintFailure.text = "${it.exception!!.message}"
-            }
-        }
-    }
-
-    @OptIn(DelicateCoroutinesApi::class)
-    fun emailIsVerify()
-    {
-       GlobalScope.launch(Dispatchers.Main) {
-
-           progressDialog.show()
-
-           val user = mAuth.currentUser
-
-           val reloadFirebase = async { user!!.reload() }
-
-           reloadFirebase.await().addOnCompleteListener {
-               if (it.isSuccessful)
-               {
-                   if (user!!.isEmailVerified)
-                   {
-                       appPref.insertCurrentUserUID(user.uid)
-                       FirebaseMessaging.getInstance().token.addOnCompleteListener {
-                           task->
-                           if (!task.isSuccessful)
-                           {
-                               binding.tvHintFailure.text = "Something went wrong. Please try again."
-                               progressDialog.hide()
-                               return@addOnCompleteListener
-                           }
-                           val token = task.result
-                           Log.d("token" ,token)
-                           fireStore.collection("users").document(appPref.getCurrentUserUID()).update(mapOf("token" to(token)))
-                               .addOnCompleteListener {
-                                   if (!it.isSuccessful)
-                                   {
-                                       binding.tvHintFailure.text = "Something went wrong. Please try again."
-                                       progressDialog.hide()
-                                   }
-                                   else
-                                   {
-                                       appPref.insertUserEmail(binding.etEmailOrNumber.text.toString())
-                                       progressDialog.hide()
-                                       val intentToMainActivity = Intent(this@LogInActivity ,InfoUserActivity::class.java)
-                                       intentToMainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                                       startActivity(intentToMainActivity)
-                                       finish()
-                                   }
-                               }
-                       }
-
-                   }
-                   else
-                   {
-                       progressDialog.hide()
-                       binding.tvHintFailure.text = "Please check your email to verify it"
-                   }
-               }
-               else
-               {
-                   progressDialog.hide()
-                   binding.tvHintFailure.text = "Please check your internet"
-               }
-           }
-       }
-    }
-
-    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-    }
-
-    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-        if (binding.etEmailOrNumber.text.isNotBlank() && binding.etPassword.text.isNotBlank())
-        {
-            binding.buLogIn.setCardBackgroundColor(Color.parseColor("#01C5C4"))
-            binding.buLogIn.isEnabled = true
-        }
-        else
-        {
-            binding.buLogIn.setCardBackgroundColor(Color.parseColor("#27000000"))
-            binding.buLogIn.isEnabled = false
-        }
-
-        binding.tvHintFailure.text = ""
-    }
-
-    override fun afterTextChanged(s: Editable?) {
-    }
-
-    fun loginFacebook(){
+        FacebookSdk.sdkInitialize(applicationContext)
+        AppEventsLogger.activateApp(application)
 
         val callbackManager =  CallbackManager.Factory.create()
-
 
         val EMAIL = "email"
 
@@ -284,6 +225,7 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
             }
 
             override fun onError(exception: FacebookException) {
+
             }
 
             override fun onSuccess(result: LoginResult?) {
@@ -318,7 +260,7 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
                     if (it.isSuccessful)
                     {
                         FirebaseMessaging.getInstance().token.addOnCompleteListener {
-                            task->
+                                task->
                             val token = task.result
                             Log.d("token" ,token)
                             fireStore.collection("users").document(appPref.getCurrentUserUID()).update(mapOf("token" to(token)))
@@ -341,16 +283,68 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
                     }
                     else
                     {
+                        progressDialog.hide()
                         Toast.makeText(baseContext,"something went wrong try again" ,Toast.LENGTH_SHORT).show()
                     }
                 }
             }
             else
             {
+                progressDialog.hide()
                 Toast.makeText(baseContext,"something went wrong try again" ,Toast.LENGTH_SHORT).show()
             }
         }
     }
+    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+    }
+
+    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        if (binding.etEmailOrNumber.text.isNotBlank() && binding.etPassword.text.isNotBlank())
+        {
+            binding.buLogIn.setCardBackgroundColor(Color.parseColor("#01C5C4"))
+            binding.buLogIn.isEnabled = true
+        }
+        else
+        {
+            binding.buLogIn.setCardBackgroundColor(Color.parseColor("#27000000"))
+            binding.buLogIn.isEnabled = false
+        }
+
+        binding.tvHintFailure.text = ""
+    }
+
+    override fun afterTextChanged(s: Editable?) {
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQ_ONE_TAP -> {
+                try {
+                    val credential = oneTapClient.getSignInCredentialFromIntent(data)
+                    val idToken = credential.googleIdToken
+                    val username = credential.id
+                    val password = credential.password
+                    val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
+                    mAuth.signInWithCredential(firebaseCredential)
+                        .addOnCompleteListener(this) { task ->
+                            if (task.isSuccessful) {
+
+                            } else {
+
+                            }
+                        }
+                    Log.d("any" ,"$idToken / $username / $password")
+                } catch (e: ApiException) {
+                    Toast.makeText(baseContext,"something went wrong 2" ,Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+
 
     override fun onStart() {
 
