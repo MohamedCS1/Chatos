@@ -149,7 +149,7 @@
                 android:layout_height="@dimen/_120sdp"
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/_40sdp"
-                android:background="@drawable/background_qr_code"
+                android:background="@drawable/background_edittext_general"
                 android:padding="@dimen/_7sdp"
                 android:src="@drawable/ic_qr_code" />
 

@@ -368,13 +368,43 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
                     val idToken = credential.googleIdToken
                     val username = credential.id
                     val password = credential.password
+                    val photoProfile = credential.profilePictureUri
                     val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
+
+                    appPref.insertProfileImagePath(photoProfile.toString())
                     mAuth.signInWithCredential(firebaseCredential)
                         .addOnCompleteListener(this) { task ->
                             if (task.isSuccessful) {
-
+                                val currentUser = mAuth.currentUser
+                                appPref.insertCurrentUserUID(currentUser!!.uid)
+                                currentUserDocRef.set(
+                                    com.example.pojo.User(
+                                        "",
+                                        username,
+                                        "By facebook",
+                                        "",
+                                        photoProfile.toString(),
+                                        "",
+                                        "",
+                                        "",
+                                    )
+                                ).addOnCompleteListener {
+                                    if (it.isSuccessful)
+                                    {
+                                        val intentToMainActivity = Intent(this@LogInActivity ,InfoUserActivity::class.java)
+                                        intentToMainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                        startActivity(intentToMainActivity)
+                                        finish()
+                                    }
+                                    else
+                                    {
+                                        Toast.makeText(baseContext,
+                                            it.exception!!.message.toString(),Toast.LENGTH_SHORT).show()
+                                    }
+                                }
                             } else {
-
+                                Toast.makeText(baseContext,
+                                    task.exception!!.message.toString(),Toast.LENGTH_SHORT).show()
                             }
                         }
                     Log.d("any" ,"$idToken / $username / $password")
