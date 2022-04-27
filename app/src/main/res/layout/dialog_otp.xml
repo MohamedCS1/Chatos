@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/background_edittext_general"
+    android:padding="@dimen/_20sdp"
+    android:layout_margin="@dimen/_10sdp"
+    android:orientation="vertical">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="@dimen/_100sdp"
+        app:lottie_autoPlay="true"
+        app:lottie_rawRes="@raw/otp_send_animation"
+        app:lottie_loop="true"
+        android:layout_gravity="center|top"
+        android:layout_marginTop="@dimen/_10sdp"
+        />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="OTP Verification"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:textSize="@dimen/_17ssp"
+        android:textColor="@color/black"
+        android:layout_marginTop="@dimen/_15sdp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enter OTP Code sent +213552938510"
+        android:gravity="center"
+        android:textSize="@dimen/_13ssp"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/_10sdp"/>
+
+    <com.chaos.view.PinView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:cursorColor="@color/my_green"
+        app:cursorWidth="2dp"
+        app:hideLineWhenFilled="true"
+        app:itemCount="6"
+        android:cursorVisible="true"
+        app:itemHeight="48dp"
+        app:itemRadius="4dp"
+        app:itemSpacing="0dp"
+        app:itemWidth="48dp"
+        app:lineColor="@color/my_green"
+        app:lineWidth="2dp"
+        app:viewType="rectangle"
+        android:layout_marginTop="@dimen/_35sdp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Didn't receive Otp code ?"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/_30sdp"
+        android:textSize="@dimen/_14ssp"
+        android:gravity="center"/>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Resend Code"
+        android:layout_gravity="center"
+        android:textSize="@dimen/_15ssp"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:textColor="@color/green"/>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/bu_CreateNewAccount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/_40sdp"
+        android:layout_marginTop="@dimen/_25sdp"
+        android:layout_marginRight="@dimen/_40sdp"
+        app:cardBackgroundColor="#51BA65"
+        app:cardCornerRadius="@dimen/_10sdp"
+        app:cardElevation="@null"
+        >
+        <TextView
+            android:id="@+id/tv_bu_CreateNewAccount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginRight="@dimen/_20sdp"
+            android:layout_marginBottom="@dimen/_5sdp"
+            android:gravity="center"
+            android:padding="@dimen/_5sdp"
+            android:text="NEXT"
+            android:textColor="#FFFFFF"
+            android:textSize="@dimen/_15ssp"
+            android:textStyle="bold" />
+    </androidx.cardview.widget.CardView>
+
+
+</LinearLayout>

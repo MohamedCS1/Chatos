@@ -185,6 +185,7 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
 
     fun googleAuth()
     {
+        progressDialog.show()
         oneTapClient = Identity.getSignInClient(this)
         signInRequest = BeginSignInRequest.builder()
             .setPasswordRequestOptions(BeginSignInRequest.PasswordRequestOptions.builder()
@@ -366,7 +367,7 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
                 try {
                     val credential = oneTapClient.getSignInCredentialFromIntent(data)
                     val idToken = credential.googleIdToken
-                    val username = credential.id
+                    val username = credential.displayName
                     val password = credential.password
                     val photoProfile = credential.profilePictureUri
                     val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
@@ -379,8 +380,8 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
                                 appPref.insertCurrentUserUID(currentUser!!.uid)
                                 currentUserDocRef.set(
                                     com.example.pojo.User(
-                                        "",
-                                        username,
+                                        currentUser.uid,
+                                        username.toString(),
                                         "By facebook",
                                         "",
                                         photoProfile.toString(),
@@ -391,6 +392,7 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
                                 ).addOnCompleteListener {
                                     if (it.isSuccessful)
                                     {
+                                        progressDialog.show()
                                         val intentToMainActivity = Intent(this@LogInActivity ,InfoUserActivity::class.java)
                                         intentToMainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                                         startActivity(intentToMainActivity)
@@ -398,17 +400,20 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
                                     }
                                     else
                                     {
+                                        progressDialog.show()
                                         Toast.makeText(baseContext,
                                             it.exception!!.message.toString(),Toast.LENGTH_SHORT).show()
                                     }
                                 }
                             } else {
+                                progressDialog.show()
                                 Toast.makeText(baseContext,
                                     task.exception!!.message.toString(),Toast.LENGTH_SHORT).show()
                             }
                         }
                     Log.d("any" ,"$idToken / $username / $password")
                 } catch (e: ApiException) {
+                    progressDialog.show()
                     Toast.makeText(baseContext,"something went wrong try again" ,Toast.LENGTH_SHORT).show()
                 }
             }

@@ -90,8 +90,12 @@ class ChatFragment : Fragment() {
                         Log.d("currentChatFragment" ,it.toString())
                         arrayOfFriends.add(User(it.id ,it["name"].toString() ,it["email"].toString() ,it["password"].toString() ,it["imagePath"].toString() ,it["job"].toString() ,it["country"].toString() ,it["gender"].toString()))
                     }.addOnCompleteListener {
-                        personAdapter.setList(arrayOfFriends)
-                        animationView.visibility = View.GONE
+                        if (it.isSuccessful)
+                        {
+                            personAdapter.setList(arrayOfFriends)
+                            animationView.visibility = View.GONE
+                        }
+
                     }
                 }
 

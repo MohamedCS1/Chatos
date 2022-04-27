@@ -83,7 +83,7 @@
             app:layout_constraintTop_toBottomOf="@+id/checkBox" />
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/bu_CreateNewAccount"
+            android:id="@+id/bu_Next"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/_20sdp"
