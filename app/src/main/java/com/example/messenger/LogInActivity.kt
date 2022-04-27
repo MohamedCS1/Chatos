@@ -81,6 +81,10 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
             facebookAuth()
         }
 
+        binding.buLoginPhoneNumber.setOnClickListener {
+            startActivity(Intent(this ,LoginPhoneNumberActivity::class.java))
+        }
+
     }
     fun logInWithEmailAndPassword()
     {

@@ -34,7 +34,7 @@
             android:background="@drawable/background_qr_code"
             android:padding="@dimen/_12sdp"
             android:inputType="text"
-            android:hint="Email"
+            android:hint="Enter your email"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
@@ -178,7 +178,7 @@
                 app:srcCompat="@drawable/ic_google_login" />
 
             <ImageView
-                android:id="@+id/imageView2"
+                android:id="@+id/bu_login_phone_number"
                 android:layout_width="@dimen/_30sdp"
                 android:layout_height="@dimen/_30sdp"
                 android:background="@drawable/background_ic_phone_login"
