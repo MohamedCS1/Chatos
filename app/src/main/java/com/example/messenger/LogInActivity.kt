@@ -15,6 +15,7 @@ import com.example.sharedPreferences.AppSharedPreferences
 import com.example.tools.LoadingProgress
 import com.facebook.*
 import com.facebook.appevents.AppEventsLogger
+import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
@@ -25,6 +26,7 @@ import com.google.firebase.auth.*
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.*
+import java.lang.Exception
 import java.util.concurrent.TimeUnit
 
 
@@ -37,6 +39,7 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
     lateinit var binding: ActivityLogInBinding
     lateinit var mAuth: FirebaseAuth
     lateinit var appPref: AppSharedPreferences
+    lateinit var callbackManager:CallbackManager
 
     private val progressDialog by lazy {
         LoadingProgress(this)
@@ -60,21 +63,22 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
         binding.etPassword.addTextChangedListener(this)
         binding.buLogIn.isEnabled = false
 
-        loginFacebookInitializing()
-
         mAuth = FirebaseAuth.getInstance()
 
-        phoneAuth()
+//        phoneAuth()
         binding.buLogIn.setOnClickListener {
             logInWithEmailAndPassword()
         }
 
-        binding.buGoogleLogin.setOnClickListener {
+        binding.buLoginGoogle.setOnClickListener {
             googleAuth()
         }
 
         binding.buCreateNewAccount.setOnClickListener {
             startActivity(Intent(this ,SignUpActivity::class.java))
+        }
+        binding.buLoginFacebook.setOnClickListener {
+            facebookAuth()
         }
 
     }
@@ -198,7 +202,7 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
                         result.pendingIntent.intentSender, REQ_ONE_TAP,
                         null, 0, 0, 0, null)
                 } catch (e: IntentSender.SendIntentException) {
-                    Toast.makeText(baseContext,"something went wrong 0" ,Toast.LENGTH_SHORT).show()
+                    Toast.makeText(baseContext,"something went wrong try again" ,Toast.LENGTH_SHORT).show()
                 }
             }
             .addOnFailureListener(this) { e ->
@@ -239,29 +243,30 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
         PhoneAuthProvider.verifyPhoneNumber(options)
     }
 
-    private fun loginFacebookInitializing(){
+    private fun facebookAuth(){
 
-        FacebookSdk.sdkInitialize(applicationContext)
+        FacebookSdk.fullyInitialize()
         AppEventsLogger.activateApp(application)
 
-        val callbackManager =  CallbackManager.Factory.create()
+        LoginManager.getInstance().logInWithReadPermissions(this , listOf("email"))
 
-        val EMAIL = "email"
+        callbackManager =  CallbackManager.Factory.create()
 
-        binding.loginButton.setPermissions(listOf(EMAIL))
-
-        binding.loginButton.registerCallback(callbackManager, object : FacebookCallback<LoginResult?> {
+        LoginManager.getInstance().registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
 
             override fun onCancel() {
-
+                progressDialog.hide()
             }
 
             override fun onError(exception: FacebookException) {
-
+                progressDialog.hide()
+                Log.d("CurrentError" ,exception.toString())
             }
 
-            override fun onSuccess(result: LoginResult?) {
-                handleFacebookToken(result?.accessToken!!)
+            override fun onSuccess(result: LoginResult) {
+                Log.d("CurrentError" ,result.toString())
+                progressDialog.show()
+                handleFacebookToken(result.accessToken)
             }
         })
     }
@@ -316,14 +321,14 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
                     else
                     {
                         progressDialog.hide()
-                        Toast.makeText(baseContext,"something went wrong try again" ,Toast.LENGTH_SHORT).show()
+                        Toast.makeText(baseContext,"${it.exception!!.message}" ,Toast.LENGTH_LONG).show()
                     }
                 }
             }
             else
             {
                 progressDialog.hide()
-                Toast.makeText(baseContext,"something went wrong try again" ,Toast.LENGTH_SHORT).show()
+                Toast.makeText(baseContext,"${it.exception!!.message}" ,Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -370,9 +375,15 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
                         }
                     Log.d("any" ,"$idToken / $username / $password")
                 } catch (e: ApiException) {
-                    Toast.makeText(baseContext,"something went wrong 2" ,Toast.LENGTH_SHORT).show()
+                    Toast.makeText(baseContext,"something went wrong try again" ,Toast.LENGTH_SHORT).show()
                 }
             }
+        }
+        try {
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+        }catch (ex:Exception)
+        {
+         Log.d("LoginActivity" ,ex.toString())
         }
     }
 

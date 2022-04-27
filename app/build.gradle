@@ -96,7 +96,6 @@ dependencies {
     //otp pinView
     implementation 'io.github.chaosleung:pinview:1.4.4'
 
-
     apply plugin: 'kotlin-kapt'
 }
 apply plugin: 'com.android.application'
