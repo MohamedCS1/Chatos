@@ -41,6 +41,7 @@
         <entry key="app/src/main/res/drawable/ic_photo_placeholder.xml" value="0.371" />
         <entry key="app/src/main/res/drawable/shape_circle.xml" value="0.324" />
         <entry key="app/src/main/res/drawable/test.xml" value="0.205" />
+        <entry key="app/src/main/res/drawable/textlines.xml" value="0.304" />
         <entry key="app/src/main/res/layout/activity_chat.xml" value="0.22" />
         <entry key="app/src/main/res/layout/activity_edit_image.xml" value="0.2526720820863617" />
         <entry key="app/src/main/res/layout/activity_info_user.xml" value="0.22" />
@@ -57,7 +58,7 @@
         <entry key="app/src/main/res/layout/app_bar_main.xml" value="0.2833333333333333" />
         <entry key="app/src/main/res/layout/bottom_sheet_layout.xml" value="0.33" />
         <entry key="app/src/main/res/layout/content_main.xml" value="0.2682291666666667" />
-        <entry key="app/src/main/res/layout/dialog_otp.xml" value="0.23514322359982898" />
+        <entry key="app/src/main/res/layout/dialog_otp.xml" value="0.23934723481414324" />
         <entry key="app/src/main/res/layout/fragment_chat.xml" value="0.21614583333333334" />
         <entry key="app/src/main/res/layout/fragment_explore.xml" value="0.21614583333333334" />
         <entry key="app/src/main/res/layout/fragment_friends.xml" value="0.3039760581445062" />

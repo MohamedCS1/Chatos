@@ -45,7 +45,7 @@
             app:layout_constraintTop_toBottomOf="@+id/textView" />
 
         <EditText
-            android:id="@+id/editText"
+            android:id="@+id/et_phone_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/_20sdp"
@@ -53,6 +53,7 @@
             android:background="@drawable/backgound_edittext_login_phone_number"
             android:hint="Enter Phone Number"
             android:inputType="number"
+            android:maxLength="10"
             android:padding="@dimen/_12sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -68,7 +69,7 @@
             android:paddingLeft="@dimen/_10sdp"
             android:buttonTint="@color/my_green"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editText" />
+            app:layout_constraintTop_toBottomOf="@+id/et_phone_number" />
 
         <CheckBox
             android:id="@+id/checkBox2"
