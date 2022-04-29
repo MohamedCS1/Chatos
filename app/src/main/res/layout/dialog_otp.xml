@@ -52,7 +52,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/_10sdp"/>
         <com.chaos.view.PinView
-            android:id="@+id/firstPinView"
+            android:id="@+id/otpPinView"
             style="@style/PinWidget.PinView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -95,7 +95,7 @@
             android:textColor="@color/green"/>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/bu_CreateNewAccount"
+            android:id="@+id/bu_verification"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/_40sdp"

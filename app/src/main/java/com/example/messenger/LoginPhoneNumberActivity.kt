@@ -8,6 +8,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.cardview.widget.CardView
+import com.chaos.view.PinView
 import com.example.messenger.databinding.ActivityLoginPhoneNumberBinding
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
@@ -23,6 +25,8 @@ class LoginPhoneNumberActivity : AppCompatActivity() {
     private val mAuth: FirebaseAuth by lazy {
         FirebaseAuth.getInstance()
     }
+
+    var mVerificationID: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +49,9 @@ class LoginPhoneNumberActivity : AppCompatActivity() {
             otpDialog.setCancelable(false)
             otpDialog.show()
 
+
+            phoneAuth(binding.etPhoneNumber.text.toString())
+
             val bu_close = otpDialog.findViewById<ImageView>(R.id.bu_close_otp_dialog)
             bu_close?.setOnClickListener {
                 otpDialog.hide()
@@ -52,6 +59,19 @@ class LoginPhoneNumberActivity : AppCompatActivity() {
 
             val tv_phone_number = otpDialog.findViewById<TextView>(R.id.tv_otp_phone_number)
             tv_phone_number?.text = "Enter OTP Code sent +213${binding.etPhoneNumber.text.toString().removeRange(0 ,1)}"
+
+            val bu_verification = otpDialog.findViewById<CardView>(R.id.bu_verification)
+            val otpPinView = otpDialog.findViewById<PinView>(R.id.otpPinView)
+            bu_verification?.setOnClickListener {
+                if (mVerificationID.isNotEmpty() && otpPinView!!.text!!.length > 5)
+                {
+                    otpVerification(mVerificationID ,otpPinView.text.toString())
+                }
+                else
+                {
+                    Toast.makeText(this ,"invalid otp" ,Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
@@ -65,34 +85,58 @@ class LoginPhoneNumberActivity : AppCompatActivity() {
         return true
     }
 
-    private fun phoneAuth()
+    private fun phoneAuth(phoneNumber:String)
     {
-        val phoneNumber = "+2130552938510"
         val smsCode = "123456"
+        val phoneNumberFirebaseAuthSettingsFormat = phoneNumber
 
         val firebaseAuthSettings = mAuth.firebaseAuthSettings
-        firebaseAuthSettings.setAutoRetrievedSmsCodeForPhoneNumber(phoneNumber, smsCode)
+        firebaseAuthSettings.setAutoRetrievedSmsCodeForPhoneNumber("+213$phoneNumberFirebaseAuthSettingsFormat", smsCode)
 
         val options = PhoneAuthOptions.newBuilder(mAuth)
-            .setPhoneNumber(phoneNumber)
+            .setPhoneNumber("+213${phoneNumber.removeRange(0,1)}")
             .setTimeout(60L, TimeUnit.SECONDS)
             .setActivity(this)
             .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                 override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-
-                    Toast.makeText(this@LoginPhoneNumberActivity ,credential.smsCode.toString() ,Toast.LENGTH_SHORT).show()
-                    Log.d("CurrentAuth" ,credential.smsCode.toString())
+                    Log.d("CurrentAuth" ,"credential -->"+credential.smsCode.toString())
                 }
 
                 override fun onVerificationFailed(p0: FirebaseException) {
                     Toast.makeText(this@LoginPhoneNumberActivity ,p0.message.toString() ,Toast.LENGTH_SHORT).show()
-                    Log.d("CurrentAuth" ,p0.message.toString())
+                    Log.d("CurrentAuth" ,"VerificationFailed -->"+p0.message.toString())
                     println(p0.message.toString())
 
                 }
 
-            })
-            .build()
+                override fun onCodeSent(p0: String, p1: PhoneAuthProvider.ForceResendingToken) {
+//                    Toast.makeText(this@LoginPhoneNumberActivity ,p0 ,Toast.LENGTH_SHORT).show()
+                    Log.d("CurrentAuth" ,"CodeSent -->"+p0)
+
+                    super.onCodeSent(p0, p1)
+                    mVerificationID = p0
+                }
+
+            }).build()
         PhoneAuthProvider.verifyPhoneNumber(options)
+    }
+
+    fun otpVerification(id: String ,otpCode:String)
+    {
+        val credential = PhoneAuthProvider.getCredential(id ,otpCode)
+
+        mAuth.signInWithCredential(credential).addOnCompleteListener {
+            if (it.isSuccessful)
+            {
+                val user = it.result.user
+                Toast.makeText(this ,"Verification passed" ,Toast.LENGTH_SHORT).show()
+                Log.d("CurrentAuth" ,user.toString())
+            }
+            else
+            {
+                Toast.makeText(this@LoginPhoneNumberActivity ,
+                    it.exception!!.message.toString() ,Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }

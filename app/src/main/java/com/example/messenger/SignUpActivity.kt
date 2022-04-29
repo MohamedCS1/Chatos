@@ -41,7 +41,6 @@ class SignUpActivity : AppCompatActivity(),TextWatcher {
         setContentView(binding.root)
 
         binding.etEmailOrNumber.addTextChangedListener(this)
-        binding.etName.addTextChangedListener(this)
         binding.etPassword.addTextChangedListener(this)
         binding.buSignUp.isEnabled = false
 
@@ -55,14 +54,7 @@ class SignUpActivity : AppCompatActivity(),TextWatcher {
     {
         val email = binding.etEmailOrNumber.text.toString().trim()
         val password = binding.etPassword.text.toString()
-        val name = binding.etName.text.toString()
 
-        if (name.isBlank())
-        {
-            binding.etName.error = "Name required"
-            binding.etName.requestFocus()
-            return
-        }
 
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches())
         {
@@ -77,7 +69,7 @@ class SignUpActivity : AppCompatActivity(),TextWatcher {
             binding.etPassword.requestFocus()
             return
         }
-        createNewAccount(User("",name ,email ,password ,"" ,"" ,"" ,""))
+        createNewAccount(User("","" ,email ,password ,"" ,"" ,"" ,""))
     }
 
     fun createNewAccount(user: User)
@@ -122,7 +114,7 @@ class SignUpActivity : AppCompatActivity(),TextWatcher {
     }
 
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-        if (binding.etEmailOrNumber.text.isNotBlank() && binding.etName.text.isNotBlank() && binding.etPassword.text.isNotBlank())
+        if (binding.etEmailOrNumber.text.isNotBlank() && binding.etPassword.text.isNotBlank())
         {
             binding.buSignUp.setCardBackgroundColor(Color.parseColor("#01C5C4"))
             binding.buSignUp.isEnabled = true
