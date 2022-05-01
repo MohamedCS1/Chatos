@@ -1,6 +1,8 @@
 package com.example.messenger
 
 import android.app.Activity
+import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -13,6 +15,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import com.bumptech.glide.Glide
 import com.example.messenger.databinding.ActivityInfoUserBinding
 import com.example.pojo.User
 import com.example.sharedPreferences.AppSharedPreferences
@@ -35,7 +38,6 @@ class InfoUserActivity : AppCompatActivity() {
     lateinit var appPref: AppSharedPreferences
 
     private val  currentUserDocRef get() =  fireStore.document("users/${appPref.getCurrentUserUID()}")
-
 
     private val storageInstance: FirebaseStorage by lazy {
         FirebaseStorage.getInstance()
@@ -111,6 +113,7 @@ class InfoUserActivity : AppCompatActivity() {
         }
     }
 
+
     fun compressImage(imageUri: Uri){
         val outputStream = ByteArrayOutputStream()
         MediaStore.Images.Media.getBitmap(this.contentResolver ,imageUri).compress(Bitmap.CompressFormat.JPEG ,30 ,outputStream)
@@ -152,11 +155,23 @@ class InfoUserActivity : AppCompatActivity() {
     }
 
     override fun onStart() {
-        if (appPref.getUserJob() != "" || appPref.getUserGender() != "" || appPref.getUserCountry() != "")
-        {
-            startActivity(Intent(this ,MainActivity::class.java))
-            finish()
+
+
+        currentUserDocRef.addSnapshotListener { value, error ->
+            val user = value?.toObject(User::class.java)
+
+            appPref.insertUserJob(user!!.job)
+            appPref.insertUserGender(user.gender)
+            appPref.insertUserCountry(user.country)
+
+            if (appPref.getUserJob() != "" || appPref.getUserGender() != "" || appPref.getUserCountry() != "")
+            {
+                loadingProgress.hide()
+                startActivity(Intent(this ,MainActivity::class.java))
+                finish()
+            }
         }
+
         super.onStart()
     }
 }
