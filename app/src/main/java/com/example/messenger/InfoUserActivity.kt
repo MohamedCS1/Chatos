@@ -155,21 +155,10 @@ class InfoUserActivity : AppCompatActivity() {
     }
 
     override fun onStart() {
-
-
-        currentUserDocRef.addSnapshotListener { value, error ->
-            val user = value?.toObject(User::class.java)
-
-            appPref.insertUserJob(user!!.job)
-            appPref.insertUserGender(user.gender)
-            appPref.insertUserCountry(user.country)
-
-            if (appPref.getUserJob() != "" || appPref.getUserGender() != "" || appPref.getUserCountry() != "")
-            {
-                loadingProgress.hide()
-                startActivity(Intent(this ,MainActivity::class.java))
-                finish()
-            }
+        if (appPref.getUserJob() != "" || appPref.getUserGender() != "" || appPref.getUserCountry() != "")
+        {
+            startActivity(Intent(this ,MainActivity::class.java))
+            finish()
         }
 
         super.onStart()

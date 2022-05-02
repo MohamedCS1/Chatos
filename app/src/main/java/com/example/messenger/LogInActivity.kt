@@ -11,6 +11,7 @@ import android.util.Patterns
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.messenger.databinding.ActivityLogInBinding
+import com.example.pojo.User
 import com.example.sharedPreferences.AppSharedPreferences
 import com.example.tools.LoadingProgress
 import com.facebook.*
@@ -23,7 +24,10 @@ import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.*
 import java.lang.Exception
@@ -360,7 +364,7 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
                                 ).addOnCompleteListener {
                                     if (it.isSuccessful)
                                     {
-                                        progressDialog.show()
+                                        dataUserfromFirebaseToAppPref()
                                         val intentToMainActivity = Intent(this@LogInActivity ,InfoUserActivity::class.java)
                                         intentToMainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                                         startActivity(intentToMainActivity)
@@ -394,7 +398,32 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
         }
     }
 
+    fun dataUserfromFirebaseToAppPref()
+    {
+        currentUserDocRef.addSnapshotListener(object :EventListener<DocumentSnapshot>
+        {
+            override fun onEvent(
+                value: DocumentSnapshot?,
+                error: FirebaseFirestoreException?
+            ) {
+                if (error != null)
+                {
+                    progressDialog.hide()
+                    Toast.makeText(this@LogInActivity ,"something wrong please try again" ,Toast.LENGTH_LONG).show()
+                }
+                else
+                {
+                    val user = value?.toObject(User::class.java)
+                    appPref.insertUserJob(user!!.job)
+                    appPref.insertUserGender(user.gender)
+                    appPref.insertUserCountry(user.country)
+                    progressDialog.hide()
 
+                }
+
+            }
+        })
+    }
 
     override fun onStart() {
 
