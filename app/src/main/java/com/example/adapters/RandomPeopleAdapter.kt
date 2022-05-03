@@ -2,12 +2,14 @@ package com.example.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.messenger.PublicProfileActivity
 import com.example.messenger.R
 import com.example.pojo.User
 import de.hdodenhof.circleimageview.CircleImageView
@@ -26,6 +28,11 @@ class RandomPeopleAdapter:RecyclerView.Adapter<RandomPeopleAdapter.RandomPeopleV
         holder.name.text = arrayOfUsers[position].name
         holder.job.text = arrayOfUsers[position].job
         holder.country.text = arrayOfUsers[position].country
+        holder.itemView.setOnClickListener {
+            val intent = Intent(context , PublicProfileActivity::class.java)
+            intent.putExtra("person" ,arrayOfUsers[position])
+            context.startActivity(intent)
+        }
     }
 
     override fun getItemCount(): Int {
