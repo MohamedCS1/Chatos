@@ -28,6 +28,9 @@ class LoadingProgress(var context: Context) {
 
     fun hide()
     {
-        loadingProgress.dismiss()
+        if (loadingProgress.isShowing)
+        {
+            loadingProgress.dismiss()
+        }
     }
 }

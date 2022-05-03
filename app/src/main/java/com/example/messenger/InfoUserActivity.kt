@@ -9,6 +9,7 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.SimpleAdapter
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
@@ -155,7 +156,13 @@ class InfoUserActivity : AppCompatActivity() {
     }
 
     override fun onStart() {
-        if (appPref.getUserJob() != "" || appPref.getUserGender() != "" || appPref.getUserCountry() != "")
+
+        appPref = AppSharedPreferences()
+        appPref.PrefManager(baseContext)
+
+        Log.d("currentAppPref" ,appPref.getUserJob()+" "+appPref.getUserCountry()+" "+appPref.getUserGender())
+
+        if (appPref.getUserJob().isNotEmpty() || appPref.getUserGender().isNotEmpty() || appPref.getUserCountry().isNotEmpty())
         {
             startActivity(Intent(this ,MainActivity::class.java))
             finish()

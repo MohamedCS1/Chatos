@@ -162,10 +162,7 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
                                     {
                                         appPref.insertUserEmail(binding.etEmailOrNumber.text.toString())
                                         progressDialog.hide()
-                                        val intentToMainActivity = Intent(this@LogInActivity ,InfoUserActivity::class.java)
-                                        intentToMainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                                        startActivity(intentToMainActivity)
-                                        finish()
+                                        intentToInfoActivity()
                                     }
                                 }
                         }
@@ -210,11 +207,12 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
                         result.pendingIntent.intentSender, REQ_ONE_TAP,
                         null, 0, 0, 0, null)
                 } catch (e: IntentSender.SendIntentException) {
-                    Toast.makeText(baseContext,"something went wrong try again" ,Toast.LENGTH_SHORT).show()
+                    Toast.makeText(baseContext,"something went wrong try again" ,Toast.LENGTH_LONG).show()
                 }
             }
             .addOnFailureListener(this) { e ->
-                Toast.makeText(baseContext,e.toString() ,Toast.LENGTH_SHORT).show()
+                progressDialog.hide()
+                Toast.makeText(baseContext,e.toString() ,Toast.LENGTH_LONG).show()
                 Log.e("any" ,e.toString())
 
             }
@@ -256,50 +254,53 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
             if (it.isSuccessful)
             {
                 val user = mAuth.currentUser
-                appPref.insertCurrentUserUID(user!!.uid)
-                appPref.insertUserEmail(user.email.toString())
-                appPref.insertProfileImagePath(user.photoUrl.toString())
-                currentUserDocRef.set(
-                    com.example.pojo.User(
-                        "",
-                        user.displayName.toString(),
-                        user.email.toString(),
-                        "",
-                        user.photoUrl.toString(),
-                        "",
-                        "",
-                        "",
-                    )
-                ).addOnCompleteListener {
-                    if (it.isSuccessful)
-                    {
-                        FirebaseMessaging.getInstance().token.addOnCompleteListener {
-                                task->
-                            val token = task.result
-                            Log.d("token" ,token)
-                            fireStore.collection("users").document(appPref.getCurrentUserUID()).update(mapOf("token" to(token)))
-                                .addOnCompleteListener {
-                                    if (!it.isSuccessful)
-                                    {
-                                        appPref.insertProfileImagePath(user.email.toString())
-                                        progressDialog.hide()
-                                    }
-                                    else
-                                    {
-                                        progressDialog.hide()
-                                        val intentToMainActivity = Intent(this@LogInActivity ,InfoUserActivity::class.java)
-                                        intentToMainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                                        startActivity(intentToMainActivity)
-                                        finish()
-                                    }
+                currentUserDocRef.get().addOnSuccessListener {
+                    document->
+
+                        if (document.exists())
+                        {
+
+                            currentUserDocRef.update(
+                                mapOf("email" to user?.email
+                                    ,"name" to user?.displayName
+                                    ,"uid" to user?.uid
+                                ,"imagePath" to user?.photoUrl.toString())
+                            ).addOnCompleteListener {
+                                if (it.isSuccessful)
+                                {
+                                    insertTokenToFirebase()
+                                    dataUserfromFirebaseToAppPref()
                                 }
+                                else
+                                {
+                                    progressDialog.hide()
+                                    Toast.makeText(baseContext,"${it.exception!!.message}" ,Toast.LENGTH_LONG).show()
+                                }
+                            }
                         }
-                    }
                     else
-                    {
-                        progressDialog.hide()
-                        Toast.makeText(baseContext,"${it.exception!!.message}" ,Toast.LENGTH_LONG).show()
-                    }
+                        {
+
+                            currentUserDocRef.set(
+                                mapOf("email" to user?.email
+                                    ,"name" to user?.displayName
+                                    ,"uid" to user?.uid
+                                    ,"imagePath" to user?.photoUrl.toString())
+
+                            ).addOnCompleteListener {
+                                if (it.isSuccessful)
+                                {
+                                    insertTokenToFirebase()
+                                    dataUserfromFirebaseToAppPref()
+                                }
+                                else
+                                {
+                                    progressDialog.hide()
+                                    Toast.makeText(baseContext,"${it.exception!!.message}" ,Toast.LENGTH_LONG).show()
+                                }
+                            }
+                        }
+
                 }
             }
             else
@@ -341,52 +342,63 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
                     val idToken = credential.googleIdToken
                     val username = credential.displayName
                     val password = credential.password
-                    val photoProfile = credential.profilePictureUri
+                    val photoProfileUri = credential.profilePictureUri
                     val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
 
-                    appPref.insertProfileImagePath(photoProfile.toString())
                     mAuth.signInWithCredential(firebaseCredential)
                         .addOnCompleteListener(this) { task ->
                             if (task.isSuccessful) {
                                 val currentUser = mAuth.currentUser
-                                appPref.insertCurrentUserUID(currentUser!!.uid)
-                                currentUserDocRef.set(
-                                    com.example.pojo.User(
-                                        currentUser.uid,
-                                        username.toString(),
-                                        "By facebook",
-                                        "",
-                                        photoProfile.toString(),
-                                        "",
-                                        "",
-                                        "",
-                                    )
-                                ).addOnCompleteListener {
-                                    if (it.isSuccessful)
+                                currentUserDocRef.get().addOnSuccessListener {
+                                    document -> if (document.exists())
                                     {
-                                        dataUserfromFirebaseToAppPref()
-                                        val intentToMainActivity = Intent(this@LogInActivity ,InfoUserActivity::class.java)
-                                        intentToMainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                                        startActivity(intentToMainActivity)
-                                        finish()
+
+                                        currentUserDocRef.update(
+                                            mapOf("email" to "Login by google"
+                                                ,"imagePath" to photoProfileUri.toString()
+                                                ,"name" to username
+                                                ,"uid" to currentUser?.uid)
+                                        ).addOnCompleteListener {
+                                            if (it.isSuccessful)
+                                            {
+                                                dataUserfromFirebaseToAppPref()
+                                            }
+                                            else
+                                            {
+                                                progressDialog.hide()
+                                                Toast.makeText(baseContext, it.exception!!.message.toString(),Toast.LENGTH_LONG).show()
+                                            }
+                                        }
                                     }
-                                    else
-                                    {
-                                        progressDialog.show()
-                                        Toast.makeText(baseContext,
-                                            it.exception!!.message.toString(),Toast.LENGTH_SHORT).show()
+                                    else {
+                                    currentUserDocRef.set(
+                                        mapOf("email" to "Login by google"
+                                            ,"imagePath" to photoProfileUri.toString()
+                                            ,"name" to username
+                                            ,"uid" to currentUser?.uid)
+                                    ).addOnCompleteListener {
+                                        if (it.isSuccessful)
+                                        {
+                                            dataUserfromFirebaseToAppPref()
+                                        }
+                                        else
+                                        {
+                                            progressDialog.hide()
+                                            Toast.makeText(baseContext, it.exception!!.message.toString(),Toast.LENGTH_LONG).show()
+                                        }
+                                    }
                                     }
                                 }
                             } else {
-                                progressDialog.show()
+                                progressDialog.hide()
                                 Toast.makeText(baseContext,
-                                    task.exception!!.message.toString(),Toast.LENGTH_SHORT).show()
+                                    task.exception!!.message.toString(),Toast.LENGTH_LONG).show()
                             }
                         }
                     Log.d("any" ,"$idToken / $username / $password")
                 } catch (e: ApiException) {
-                    progressDialog.show()
-                    Toast.makeText(baseContext,"something went wrong try again" ,Toast.LENGTH_SHORT).show()
+                    progressDialog.hide()
+                    Toast.makeText(baseContext,"something went wrong try again" ,Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -396,6 +408,40 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
         {
          Log.d("LoginActivity" ,ex.toString())
         }
+    }
+
+
+    fun insertTokenToFirebase()
+    {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener {
+                task->
+            val token = task.result
+            Log.d("token" ,token)
+            fireStore.collection("users").document(mAuth.currentUser!!.uid).update(mapOf("token" to(token)))
+                .addOnCompleteListener {
+                    if (!it.isSuccessful)
+                    {
+                        progressDialog.hide()
+                        Toast.makeText(baseContext,"something went wrong try again" ,Toast.LENGTH_LONG).show()
+
+                    }
+                    else
+                    {
+                        progressDialog.hide()
+                        intentToInfoActivity()
+                    }
+                }
+        }.addOnFailureListener {
+            Toast.makeText(baseContext,"something went wrong try again" ,Toast.LENGTH_LONG).show()
+        }
+    }
+
+    fun intentToInfoActivity()
+    {
+        val intentToMainActivity = Intent(this@LogInActivity ,InfoUserActivity::class.java)
+        intentToMainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intentToMainActivity)
+        finish()
     }
 
     fun dataUserfromFirebaseToAppPref()
@@ -413,26 +459,32 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
                 }
                 else
                 {
-                    val user = value?.toObject(User::class.java)
-                    appPref.insertUserJob(user!!.job)
-                    appPref.insertUserGender(user.gender)
-                    appPref.insertUserCountry(user.country)
-                    progressDialog.hide()
-
+                    try {
+                        val user = value?.toObject(User::class.java)
+                        appPref.insertUserJob(user!!.job)
+                        appPref.insertUserGender(user.gender)
+                        appPref.insertUserCountry(user.country)
+                        appPref.insertUserEmail(user.email)
+                        appPref.insertProfileImagePath(user.imagePath)
+                        appPref.insertCurrentUserUID(user.uid)
+                    }catch (ex:Exception)
+                    {
+                        Log.e("current Exception" ,ex.message.toString())
+                        Toast.makeText(this@LogInActivity ,ex.message.toString() ,Toast.LENGTH_LONG).show()
+                    }
+                    intentToInfoActivity()
                 }
 
             }
         })
     }
 
+
     override fun onStart() {
 
         if (appPref.getCurrentUserUID().isNotEmpty() && appPref.getCurrentUserUID().isNotBlank())
         {
-            val intentToMainActivity = Intent(this@LogInActivity ,InfoUserActivity::class.java)
-            intentToMainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            startActivity(intentToMainActivity)
-            finish()
+           intentToInfoActivity()
         }
         super.onStart()
     }
