@@ -1,17 +1,21 @@
 package com.example.messenger
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.View
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.Composable
 import com.bumptech.glide.Glide
 import com.example.messenger.databinding.ActivityProfileBinding
 import com.example.sharedPreferences.AppSharedPreferences
@@ -60,6 +64,30 @@ class ProfileActivity : AppCompatActivity() {
         binding.tvUserJob.text = appPref.getUserJob()
         binding.tvUserName.text = appPref.getCurrentUserName()
         binding.tvUserEmail.text = appPref.getUserEmail()
+
+        binding.buLogOut.setOnClickListener {
+
+            val dialogSingout = AlertDialog.Builder(this)
+            val view = View.inflate(this ,R.layout.dialog_singout , null)
+            val createDialog = dialogSingout.setView(view).create()
+            createDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+            createDialog.show()
+            val bu_yes = createDialog.findViewById<Button>(R.id.bu_yes)
+            val bu_no = createDialog.findViewById<Button>(R.id.bu_no)
+
+            bu_yes.setOnClickListener {
+                appPref.clearSession()
+                FirebaseAuth.getInstance().signOut()
+                val intentToLoginActivity = Intent(this ,LogInActivity::class.java)
+                intentToLoginActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                startActivity(intentToLoginActivity)
+                finish()
+            }
+
+            bu_no.setOnClickListener{
+                createDialog.dismiss()
+            }
+        }
 
         binding.profileImageBig.setOnClickListener {
             val intentImage = Intent().apply {
