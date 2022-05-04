@@ -47,8 +47,6 @@ class ChatActivity : AppCompatActivity() {
 
     lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
-
-
     private val fireStoreInstance:FirebaseFirestore by lazy {
         FirebaseFirestore.getInstance()
     }

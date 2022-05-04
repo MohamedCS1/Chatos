@@ -1,6 +1,7 @@
 package com.example.messenger
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -16,17 +17,37 @@ import androidx.cardview.widget.CardView
 import androidx.compose.ui.graphics.Color
 import com.chaos.view.PinView
 import com.example.messenger.databinding.ActivityLoginPhoneNumberBinding
+import com.example.pojo.User
+import com.example.sharedPreferences.AppSharedPreferences
+import com.example.tools.LoadingProgress
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.EventListener
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.messaging.FirebaseMessaging
+import java.lang.Exception
 import java.util.concurrent.TimeUnit
 
 class LoginPhoneNumberActivity : AppCompatActivity() {
 
     lateinit var binding:ActivityLoginPhoneNumberBinding
 
+    private val fireStore: FirebaseFirestore by lazy {
+        FirebaseFirestore.getInstance()
+    }
+
+    lateinit var appPref: AppSharedPreferences
+
+    val  currentUserDocRef get() =  fireStore.document("users/${mAuth.currentUser!!.uid}")
+
+    private val progressDialog by lazy {
+        LoadingProgress(this)
+    }
     private val mAuth: FirebaseAuth by lazy {
         FirebaseAuth.getInstance()
     }
@@ -37,6 +58,10 @@ class LoginPhoneNumberActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginPhoneNumberBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+
+        appPref = AppSharedPreferences()
+        appPref.PrefManager(this)
 
         binding.buNext.setOnClickListener {
             showOtpDialog()
@@ -148,9 +173,55 @@ class LoginPhoneNumberActivity : AppCompatActivity() {
         mAuth.signInWithCredential(credential).addOnCompleteListener {
             if (it.isSuccessful)
             {
-                val user = it.result.user
-                Toast.makeText(this ,"Verification passed" ,Toast.LENGTH_LONG).show()
-                Log.d("CurrentAuth" ,user.toString())
+                val user = mAuth.currentUser
+                currentUserDocRef.get().addOnSuccessListener {
+                        document->
+
+                    if (document.exists())
+                    {
+
+                        currentUserDocRef.update(
+                            mapOf("email" to user?.email
+                                ,"name" to user?.displayName
+                                ,"uid" to user?.uid
+                                ,"imagePath" to user?.photoUrl.toString())
+                        ).addOnCompleteListener {
+                            if (it.isSuccessful)
+                            {
+                                insertTokenToFirebase()
+                                dataUserfromFirebaseToAppPref()
+                            }
+                            else
+                            {
+                                progressDialog.hide()
+                                Toast.makeText(baseContext,"${it.exception!!.message}" ,Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    }
+                    else
+                    {
+
+                        currentUserDocRef.set(
+                            mapOf("email" to user?.email
+                                ,"name" to user?.displayName
+                                ,"uid" to user?.uid
+                                ,"imagePath" to user?.photoUrl.toString())
+
+                        ).addOnCompleteListener {
+                            if (it.isSuccessful)
+                            {
+                                insertTokenToFirebase()
+                                dataUserfromFirebaseToAppPref()
+                            }
+                            else
+                            {
+                                progressDialog.hide()
+                                Toast.makeText(baseContext,"${it.exception!!.message}" ,Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    }
+
+                }
             }
             else
             {
@@ -158,5 +229,72 @@ class LoginPhoneNumberActivity : AppCompatActivity() {
                     it.exception!!.message.toString() ,Toast.LENGTH_LONG).show()
             }
         }
+    }
+
+    fun dataUserfromFirebaseToAppPref()
+    {
+        currentUserDocRef.addSnapshotListener(object : EventListener<DocumentSnapshot>
+        {
+            override fun onEvent(
+                value: DocumentSnapshot?,
+                error: FirebaseFirestoreException?
+            ) {
+                if (error != null)
+                {
+                    progressDialog.hide()
+                    Toast.makeText(this@LoginPhoneNumberActivity ,"something wrong please try again" ,Toast.LENGTH_LONG).show()
+                }
+                else
+                {
+                    try {
+                        val user = value?.toObject(User::class.java)
+                        appPref.insertUserJob(user!!.job)
+                        appPref.insertUserGender(user.gender)
+                        appPref.insertUserCountry(user.country)
+                        appPref.insertUserEmail(user.email)
+                        appPref.insertProfileImagePath(user.imagePath)
+                        appPref.insertCurrentUserUID(user.uid)
+                    }catch (ex: Exception)
+                    {
+                        Log.e("current Exception" ,ex.message.toString())
+                        Toast.makeText(this@LoginPhoneNumberActivity ,ex.message.toString() ,Toast.LENGTH_LONG).show()
+                    }
+                    intentToInfoActivity()
+                }
+
+            }
+        })
+    }
+
+    fun insertTokenToFirebase()
+    {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener {
+                task->
+            val token = task.result
+            Log.d("token" ,token)
+            fireStore.collection("users").document(mAuth.currentUser!!.uid).update(mapOf("token" to(token)))
+                .addOnCompleteListener {
+                    if (!it.isSuccessful)
+                    {
+                        progressDialog.hide()
+                        Toast.makeText(baseContext,"something went wrong try again" ,Toast.LENGTH_LONG).show()
+
+                    }
+                    else
+                    {
+                        progressDialog.hide()
+                        intentToInfoActivity()
+                    }
+                }
+        }.addOnFailureListener {
+            Toast.makeText(baseContext,"something went wrong try again" ,Toast.LENGTH_LONG).show()
+        }
+    }
+    fun intentToInfoActivity()
+    {
+        val intentToMainActivity = Intent(this@LoginPhoneNumberActivity ,InfoUserActivity::class.java)
+        intentToMainActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intentToMainActivity)
+        finish()
     }
 }
