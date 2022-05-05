@@ -197,6 +197,21 @@ class ChatActivity : AppCompatActivity() {
     fun sendMessage(channelId:String, message:Message)
     {
         chatChannelsCollectionRef.document(channelId).collection("messages").add(message)
+        chatChannelsCollectionRef.document(channelId).collection("messages").document("lastMessage")
+            .get().addOnSuccessListener {
+                document->
+                if (document.exists())
+                {
+                    chatChannelsCollectionRef.document(channelId).collection("messages").document("lastMessage").update(
+                        mapOf("lastMessage" to message))
+                }
+                else
+                {
+                    chatChannelsCollectionRef.document(channelId).collection("messages").document("lastMessage").set(
+                        mapOf("lastMessage" to message))
+                }
+            }
+
     }
 
 
@@ -293,6 +308,10 @@ class ChatActivity : AppCompatActivity() {
             messageAdapter.arrayOfMessages.clear()
             querySnapshot!!.documents.forEach {
                 document ->
+                if (document.id == "lastMessage")
+                {
+                    return@forEach
+                }
                 if (document["type"] == MessageType.TEXT)
                 {
                     arrayOfReceiveMessage.add(ReceiveMessage(document.toObject(TextMessage::class.java)!!,document.id))

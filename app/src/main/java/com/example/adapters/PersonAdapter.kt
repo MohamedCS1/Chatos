@@ -2,6 +2,7 @@ package com.example.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,13 +11,28 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.messenger.R
+import com.example.pojo.Message
+import com.example.pojo.ReceiveMessage
+import com.example.pojo.TextMessage
 import com.example.pojo.User
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 
 class PersonAdapter: RecyclerView.Adapter<PersonAdapter.PersonViewHolder>() {
 
     var arrayOfPersons = arrayListOf<User>()
     var setOnPersonClick:SetOnPersonClick? = null
+    val mAuth:FirebaseAuth by lazy {
+        FirebaseAuth.getInstance()
+    }
 
+    private val fireStoreInstance: FirebaseFirestore by lazy {
+        FirebaseFirestore.getInstance()
+    }
+
+    private val chatChannelsCollectionRef = fireStoreInstance.collection("chatChannels")
 
     lateinit var context: Context
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PersonViewHolder {
@@ -27,10 +43,22 @@ class PersonAdapter: RecyclerView.Adapter<PersonAdapter.PersonViewHolder>() {
     override fun onBindViewHolder(holder: PersonViewHolder, position: Int) {
         holder.name.text = arrayOfPersons[position].name
 //        holder.lastMessage.text = arrayOfPersons[position].lastMessage
-        Glide.with(context).load(arrayOfPersons[position].imagePath).placeholder(R.drawable.ic_photo_placeholder).into(holder.image)
+        Glide.with(context).load(arrayOfPersons[position].imagePath)
+            .placeholder(R.drawable.ic_photo_placeholder).into(holder.image)
         holder.itemView.setOnClickListener {
             setOnPersonClick!!.personValue(arrayOfPersons[position])
         }
+
+        fireStoreInstance.collection("users")
+            .document(arrayOfPersons[position].uid)
+            .collection("sharedChat")
+            .document(mAuth.currentUser!!.uid)
+            .get().addOnSuccessListener { document ->
+                chatChannelsCollectionRef.document(document["channelId"].toString())
+                    .collection("messages").document("/lastMessage").addSnapshotListener() { value, error ->
+                   Log.d("CurrentLastMessage" , value?.toObject(TextMessage::class.java)!!.date.toString())
+                }
+            }
     }
 
     override fun getItemCount(): Int {
