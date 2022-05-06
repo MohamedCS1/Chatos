@@ -203,12 +203,16 @@ class ChatActivity : AppCompatActivity() {
                 if (document.exists())
                 {
                     chatChannelsCollectionRef.document(channelId).collection("messages").document("lastMessage").update(
-                        mapOf("lastMessage" to message))
+                        mapOf("date" to message.date
+                        ,"message" to (message as TextMessage).message
+                        ,"type" to message.type))
                 }
                 else
                 {
                     chatChannelsCollectionRef.document(channelId).collection("messages").document("lastMessage").set(
-                        mapOf("lastMessage" to message))
+                        mapOf("date" to message.date
+                        ,"message" to (message as TextMessage).message
+                        ,"type" to message.type))
                 }
             }
 

@@ -17,6 +17,8 @@ import com.example.pojo.TextMessage
 import com.example.pojo.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.getField
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 
@@ -54,10 +56,11 @@ class PersonAdapter: RecyclerView.Adapter<PersonAdapter.PersonViewHolder>() {
             .collection("sharedChat")
             .document(mAuth.currentUser!!.uid)
             .get().addOnSuccessListener { document ->
+
                 chatChannelsCollectionRef.document(document["channelId"].toString())
-                    .collection("messages").document("/lastMessage").addSnapshotListener() { value, error ->
-                   Log.d("CurrentLastMessage" , value?.toObject(TextMessage::class.java)!!.date.toString())
-                }
+                    .collection("messages").document("/lastMessage").get().addOnSuccessListener {
+                        holder.lastMessage.text = it["message"].toString() +" "+it["date"].toString()
+                    }
             }
     }
 
