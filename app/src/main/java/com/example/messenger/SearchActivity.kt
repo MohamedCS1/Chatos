@@ -63,7 +63,7 @@ class SearchActivity : AppCompatActivity() {
                         .orderBy("name").get().addOnSuccessListener {
                             searchAdapter.clearArray()
                             it.documents.forEach {
-                                if (it.get("name").toString().lowercase().toString().contains(s.toString().lowercase()))
+                                if (it.get("name").toString().lowercase().contains(s.toString().lowercase()))
                                 {
                                     searchAdapter.addUser(User(it.id ,it["name"].toString() ,it["email"].toString() ,it["password"].toString() ,it["imagePath"].toString() ,it["job"].toString() ,it["country"].toString() ,it["gender"].toString()))
                                 }

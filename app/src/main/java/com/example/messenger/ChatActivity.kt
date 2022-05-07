@@ -20,8 +20,10 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.example.adapters.ChatImagesAdapter
 import com.example.adapters.MessageAdapter
 import com.example.messenger.databinding.ActivityChatBinding
 import com.example.pojo.*
@@ -43,6 +45,7 @@ class ChatActivity : AppCompatActivity() {
     lateinit var context: Context
     private lateinit var appPref: AppSharedPreferences
     lateinit var messageAdapter:MessageAdapter
+    lateinit var chatImagesAdapter:ChatImagesAdapter
     lateinit var lm: LinearLayoutManager
 
     lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
@@ -99,18 +102,19 @@ class ChatActivity : AppCompatActivity() {
 
         createChatChannel()
         {
-            channelId ->
+                channelId ->
             currentChannelId = channelId
             getMessageFromFireBase(channelId)
             binding.buSendMessage.setOnClickListener {
-            if (binding.edittextSendMessage.text.isNotBlank() && binding.edittextSendMessage.text.isNotEmpty())
-            {
-                sendMessage(channelId,TextMessage(binding.edittextSendMessage.text.toString() ,currentUserUID ,currentFriend.uid ,appPref.getCurrentUserName() ,currentFriend.name ,Calendar.getInstance().time))
-                binding.edittextSendMessage.setText("")
-            }
+                if (binding.edittextSendMessage.text.isNotBlank() && binding.edittextSendMessage.text.isNotEmpty())
+                {
+                    sendMessage(channelId,TextMessage(binding.edittextSendMessage.text.toString() ,currentUserUID ,currentFriend.uid ,appPref.getCurrentUserName() ,currentFriend.name ,Calendar.getInstance().time))
+                    binding.edittextSendMessage.setText("")
+                }
 
             }
         }
+
         bottombarSendMessageAnimation()
 
         buChatTollBarSelected()
@@ -139,6 +143,7 @@ class ChatActivity : AppCompatActivity() {
                     }
                 }
             })
+
 
     }
 
@@ -191,7 +196,21 @@ class ChatActivity : AppCompatActivity() {
         binding.rvChat.adapter = messageAdapter
 
         binding.rvChat.layoutManager = lm
+    }
 
+    fun initializingGridViewFiles()
+    {
+        lm = GridLayoutManager(this ,3)
+
+        lm.reverseLayout = false
+
+        chatImagesAdapter = ChatImagesAdapter()
+
+        binding.rvChat.adapter = chatImagesAdapter
+
+        binding.rvChat.layoutManager = lm
+
+        getImagesFromFireBase(currentChannelId)
     }
 
     fun sendMessage(channelId:String, message:Message)
@@ -285,6 +304,7 @@ class ChatActivity : AppCompatActivity() {
             binding.toolBarBuChat.setBackgroundResource(R.drawable.shape_circle)
             binding.toolBarBuFiles.setTextColor(Color.parseColor("#FFFFFFFF"))
             binding.toolBarBuFiles.setBackgroundResource(R.color.my_green)
+            initializingRecyclerView()
         }
 
         binding.toolBarBuFiles.setOnClickListener {
@@ -292,6 +312,7 @@ class ChatActivity : AppCompatActivity() {
             binding.toolBarBuFiles.setBackgroundResource(R.drawable.shape_circle)
             binding.toolBarBuChat.setTextColor(Color.parseColor("#FFFFFFFF"))
             binding.toolBarBuChat.setBackgroundResource(R.color.my_green)
+            initializingGridViewFiles()
         }
     }
 
@@ -330,6 +351,35 @@ class ChatActivity : AppCompatActivity() {
             }
         })
     }
+    fun getImagesFromFireBase(channelId: String)
+    {
+        val arrayOfImages = arrayListOf<String>()
+        val query = chatChannelsCollectionRef.document(channelId).collection("messages").orderBy("date" ,Query.Direction.DESCENDING)
+        query.addSnapshotListener { querySnapshot, error ->
+            messageAdapter.arrayOfMessages.clear()
+            querySnapshot!!.documents.forEach {
+                    document ->
+                if (document.id == "lastMessage")
+                {
+                    return@forEach
+                }
+                if (document["type"] == MessageType.TEXT)
+                {
+                   return@forEach
+                }
+                else
+                {
+                    arrayOfImages.add(document.toObject(ImageMessage::class.java)!!.imagePath)
+                    Log.d("chat" ,ReceiveMessage(document.toObject(TextMessage::class.java)!!,document.id).toString())
+                }
+            }
+            chatImagesAdapter.setList(arrayOfImages)
+
+            binding.rvChat.scrollToPosition(0)
+        }
+    }
+
+
     fun getMessageFromFireBase(channelId: String)
     {
         val arrayOfReceiveMessage = arrayListOf<ReceiveMessage>()
