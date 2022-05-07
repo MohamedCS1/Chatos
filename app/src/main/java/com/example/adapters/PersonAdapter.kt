@@ -2,7 +2,6 @@ package com.example.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,16 +10,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.messenger.R
-import com.example.pojo.Message
-import com.example.pojo.ReceiveMessage
-import com.example.pojo.TextMessage
+import com.example.pojo.MessageType
 import com.example.pojo.User
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.getField
-import com.google.firebase.firestore.ktx.toObject
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
+import java.text.SimpleDateFormat
+import java.util.*
 
 class PersonAdapter: RecyclerView.Adapter<PersonAdapter.PersonViewHolder>() {
 
@@ -39,7 +35,7 @@ class PersonAdapter: RecyclerView.Adapter<PersonAdapter.PersonViewHolder>() {
     lateinit var context: Context
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PersonViewHolder {
         context = parent.context
-        return PersonViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.rv_person_item ,null ,false))
+        return PersonViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.rv_person_item ,parent ,false))
     }
 
     override fun onBindViewHolder(holder: PersonViewHolder, position: Int) {
@@ -56,10 +52,12 @@ class PersonAdapter: RecyclerView.Adapter<PersonAdapter.PersonViewHolder>() {
             .collection("sharedChat")
             .document(mAuth.currentUser!!.uid)
             .get().addOnSuccessListener { document ->
+                val sfd = SimpleDateFormat("HH:mm:ss")
 
                 chatChannelsCollectionRef.document(document["channelId"].toString())
                     .collection("messages").document("/lastMessage").get().addOnSuccessListener {
-                        holder.lastMessage.text = it["message"].toString() +" "+it["date"].toString()
+                            holder.lastMessage.text = it["message"].toString()
+                            holder.date.text = sfd.format((it["date"] as Timestamp).toDate())
                     }
             }
     }
@@ -73,6 +71,7 @@ class PersonAdapter: RecyclerView.Adapter<PersonAdapter.PersonViewHolder>() {
         val image = itemView.findViewById<ImageView>(R.id.person_image)
         val name = itemView.findViewById<TextView>(R.id.person_name)
         val lastMessage = itemView.findViewById<TextView>(R.id.person_last_message)
+        val date = itemView.findViewById<TextView>(R.id.person_tv_date)
     }
 
 

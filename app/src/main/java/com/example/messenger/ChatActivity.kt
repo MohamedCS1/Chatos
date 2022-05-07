@@ -197,24 +197,50 @@ class ChatActivity : AppCompatActivity() {
     fun sendMessage(channelId:String, message:Message)
     {
         chatChannelsCollectionRef.document(channelId).collection("messages").add(message)
-        chatChannelsCollectionRef.document(channelId).collection("messages").document("lastMessage")
-            .get().addOnSuccessListener {
-                document->
-                if (document.exists())
-                {
-                    chatChannelsCollectionRef.document(channelId).collection("messages").document("lastMessage").update(
-                        mapOf("date" to message.date
-                        ,"message" to (message as TextMessage).message
-                        ,"type" to message.type))
+        if(message is TextMessage)
+        {
+            chatChannelsCollectionRef.document(channelId).collection("messages").document("lastMessage")
+                .get().addOnSuccessListener {
+                        document->
+                    if (document.exists())
+                    {
+                        chatChannelsCollectionRef.document(channelId).collection("messages").document("lastMessage").update(
+                            mapOf("date" to message.date
+                                ,"message" to (message as TextMessage).message
+                                ,"type" to message.type))
+                    }
+                    else
+                    {
+                        chatChannelsCollectionRef.document(channelId).collection("messages").document("lastMessage").set(
+                            mapOf("date" to message.date
+                                ,"message" to (message as TextMessage).message
+                                ,"type" to message.type))
+                    }
                 }
-                else
-                {
-                    chatChannelsCollectionRef.document(channelId).collection("messages").document("lastMessage").set(
-                        mapOf("date" to message.date
-                        ,"message" to (message as TextMessage).message
-                        ,"type" to message.type))
+        }
+        else if (message is ImageMessage)
+        {
+
+            chatChannelsCollectionRef.document(channelId).collection("messages").document("lastMessage")
+                .get().addOnSuccessListener {
+                        document->
+                    if (document.exists())
+                    {
+                        chatChannelsCollectionRef.document(channelId).collection("messages").document("lastMessage").update(
+                            mapOf("date" to message.date
+                                ,"message" to "send Picture"
+                                ,"type" to message.type))
+                    }
+                    else
+                    {
+                        chatChannelsCollectionRef.document(channelId).collection("messages").document("lastMessage").set(
+                            mapOf("date" to message.date
+                                ,"message" to "send Picture"
+                                ,"type" to message.type))
+                    }
                 }
-            }
+        }
+
 
     }
 

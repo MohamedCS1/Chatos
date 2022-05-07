@@ -20,7 +20,7 @@ class SearchAdapter :RecyclerView.Adapter<SearchAdapter.PersonViewHolder>(){
     lateinit var context: Context
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PersonViewHolder {
         context = parent.context
-        return PersonViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.rv_person_item ,null ,false))
+        return PersonViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.rv_person_item ,parent ,false))
     }
 
     override fun onBindViewHolder(holder: PersonViewHolder, position: Int) {

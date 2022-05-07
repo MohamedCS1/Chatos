@@ -5,12 +5,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.adapters.SearchAdapter
 import com.example.messenger.databinding.ActivitySearchBinding
 import com.example.pojo.User
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 
 class SearchActivity : AppCompatActivity() {
@@ -50,7 +53,7 @@ class SearchActivity : AppCompatActivity() {
             @SuppressLint("NotifyDataSetChanged")
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
 
-                if (s!!.isEmpty())
+                if (s!!.isEmpty() || s.isBlank())
                 {
                     searchAdapter.clearArray()
                 }
@@ -60,7 +63,7 @@ class SearchActivity : AppCompatActivity() {
                         .orderBy("name").get().addOnSuccessListener {
                             searchAdapter.clearArray()
                             it.documents.forEach {
-                                if (it.toObject(User::class.java)!!.name.lowercase().contains(s.toString().lowercase()))
+                                if (it.get("name").toString().lowercase().toString().contains(s.toString().lowercase()))
                                 {
                                     searchAdapter.addUser(User(it.id ,it["name"].toString() ,it["email"].toString() ,it["password"].toString() ,it["imagePath"].toString() ,it["job"].toString() ,it["country"].toString() ,it["gender"].toString()))
                                 }

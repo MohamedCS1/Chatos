@@ -3,14 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/_5sdp"
+    android:background="@drawable/background_random_people_item">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/person_image"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="8dp"
-        android:layout_margin="@dimen/_10sdp"
+        android:layout_width="@dimen/_45sdp"
+        android:layout_height="@dimen/_45sdp"
+        android:layout_marginStart="@dimen/_8sdp"
+        android:layout_margin="@dimen/_8sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -25,34 +27,36 @@
         android:textColor="@android:color/black"
         app:layout_constraintTop_toTopOf="@+id/person_image"
         app:layout_constraintStart_toEndOf="@+id/person_image"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginStart="@dimen/_8sdp" />
 
     <TextView
         android:id="@+id/person_last_message"
-        android:layout_width="285dp"
-        android:layout_height="20dp"
-        android:layout_marginStart="8dp"
+        android:layout_width="@dimen/_210sdp"
+        android:layout_height="@dimen/_20sdp"
+        android:layout_marginStart="@dimen/_8sdp"
+        android:layout_marginTop="@dimen/_10sdp"
         app:layout_constraintBottom_toBottomOf="@+id/person_image"
         app:layout_constraintStart_toEndOf="@+id/person_image"
         app:layout_constraintTop_toBottomOf="@+id/person_name"
         tools:text="@tools:sample/lorem[4:10]" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/person_tv_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="@tools:sample/date/hhmm"
         app:layout_constraintTop_toTopOf="@+id/person_image"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="8dp" />
+        android:layout_marginEnd="@dimen/_15sdp"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_1sdp"
-        android:background="@color/my_green"
+    <ImageView
+        android:layout_width="@dimen/_10sdp"
+        android:layout_height="@dimen/_10sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/person_tv_date"
+        android:layout_marginBottom="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:src="@drawable/green_dot"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
