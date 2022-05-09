@@ -132,7 +132,14 @@
     </com.google.android.material.appbar.AppBarLayout>
 
 
-
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animation_loading_messages"
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="@dimen/_150sdp"
+        app:lottie_rawRes="@raw/loading_messages_chat"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        android:layout_gravity="center"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_chat"

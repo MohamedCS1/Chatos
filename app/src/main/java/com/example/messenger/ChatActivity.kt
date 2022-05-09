@@ -305,6 +305,7 @@ class ChatActivity : AppCompatActivity() {
             binding.toolBarBuFiles.setTextColor(Color.parseColor("#FFFFFFFF"))
             binding.toolBarBuFiles.setBackgroundResource(R.color.my_green)
             initializingRecyclerView()
+            getMessageFromFireBase(currentChannelId)
         }
 
         binding.toolBarBuFiles.setOnClickListener {
@@ -353,6 +354,7 @@ class ChatActivity : AppCompatActivity() {
     }
     fun getImagesFromFireBase(channelId: String)
     {
+
         val arrayOfImages = arrayListOf<String>()
         val query = chatChannelsCollectionRef.document(channelId).collection("messages").orderBy("date" ,Query.Direction.DESCENDING)
         query.addSnapshotListener { querySnapshot, error ->
@@ -382,9 +384,11 @@ class ChatActivity : AppCompatActivity() {
 
     fun getMessageFromFireBase(channelId: String)
     {
+        binding.animationLoadingMessages.visibility = View.VISIBLE
         val arrayOfReceiveMessage = arrayListOf<ReceiveMessage>()
         val query = chatChannelsCollectionRef.document(channelId).collection("messages").orderBy("date" ,Query.Direction.DESCENDING)
         query.addSnapshotListener { querySnapshot, error ->
+            binding.animationLoadingMessages.visibility = View.GONE
             messageAdapter.arrayOfMessages.clear()
             querySnapshot!!.documents.forEach {
                 document ->

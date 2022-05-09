@@ -52,13 +52,30 @@ class PersonAdapter: RecyclerView.Adapter<PersonAdapter.PersonViewHolder>() {
             .collection("sharedChat")
             .document(mAuth.currentUser!!.uid)
             .get().addOnSuccessListener { document ->
-                val sfd = SimpleDateFormat("HH:mm:ss")
+                if (document.exists())
+                {
+                    val sfd = SimpleDateFormat("HH:mm:ss")
 
-                chatChannelsCollectionRef.document(document["channelId"].toString())
-                    .collection("messages").document("/lastMessage").get().addOnSuccessListener {
-                            holder.lastMessage.text = it["message"].toString()
-                            holder.date.text = sfd.format((it["date"] as Timestamp).toDate())
-                    }
+                    chatChannelsCollectionRef.document(document["channelId"].toString())
+                        .collection("messages").document("/lastMessage").get().addOnSuccessListener {
+                            if (it["message"] == null)
+                            {
+                                holder.lastMessage.text = "start conversation "
+                            }
+                            else
+                            {
+                                holder.lastMessage.text = it["message"].toString()
+                            }
+                            if (it["date"] == null)
+                            {
+                                holder.date.text = "00:00:00"
+                            }
+                            else
+                            {
+                                holder.date.text = sfd.format((it["date"] as Timestamp).toDate())
+                            }
+                        }
+                }
             }
     }
 
