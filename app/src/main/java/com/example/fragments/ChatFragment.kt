@@ -16,6 +16,7 @@ import com.example.messenger.ChatActivity
 import com.example.messenger.R
 import com.example.pojo.User
 import com.example.sharedPreferences.AppSharedPreferences
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 
 private const val ARG_PARAM1 = "param1"
@@ -32,6 +33,8 @@ class ChatFragment : Fragment() {
     private val personAdapter:PersonAdapter by lazy {
         PersonAdapter()
     }
+
+    lateinit var rv:RecyclerView
 
     lateinit var appPref:AppSharedPreferences
 
@@ -54,9 +57,11 @@ class ChatFragment : Fragment() {
         appPref.PrefManager(activity?.baseContext)
 
         animationView = view.findViewById(R.id.progress_animation_view)
+        rv = view.findViewById(R.id.rv_person)
+
+        rv.isClickable = false
 
         addChatListener()
-        val rv = view.findViewById<RecyclerView>(R.id.rv_person)
         rv.layoutManager = LinearLayoutManager(requireContext())
         rv.adapter = personAdapter
 
@@ -69,7 +74,6 @@ class ChatFragment : Fragment() {
         })
         return view
     }
-
 
     fun addChatListener()
     {
@@ -94,14 +98,13 @@ class ChatFragment : Fragment() {
                         {
                             personAdapter.setList(arrayOfFriends)
                             animationView.visibility = View.GONE
+                            rv.isClickable = true
                         }
 
                     }
                 }
 
             }
-
-
         })
     }
 

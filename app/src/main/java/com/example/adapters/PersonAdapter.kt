@@ -44,7 +44,10 @@ class PersonAdapter: RecyclerView.Adapter<PersonAdapter.PersonViewHolder>() {
         Glide.with(context).load(arrayOfPersons[position].imagePath)
             .placeholder(R.drawable.ic_photo_placeholder).into(holder.image)
         holder.itemView.setOnClickListener {
-            setOnPersonClick!!.personValue(arrayOfPersons[position])
+            if (arrayOfPersons.size > 0)
+            {
+                setOnPersonClick!!.personValue(arrayOfPersons[position])
+            }
         }
 
         fireStoreInstance.collection("users")

@@ -157,6 +157,7 @@
             />
 
         <LinearLayout
+            android:id="@+id/linearLayoutProviders"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -190,7 +191,19 @@
 
         </LinearLayout>
 
-
+        <TextView
+            android:id="@+id/buResetPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Password Reset !"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:textColor="@color/green"
+            android:textSize="@dimen/_12ssp"
+            android:background="@drawable/textlines"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/linearLayoutProviders"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

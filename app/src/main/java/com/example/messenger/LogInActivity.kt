@@ -8,8 +8,11 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.util.Patterns
-import android.widget.Toast
+import android.view.LayoutInflater
+import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import com.example.messenger.databinding.ActivityLogInBinding
 import com.example.pojo.User
 import com.example.sharedPreferences.AppSharedPreferences
@@ -86,6 +89,10 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
 
         binding.buLoginPhoneNumber.setOnClickListener {
             startActivity(Intent(this ,LoginPhoneNumberActivity::class.java))
+        }
+
+        binding.buResetPassword.setOnClickListener {
+            restPassword()
         }
 
     }
@@ -479,6 +486,41 @@ class LogInActivity : AppCompatActivity() ,TextWatcher{
         })
     }
 
+    fun restPassword()
+    {
+        val dialog = AlertDialog.Builder(this)
+        val view = LayoutInflater.from(this).inflate(R.layout.dialog_reset_password ,null)
+        val dialogResetPassword = dialog.setView(view).create()
+        dialogResetPassword.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        dialogResetPassword.setCancelable(false)
+        dialogResetPassword.show()
+
+
+        val tv_email = dialogResetPassword.findViewById<EditText>(R.id.et_email_reset)
+        val bu_reset = dialogResetPassword.findViewById<CardView>(R.id.bu_reset)
+        val tv_failure_reset = dialogResetPassword.findViewById<TextView>(R.id.tv_hint_failure_reset)
+        bu_reset?.setOnClickListener {
+            progressDialog.show()
+            if (tv_email?.text.toString().isNotEmpty())
+            {
+                mAuth.sendPasswordResetEmail(tv_email?.text.toString()).addOnCompleteListener {
+                    progressDialog.hide()
+                    if (it.isSuccessful)
+                    {
+                        tv_failure_reset?.setTextColor(Color.parseColor("#FF03DAC5"))
+                        tv_failure_reset?.text = "Check your email"
+                    }else
+                    {
+                        tv_failure_reset?.text = it.exception?.message.toString()
+                    }
+                }
+            }
+        }
+        val bu_close = dialogResetPassword.findViewById<ImageView>(R.id.bu_close_reset_dialog)
+        bu_close?.setOnClickListener {
+            dialogResetPassword.cancel()
+        }
+    }
 
     override fun onStart() {
 
