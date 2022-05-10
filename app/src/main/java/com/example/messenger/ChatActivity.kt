@@ -407,7 +407,7 @@ class ChatActivity : AppCompatActivity() {
                     Log.d("chat" ,ReceiveMessage(document.toObject(TextMessage::class.java)!!,document.id).toString())
                 }
             }
-            messageAdapter.setList(arrayOfReceiveMessage)
+            messageAdapter.setList(arrayOfReceiveMessage )
 
             binding.rvChat.scrollToPosition(0)
         }

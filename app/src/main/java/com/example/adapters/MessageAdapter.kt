@@ -6,6 +6,8 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -104,6 +106,13 @@ class MessageAdapter(val currentId:String): RecyclerView.Adapter<MessageAdapter.
                 context.startActivity(intentToImageDisplay)
             }
         }
+
+        if (position < 1)
+        {
+            val animation: Animation = AnimationUtils.loadAnimation(context, R.anim.rv_chat_animation)
+            holder.itemView.startAnimation(animation)
+        }
+
     }
 
     override fun getItemCount(): Int {
@@ -122,6 +131,7 @@ class MessageAdapter(val currentId:String): RecyclerView.Adapter<MessageAdapter.
     {
         this.arrayOfMessages = arrayofmessages
         notifyDataSetChanged()
+
     }
 
 
