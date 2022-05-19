@@ -25,6 +25,7 @@
         <entry key="app/src/main/res/drawable/ic_add_image_message.xml" value="0.3425" />
         <entry key="app/src/main/res/drawable/ic_back.xml" value="0.3425" />
         <entry key="app/src/main/res/drawable/ic_block_chat.xml" value="0.3495" />
+        <entry key="app/src/main/res/drawable/ic_call_video.xml" value="0.345" />
         <entry key="app/src/main/res/drawable/ic_chat_selected.xml" value="0.3225" />
         <entry key="app/src/main/res/drawable/ic_chat_unselected.xml" value="0.2495" />
         <entry key="app/src/main/res/drawable/ic_email.xml" value="0.3425" />
@@ -44,7 +45,7 @@
         <entry key="app/src/main/res/drawable/shape_circle.xml" value="0.324" />
         <entry key="app/src/main/res/drawable/test.xml" value="0.205" />
         <entry key="app/src/main/res/drawable/textlines.xml" value="0.304" />
-        <entry key="app/src/main/res/layout/activity_chat.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/activity_chat.xml" value="0.67" />
         <entry key="app/src/main/res/layout/activity_edit_image.xml" value="0.2526720820863617" />
         <entry key="app/src/main/res/layout/activity_info_user.xml" value="0.22" />
         <entry key="app/src/main/res/layout/activity_log_in.xml" value="0.25" />

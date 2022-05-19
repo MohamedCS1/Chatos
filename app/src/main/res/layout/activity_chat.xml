@@ -182,7 +182,7 @@
                 android:gravity="start|center"
                 android:hint="Type something"
                 android:maxHeight="@dimen/_100sdp"
-                android:paddingStart="@dimen/_44sdp"
+                android:paddingStart="@dimen/_75sdp"
                 android:paddingTop="@dimen/_12sdp"
                 android:paddingBottom="@dimen/_12sdp"
                 android:textStyle="normal"
@@ -196,8 +196,16 @@
             android:focusableInTouchMode="false"
                 android:layout_margin="@dimen/_5sdp"
             android:src="@drawable/ic_add_image_message" />
+            <ImageView
+                android:id="@+id/bu_recording"
+                android:layout_width="@dimen/_32sdp"
+                android:layout_height="@dimen/_32sdp"
+                android:layout_gravity="start|center"
+                android:focusableInTouchMode="false"
+                android:layout_marginStart="@dimen/_38sdp"
+                android:src="@drawable/ic_recording" />
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-    <include layout="@layout/bottom_sheet_layout"/>
+    <include layout="@layout/bottom_sheet_layout" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

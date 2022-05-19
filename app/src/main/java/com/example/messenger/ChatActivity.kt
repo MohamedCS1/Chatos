@@ -1,17 +1,21 @@
 package com.example.messenger
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
+import android.view.View.OnTouchListener
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
@@ -36,6 +40,7 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import java.io.ByteArrayOutputStream
+import java.io.IOException
 import java.util.*
 
 
@@ -68,9 +73,13 @@ class ChatActivity : AppCompatActivity() {
 
     lateinit var loadingProgress: LoadingProgress
 
-
     lateinit var bottomSheet:CoordinatorLayout
 
+    private var recorder: MediaRecorder? = null
+
+    private var fileName: String = ""
+
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityChatBinding.inflate(layoutInflater)
@@ -144,7 +153,20 @@ class ChatActivity : AppCompatActivity() {
                 }
             })
 
+        fileRecordingInit()
 
+
+
+        binding.buRecording.setOnTouchListener{ v, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                startRecording()
+                Toast.makeText(this ,"start recording" ,Toast.LENGTH_SHORT).show()
+            } else if (event.action == MotionEvent.ACTION_UP) {
+                stopRecording()
+                Toast.makeText(this ,"stop recording" ,Toast.LENGTH_SHORT).show()
+            }
+            true
+        }
     }
 
     fun compressImage(imageUri: Uri){
@@ -428,4 +450,40 @@ class ChatActivity : AppCompatActivity() {
             }
         })
     }
+
+
+
+    private fun startRecording() {
+        val recorder = MediaRecorder()
+        recorder.setAudioSource(MediaRecorder.AudioSource.MIC)
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS)
+        recorder.setOutputFile(fileName)
+        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+        try {
+            recorder.prepare()
+        } catch (e: IOException) {
+            Log.e("LOG_TAG", "prepare() failed" + e.message)
+        }
+        recorder.start()
+    }
+
+    private fun stopRecording() {
+        recorder = MediaRecorder()
+        recorder!!.release()
+        try {
+            recorder!!.stop()
+        } catch (stopException: RuntimeException) {
+            //handle cleanup here
+            Log.d("LOG_TAG", " message derreure " + stopException.message)
+        }
+        recorder = null
+    }
+
+    fun fileRecordingInit()
+    {
+        fileName = "${externalCacheDir!!.absolutePath}/audiorecordtest.3gp"
+    }
+
+
+
 }
