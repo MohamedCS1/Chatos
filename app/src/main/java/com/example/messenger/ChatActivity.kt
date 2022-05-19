@@ -15,7 +15,6 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import android.view.View.OnTouchListener
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
@@ -40,6 +39,7 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.IOException
 import java.util.*
 
@@ -477,6 +477,7 @@ class ChatActivity : AppCompatActivity() {
             Log.d("LOG_TAG", " message derreure " + stopException.message)
         }
         recorder = null
+        uploadAudio()
     }
 
     fun fileRecordingInit()
@@ -484,6 +485,12 @@ class ChatActivity : AppCompatActivity() {
         fileName = "${externalCacheDir!!.absolutePath}/audiorecordtest.3gp"
     }
 
-
+    private fun uploadAudio() {
+        val fii: StorageReference = storageInstance.reference.child("Audio").child("new audio.3gp")
+        val uri = Uri.fromFile(File(fileName))
+        fii.putFile(uri).addOnSuccessListener {
+            Toast.makeText(this, "Vocal Save to db storage", Toast.LENGTH_SHORT).show()
+        }
+    }
 
 }
