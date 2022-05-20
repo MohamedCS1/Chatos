@@ -444,10 +444,15 @@ class ChatActivity : AppCompatActivity() {
                     arrayOfReceiveMessage.add(ReceiveMessage(document.toObject(TextMessage::class.java)!!,document.id))
                     Log.d("chat" ,ReceiveMessage(document.toObject(TextMessage::class.java)!!,document.id).toString())
                 }
-                else
+                else if (document["type"] == MessageType.IMAGE)
                 {
                     arrayOfReceiveMessage.add(ReceiveMessage(document.toObject(ImageMessage::class.java)!!,document.id))
                     Log.d("chat" ,ReceiveMessage(document.toObject(TextMessage::class.java)!!,document.id).toString())
+                }
+                else
+                {
+                    arrayOfReceiveMessage.add(ReceiveMessage(document.toObject(VoiceMessage::class.java)!!,document.id))
+                    Log.d("chat" ,ReceiveMessage(document.toObject(VoiceMessage::class.java)!!,document.id).toString())
                 }
             }
             messageAdapter.setList(arrayOfReceiveMessage )

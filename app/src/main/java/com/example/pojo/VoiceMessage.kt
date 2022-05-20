@@ -3,7 +3,7 @@ package com.example.pojo
 import java.util.*
 
 data class VoiceMessage(
-    val voiceUID:String,
+    val voicePath:String,
     override val senderId: String,
     override val receiverId: String,
     override val senderName: String,
