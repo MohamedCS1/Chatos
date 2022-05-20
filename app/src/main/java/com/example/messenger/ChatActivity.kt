@@ -281,6 +281,27 @@ class ChatActivity : AppCompatActivity() {
                     }
                 }
         }
+        else if (message is VoiceMessage)
+        {
+            chatChannelsCollectionRef.document(channelId).collection("messages").document("lastMessage")
+                .get().addOnSuccessListener {
+                        document->
+                    if (document.exists())
+                    {
+                        chatChannelsCollectionRef.document(channelId).collection("messages").document("lastMessage").update(
+                            mapOf("date" to message.date
+                                ,"message" to "send voice message"
+                                ,"type" to message.type))
+                    }
+                    else
+                    {
+                        chatChannelsCollectionRef.document(channelId).collection("messages").document("lastMessage").set(
+                            mapOf("date" to message.date
+                                ,"message" to "send voice message"
+                                ,"type" to message.type))
+                    }
+                }
+        }
 
 
     }
@@ -473,7 +494,6 @@ class ChatActivity : AppCompatActivity() {
         try {
             recorder!!.stop()
         } catch (stopException: RuntimeException) {
-            //handle cleanup here
             Log.d("LOG_TAG", " message derreure " + stopException.message)
         }
         recorder = null
@@ -482,14 +502,32 @@ class ChatActivity : AppCompatActivity() {
 
     fun fileRecordingInit()
     {
-        fileName = "${externalCacheDir!!.absolutePath}/audiorecordtest.3gp"
+        fileName = "${externalCacheDir!!.absolutePath}/audiorecord.3gp"
     }
 
     private fun uploadAudio() {
-        val fii: StorageReference = storageInstance.reference.child("Audio").child("new audio.3gp")
+        val voiceUID = UUID.randomUUID().toString()
+        val fii: StorageReference = storageInstance.reference.child("Audio").child(voiceUID)
         val uri = Uri.fromFile(File(fileName))
-        fii.putFile(uri).addOnSuccessListener {
-            Toast.makeText(this, "Vocal Save to db storage", Toast.LENGTH_SHORT).show()
+        fii.putFile(uri).addOnCompleteListener{
+            if (it.isSuccessful)
+            {
+                fii.downloadUrl.addOnCompleteListener {
+                    task->
+                    if (task.isSuccessful)
+                    {
+                        sendMessage(currentChannelId ,VoiceMessage(task.result.toString() ,currentUserUID ,currentFriend.uid ,appPref.getCurrentUserName() ,currentFriend.name ,Calendar.getInstance().time))
+                    }
+                    else
+                    {
+                        Toast.makeText(this ,"something went wrong please try again later" ,Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+            else
+            {
+                Toast.makeText(this ,"something went wrong please try again later" ,Toast.LENGTH_LONG).show()
+            }
         }
     }
 

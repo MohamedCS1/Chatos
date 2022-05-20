@@ -93,8 +93,13 @@ dependencies {
     //facebook auth
     implementation 'com.facebook.android:facebook-android-sdk:latest.release'
 
+
     //otp pinView
     implementation 'io.github.chaosleung:pinview:1.4.4'
+
+    //chatVoicePlayer
+    implementation "com.github.JagarYousef:ChatVoicePlayer:1.1.0"
+
 
     apply plugin: 'kotlin-kapt'
 }
