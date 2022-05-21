@@ -61,6 +61,7 @@
         <entry key="app/src/main/res/layout/app_bar_main.xml" value="0.2833333333333333" />
         <entry key="app/src/main/res/layout/bottom_sheet_layout.xml" value="0.33" />
         <entry key="app/src/main/res/layout/content_main.xml" value="0.2682291666666667" />
+        <entry key="app/src/main/res/layout/dialog_audio_record_view.xml" value="0.25" />
         <entry key="app/src/main/res/layout/dialog_otp.xml" value="0.5653021442495126" />
         <entry key="app/src/main/res/layout/dialog_reset_password.xml" value="0.3039760581445062" />
         <entry key="app/src/main/res/layout/dialog_singout.xml" value="0.25" />
@@ -77,8 +78,8 @@
         <entry key="app/src/main/res/layout/message_item.xml" value="0.33" />
         <entry key="app/src/main/res/layout/message_item_receiver.xml" value="0.25181701581872595" />
         <entry key="app/src/main/res/layout/message_item_sender.xml" value="0.5" />
-        <entry key="app/src/main/res/layout/message_voice_item_receiver.xml" value="0.20217588395285585" />
-        <entry key="app/src/main/res/layout/message_voice_item_sender.xml" value="0.24925181701581872" />
+        <entry key="app/src/main/res/layout/message_voice_item_receiver.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/message_voice_item_sender.xml" value="0.33" />
         <entry key="app/src/main/res/layout/nav_header.xml" value="0.25" />
         <entry key="app/src/main/res/layout/nav_header_main.xml" value="0.2833333333333333" />
         <entry key="app/src/main/res/layout/random_people_item.xml" value="0.22" />

@@ -16,6 +16,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterInside
 import com.example.messenger.MessageImageDisplayActivity
 import com.example.messenger.R
 import com.example.pojo.*
+import kotlinx.coroutines.*
 import me.jagar.chatvoiceplayerlibrary.VoicePlayerView
 
 private const val VIEW_TYPE_MY_MESSAGE_TEXT = 1
@@ -24,8 +25,8 @@ private const val VIEW_TYPE_OTHER_MESSAGE_TEXT = 2
 private const val VIEW_TYPE_MY_MESSAGE_IMAGE = 3
 private const val VIEW_TYPE_OTHER_MESSAGE_IMAGE = 4
 
-private const val VIEW_TYPE_MY_MESSAGE_VOICE = 1
-private const val VIEW_TYPE_OTHER_MESSAGE_VOICE = 2
+private const val VIEW_TYPE_MY_MESSAGE_VOICE = 5
+private const val VIEW_TYPE_OTHER_MESSAGE_VOICE = 6
 
 class MessageAdapter(val currentId:String): RecyclerView.Adapter<MessageAdapter.MessageViewHolder>() {
 
@@ -92,6 +93,7 @@ class MessageAdapter(val currentId:String): RecyclerView.Adapter<MessageAdapter.
         }
 
     }
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
         if (arrayOfMessages[position].Message.type == MessageType.TEXT)
         {
@@ -109,7 +111,12 @@ class MessageAdapter(val currentId:String): RecyclerView.Adapter<MessageAdapter.
         else if (arrayOfMessages[position].Message.type == MessageType.VOICE)
         {
             val voiceMessage = arrayOfMessages[position].Message as VoiceMessage
-            holder.voicePlayer.setAudio(voiceMessage.voicePath)
+
+            GlobalScope.launch {
+                async {
+                    holder.voicePlayer.setAudio(voiceMessage.voicePath)
+                }
+            }
         }
         holder.itemView.setOnClickListener {
             if (holder.date.visibility == View.VISIBLE)
@@ -146,7 +153,7 @@ class MessageAdapter(val currentId:String): RecyclerView.Adapter<MessageAdapter.
         val message = itemView.findViewById<TextView>(R.id.tv_message)
         val date = itemView.findViewById<TextView>(R.id.tv_date_message)
         val image = itemView.findViewById<ImageView>(R.id.imageMessage)
-        val voicePlayer = itemView.findViewById<VoicePlayerView>(R.id.voicePlayerView)
+        val voicePlayer = itemView.findViewById<VoicePlayerView>(R.id.voicePlayerView1)
     }
 
     @SuppressLint("NotifyDataSetChanged")

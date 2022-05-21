@@ -2,6 +2,7 @@ package com.example.messenger
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -13,6 +14,7 @@ import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -38,6 +40,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.visualizer.amplitude.AudioRecordView
+import kotlinx.coroutines.*
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
@@ -113,7 +117,10 @@ class ChatActivity : AppCompatActivity() {
         {
                 channelId ->
             currentChannelId = channelId
+
             getMessageFromFireBase(channelId)
+
+
             binding.buSendMessage.setOnClickListener {
                 if (binding.edittextSendMessage.text.isNotBlank() && binding.edittextSendMessage.text.isNotEmpty())
                 {
@@ -348,7 +355,12 @@ class ChatActivity : AppCompatActivity() {
             binding.toolBarBuFiles.setTextColor(Color.parseColor("#FFFFFFFF"))
             binding.toolBarBuFiles.setBackgroundResource(R.color.my_green)
             initializingRecyclerView()
-            getMessageFromFireBase(currentChannelId)
+            GlobalScope.launch {
+                async {
+                    getMessageFromFireBase(currentChannelId)
+                }
+            }
+
         }
 
         binding.toolBarBuFiles.setOnClickListener {
@@ -427,38 +439,43 @@ class ChatActivity : AppCompatActivity() {
 
     fun getMessageFromFireBase(channelId: String)
     {
-        binding.animationLoadingMessages.visibility = View.VISIBLE
-        val arrayOfReceiveMessage = arrayListOf<ReceiveMessage>()
-        val query = chatChannelsCollectionRef.document(channelId).collection("messages").orderBy("date" ,Query.Direction.DESCENDING)
-        query.addSnapshotListener { querySnapshot, error ->
-            binding.animationLoadingMessages.visibility = View.GONE
-            messageAdapter.arrayOfMessages.clear()
-            querySnapshot!!.documents.forEach {
-                document ->
-                if (document.id == "lastMessage")
-                {
-                    return@forEach
-                }
-                if (document["type"] == MessageType.TEXT)
-                {
-                    arrayOfReceiveMessage.add(ReceiveMessage(document.toObject(TextMessage::class.java)!!,document.id))
-                    Log.d("chat" ,ReceiveMessage(document.toObject(TextMessage::class.java)!!,document.id).toString())
-                }
-                else if (document["type"] == MessageType.IMAGE)
-                {
-                    arrayOfReceiveMessage.add(ReceiveMessage(document.toObject(ImageMessage::class.java)!!,document.id))
-                    Log.d("chat" ,ReceiveMessage(document.toObject(TextMessage::class.java)!!,document.id).toString())
-                }
-                else
-                {
-                    arrayOfReceiveMessage.add(ReceiveMessage(document.toObject(VoiceMessage::class.java)!!,document.id))
-                    Log.d("chat" ,ReceiveMessage(document.toObject(VoiceMessage::class.java)!!,document.id).toString())
-                }
-            }
-            messageAdapter.setList(arrayOfReceiveMessage )
-
-            binding.rvChat.scrollToPosition(0)
+        runOnUiThread {
+            binding.animationLoadingMessages.visibility = View.VISIBLE
         }
+        val arrayOfReceiveMessage = arrayListOf<ReceiveMessage>()
+
+                val query = chatChannelsCollectionRef.document(channelId).collection("messages").orderBy("date" ,Query.Direction.DESCENDING)
+                query.addSnapshotListener { querySnapshot, error ->
+                    runOnUiThread {
+                        binding.animationLoadingMessages.visibility = View.GONE
+                    }
+                    messageAdapter.arrayOfMessages.clear()
+                    querySnapshot!!.documents.forEach {
+                            document ->
+                        if (document.id == "lastMessage")
+                        {
+                            return@forEach
+                        }
+                        if (document["type"] == MessageType.TEXT)
+                        {
+                            arrayOfReceiveMessage.add(ReceiveMessage(document.toObject(TextMessage::class.java)!!,document.id))
+                            Log.d("chat" ,ReceiveMessage(document.toObject(TextMessage::class.java)!!,document.id).toString())
+                        }
+                        else if (document["type"] == MessageType.IMAGE)
+                        {
+                            arrayOfReceiveMessage.add(ReceiveMessage(document.toObject(ImageMessage::class.java)!!,document.id))
+                            Log.d("chat" ,ReceiveMessage(document.toObject(TextMessage::class.java)!!,document.id).toString())
+                        }
+                        else
+                        {
+                            arrayOfReceiveMessage.add(ReceiveMessage(document.toObject(VoiceMessage::class.java)!!,document.id))
+                            Log.d("chat" ,ReceiveMessage(document.toObject(VoiceMessage::class.java)!!,document.id).toString())
+                        }
+                    }
+                    messageAdapter.setList(arrayOfReceiveMessage )
+
+                    binding.rvChat.scrollToPosition(0)
+                }
     }
     fun createBottomSheet()
     {
@@ -491,6 +508,21 @@ class ChatActivity : AppCompatActivity() {
             Log.e("LOG_TAG", "prepare() failed" + e.message)
         }
         recorder.start()
+        val dialog = AlertDialog.Builder(this)
+        dialog.setView(LayoutInflater.from(this).inflate(R.layout.dialog_audio_record_view ,null ,false))
+        val audioDialog = dialog.create()
+        audioDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        audioDialog.show()
+        val audioRecordView = audioDialog.findViewById<AudioRecordView>(R.id.audioRecordView)
+
+        val timer = Timer()
+        timer.schedule(object : TimerTask() {
+            override fun run() {
+                val currentMaxAmplitude = recorder.maxAmplitude
+                audioRecordView.update(currentMaxAmplitude ?: 0) //redraw view
+            }
+        }, 0, 100)
+
     }
 
     private fun stopRecording() {

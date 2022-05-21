@@ -97,9 +97,12 @@ dependencies {
 
     //otp pinView
     implementation 'io.github.chaosleung:pinview:1.4.4'
-//
+
     //chatVoicePlayer
     implementation "com.github.JagarYousef:ChatVoicePlayer:1.1.0"
+
+    //audioRecordView
+    implementation 'com.github.Armen101:AudioRecordView:1.0.5'
 
     apply plugin: 'kotlin-kapt'
 }
