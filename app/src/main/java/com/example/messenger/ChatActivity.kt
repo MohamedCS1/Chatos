@@ -1,8 +1,9 @@
 package com.example.messenger
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -14,7 +15,6 @@ import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -35,13 +35,11 @@ import com.example.pojo.*
 import com.example.sharedPreferences.AppSharedPreferences
 import com.example.tools.LoadingProgress
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.common.collect.Queues
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import com.visualizer.amplitude.AudioRecordView
 import kotlinx.coroutines.*
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -261,14 +259,14 @@ class ChatActivity : AppCompatActivity() {
                     {
                         chatChannelsCollectionRef.document(channelId).collection("messages").document("lastMessage").update(
                             mapOf("date" to message.date
-                                ,"message" to (message as TextMessage).message
+                                ,"message" to message.message
                                 ,"type" to message.type))
                     }
                     else
                     {
                         chatChannelsCollectionRef.document(channelId).collection("messages").document("lastMessage").set(
                             mapOf("date" to message.date
-                                ,"message" to (message as TextMessage).message
+                                ,"message" to message.message
                                 ,"type" to message.type))
                     }
                 }
@@ -515,6 +513,13 @@ class ChatActivity : AppCompatActivity() {
             Log.e("LOG_TAG", "prepare() failed" + e.message)
         }
         recorder!!.start()
+        binding.audioRecordView.visibility = View.VISIBLE
+        binding.audioRecordView.alpha = 0.0f
+
+        binding.audioRecordView.animate()
+            .translationY(0.0f)
+            .alpha(1.0f)
+            .setListener(null)
 
 
         val audioRecordView = binding.audioRecordView
@@ -522,7 +527,6 @@ class ChatActivity : AppCompatActivity() {
         timer = Timer()
         timer.schedule(object : TimerTask() {
             override fun run() {
-                Log.e("Errrrrrrrrr" , recorder!!.maxAmplitude.toString())
                     val currentMaxAmplitude = recorder!!.maxAmplitude
                     audioRecordView.update(currentMaxAmplitude) //redraw view
             }
@@ -537,6 +541,15 @@ class ChatActivity : AppCompatActivity() {
             recorder!!.stop()
             recorder!!.release()
             recorder = null
+            binding.audioRecordView.animate()
+                .translationY(binding.audioRecordView.height.toFloat())
+                .alpha(0.0f)
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        super.onAnimationEnd(animation)
+                        binding.audioRecordView.visibility = View.GONE
+                    }
+                })
         } catch (stopException: RuntimeException) {
             Log.d("LOG_TAG", " message derreure " + stopException.message)
         }
