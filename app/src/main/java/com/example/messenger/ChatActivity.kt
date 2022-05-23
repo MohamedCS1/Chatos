@@ -35,6 +35,7 @@ import com.example.pojo.*
 import com.example.sharedPreferences.AppSharedPreferences
 import com.example.tools.LoadingProgress
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.common.collect.Queues
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -79,9 +80,11 @@ class ChatActivity : AppCompatActivity() {
 
     lateinit var bottomSheet:CoordinatorLayout
 
-    private var recorder: MediaRecorder? = null
+    var recorder: MediaRecorder? = null
 
     private var fileName: String = ""
+
+    lateinit var timer:Timer
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -239,7 +242,11 @@ class ChatActivity : AppCompatActivity() {
 
         binding.rvChat.layoutManager = lm
 
-        getImagesFromFireBase(currentChannelId)
+        if (currentChannelId != null)
+        {
+            getImagesFromFireBase(currentChannelId)
+        }
+
     }
 
     fun sendMessage(channelId:String, message:Message)
@@ -497,43 +504,42 @@ class ChatActivity : AppCompatActivity() {
 
 
     private fun startRecording() {
-        val recorder = MediaRecorder()
-        recorder.setAudioSource(MediaRecorder.AudioSource.MIC)
-        recorder.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS)
-        recorder.setOutputFile(fileName)
-        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+        recorder = MediaRecorder()
+        recorder!!.setAudioSource(MediaRecorder.AudioSource.MIC)
+        recorder!!.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS)
+        recorder!!.setOutputFile(fileName)
+        recorder!!.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
         try {
-            recorder.prepare()
+            recorder!!.prepare()
         } catch (e: IOException) {
             Log.e("LOG_TAG", "prepare() failed" + e.message)
         }
-        recorder.start()
-        val dialog = AlertDialog.Builder(this)
-        dialog.setView(LayoutInflater.from(this).inflate(R.layout.dialog_audio_record_view ,null ,false))
-        val audioDialog = dialog.create()
-        audioDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        audioDialog.show()
-        val audioRecordView = audioDialog.findViewById<AudioRecordView>(R.id.audioRecordView)
+        recorder!!.start()
 
-        val timer = Timer()
+
+        val audioRecordView = binding.audioRecordView
+
+        timer = Timer()
         timer.schedule(object : TimerTask() {
             override fun run() {
-                val currentMaxAmplitude = recorder.maxAmplitude
-                audioRecordView.update(currentMaxAmplitude ?: 0) //redraw view
+                Log.e("Errrrrrrrrr" , recorder!!.maxAmplitude.toString())
+                    val currentMaxAmplitude = recorder!!.maxAmplitude
+                    audioRecordView.update(currentMaxAmplitude) //redraw view
             }
         }, 0, 100)
 
     }
 
     private fun stopRecording() {
-        recorder = MediaRecorder()
-        recorder!!.release()
+
         try {
+            timer.cancel()
             recorder!!.stop()
+            recorder!!.release()
+            recorder = null
         } catch (stopException: RuntimeException) {
             Log.d("LOG_TAG", " message derreure " + stopException.message)
         }
-        recorder = null
         uploadAudio()
     }
 
@@ -546,26 +552,26 @@ class ChatActivity : AppCompatActivity() {
         val voiceUID = UUID.randomUUID().toString()
         val fii: StorageReference = storageInstance.reference.child("Audio").child(voiceUID)
         val uri = Uri.fromFile(File(fileName))
-        fii.putFile(uri).addOnCompleteListener{
-            if (it.isSuccessful)
-            {
-                fii.downloadUrl.addOnCompleteListener {
-                    task->
-                    if (task.isSuccessful)
-                    {
-                        sendMessage(currentChannelId ,VoiceMessage(task.result.toString() ,currentUserUID ,currentFriend.uid ,appPref.getCurrentUserName() ,currentFriend.name ,Calendar.getInstance().time))
-                    }
-                    else
-                    {
-                        Toast.makeText(this ,"something went wrong please try again later" ,Toast.LENGTH_LONG).show()
+            fii.putFile(uri).addOnCompleteListener{
+                if (it.isSuccessful)
+                {
+                    fii.downloadUrl.addOnCompleteListener {
+                            task->
+                        if (task.isSuccessful)
+                        {
+                            sendMessage(currentChannelId ,VoiceMessage(task.result.toString() ,currentUserUID ,currentFriend.uid ,appPref.getCurrentUserName() ,currentFriend.name ,Calendar.getInstance().time))
+                        }
+                        else
+                        {
+                            Toast.makeText(this ,"something went wrong please try again later" ,Toast.LENGTH_LONG).show()
+                        }
                     }
                 }
+                else
+                {
+                    Toast.makeText(this ,"something went wrong please try again later" ,Toast.LENGTH_LONG).show()
+                }
             }
-            else
-            {
-                Toast.makeText(this ,"something went wrong please try again later" ,Toast.LENGTH_LONG).show()
-            }
-        }
     }
 
 }

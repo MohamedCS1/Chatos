@@ -150,6 +150,26 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
             app:reverseLayout="true"/>
+    <com.visualizer.amplitude.AudioRecordView
+        android:id="@+id/audioRecordView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp"
+        app:chunkAlignTo="bottom"
+        android:layout_marginBottom="@dimen/_52sdp"
+        app:chunkColor="@color/white"
+        app:chunkMaxHeight="@dimen/_40sdp"
+        app:layout_anchorGravity="center"
+        app:chunkMinHeight="2dp"
+        android:layout_gravity="center|bottom"
+        android:background="@drawable/background_random_people_item"
+        android:backgroundTint="@color/my_green"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_5sdp"
+        app:chunkRoundedCorners="true"
+        app:chunkSoftTransition="true"
+        app:chunkSpace="1dp"
+        app:chunkWidth="2dp"
+        app:direction="leftToRight" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/bar_send_message"
