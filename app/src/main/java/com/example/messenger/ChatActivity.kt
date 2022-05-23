@@ -1,17 +1,20 @@
 package com.example.messenger
 
+import android.Manifest
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -25,6 +28,8 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -587,4 +592,61 @@ class ChatActivity : AppCompatActivity() {
             }
     }
 
+    private fun checkPermissionRecordAudio() {
+        if (ContextCompat.checkSelfPermission(this, arrayOf(Manifest.permission.RECORD_AUDIO).toString()) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.RECORD_AUDIO), PERMISSIONS_CODES.RECORD_AUDIO)
+        }
+
+    }
+
+    private fun checkPermissionCamera() {
+        if (ContextCompat.checkSelfPermission(this, arrayOf(Manifest.permission.CAMERA).toString()) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), PERMISSIONS_CODES.CAMERA)
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == PERMISSIONS_CODES.RECORD_AUDIO)
+        {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                checkPermissionCamera()
+            }
+            else if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED)
+            {
+                intentToSettings()
+            }
+
+        }
+
+        if (requestCode == PERMISSIONS_CODES.CAMERA)
+        {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                return
+            }
+            else if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED)
+            {
+                intentToSettings()
+            }
+
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+    fun intentToSettings()
+    {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+        val uri = Uri.fromParts("package", packageName, null)
+        intent.data = uri
+        startActivity(intent)
+    }
+
+    override fun onStart() {
+        checkPermissionRecordAudio()
+        super.onStart()
+    }
 }

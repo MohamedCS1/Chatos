@@ -113,9 +113,7 @@ class MessageAdapter(val currentId:String): RecyclerView.Adapter<MessageAdapter.
             val voiceMessage = arrayOfMessages[position].Message as VoiceMessage
 
             GlobalScope.launch {
-                async {
                     holder.voicePlayer.setAudio(voiceMessage.voicePath)
-                }
             }
         }
         holder.itemView.setOnClickListener {

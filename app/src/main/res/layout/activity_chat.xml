@@ -159,6 +159,7 @@
         android:layout_marginBottom="@dimen/_52sdp"
         app:chunkColor="@color/white"
         app:chunkMaxHeight="@dimen/_40sdp"
+        android:padding="@dimen/_5sdp"
         app:layout_anchorGravity="center"
         app:chunkMinHeight="2dp"
         android:animateLayoutChanges="true"
