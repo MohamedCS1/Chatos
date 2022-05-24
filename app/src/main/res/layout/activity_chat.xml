@@ -150,29 +150,49 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
             app:reverseLayout="true"/>
-    <com.visualizer.amplitude.AudioRecordView
-        android:id="@+id/audioRecordView"
+    <LinearLayout
+        android:id="@+id/voiceMessageContainer"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_40sdp"
-        android:visibility="gone"
-        app:chunkAlignTo="bottom"
-        android:layout_marginBottom="@dimen/_52sdp"
-        app:chunkColor="@color/white"
-        app:chunkMaxHeight="@dimen/_40sdp"
-        android:padding="@dimen/_5sdp"
-        app:layout_anchorGravity="center"
-        app:chunkMinHeight="2dp"
-        android:animateLayoutChanges="true"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_gravity="center|bottom"
+        android:visibility="gone"
+        android:gravity="center"
         android:background="@drawable/background_random_people_item"
         android:backgroundTint="@color/my_green"
         android:layout_marginStart="@dimen/_5sdp"
         android:layout_marginEnd="@dimen/_5sdp"
-        app:chunkRoundedCorners="true"
-        app:chunkSoftTransition="true"
-        app:chunkSpace="1dp"
-        app:chunkWidth="2dp"
-        app:direction="leftToRight" />
+        android:layout_marginBottom="@dimen/_52sdp">
+        <com.visualizer.amplitude.AudioRecordView
+            android:id="@+id/audioRecordView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_30sdp"
+            android:visibility="visible"
+            app:chunkAlignTo="bottom"
+            app:chunkColor="@color/white"
+            android:layout_gravity="center"
+            app:chunkMaxHeight="@dimen/_40sdp"
+            app:layout_anchorGravity="center"
+            android:layout_margin="@dimen/_4sdp"
+            android:foregroundGravity="center"
+            app:chunkMinHeight="2dp"
+            android:animateLayoutChanges="true"
+            app:chunkRoundedCorners="true"
+            app:chunkSoftTransition="true"
+            app:chunkSpace="1dp"
+            app:chunkWidth="@dimen/_4sdp"
+            app:direction="leftToRight"
+            android:layout_weight="1"/>
+        <Chronometer
+            android:id="@+id/chronometerMessageDelay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:layout_margin="@dimen/_5sdp"
+            android:layout_weight="0"/>
+    </LinearLayout>
+
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/bar_send_message"

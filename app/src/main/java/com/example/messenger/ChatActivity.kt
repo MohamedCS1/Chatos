@@ -13,6 +13,7 @@ import android.graphics.Color
 import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Bundle
+import android.os.SystemClock
 import android.provider.MediaStore
 import android.provider.Settings
 import android.text.Editable
@@ -518,16 +519,18 @@ class ChatActivity : AppCompatActivity() {
             Log.e("LOG_TAG", "prepare() failed" + e.message)
         }
         recorder!!.start()
-        binding.audioRecordView.visibility = View.VISIBLE
-        binding.audioRecordView.alpha = 0.0f
+        binding.voiceMessageContainer.visibility = View.VISIBLE
+        binding.voiceMessageContainer.alpha = 0.0f
 
-        binding.audioRecordView.animate()
+        binding.voiceMessageContainer.animate()
             .translationY(0.0f)
             .alpha(1.0f)
             .setListener(null)
 
 
         val audioRecordView = binding.audioRecordView
+
+        binding.chronometerMessageDelay.start()
 
         timer = Timer()
         timer.schedule(object : TimerTask() {
@@ -546,15 +549,19 @@ class ChatActivity : AppCompatActivity() {
             recorder!!.stop()
             recorder!!.release()
             recorder = null
-            binding.audioRecordView.animate()
+            binding.voiceMessageContainer.animate()
                 .translationY(binding.audioRecordView.height.toFloat())
                 .alpha(0.0f)
                 .setListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator?) {
                         super.onAnimationEnd(animation)
-                        binding.audioRecordView.visibility = View.GONE
+                        binding.voiceMessageContainer.visibility = View.GONE
                     }
                 })
+            binding.audioRecordView.recreate()
+
+            binding.chronometerMessageDelay.base = SystemClock.elapsedRealtime()
+            binding.chronometerMessageDelay.stop()
         } catch (stopException: RuntimeException) {
             Log.d("LOG_TAG", " message derreure " + stopException.message)
         }
