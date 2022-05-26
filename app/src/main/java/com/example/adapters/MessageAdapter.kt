@@ -3,6 +3,7 @@ package com.example.adapters
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -93,7 +94,6 @@ class MessageAdapter(val currentId:String): RecyclerView.Adapter<MessageAdapter.
         }
 
     }
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
         if (arrayOfMessages[position].Message.type == MessageType.TEXT)
         {
@@ -113,7 +113,12 @@ class MessageAdapter(val currentId:String): RecyclerView.Adapter<MessageAdapter.
             val voiceMessage = arrayOfMessages[position].Message as VoiceMessage
 
             GlobalScope.launch {
+                try {
                     holder.voicePlayer.setAudio(voiceMessage.voicePath)
+                }catch (ex:Exception)
+                {
+                    Log.e("voicePlayerException" ,ex.message.toString())
+                }
             }
         }
         holder.itemView.setOnClickListener {
@@ -161,6 +166,5 @@ class MessageAdapter(val currentId:String): RecyclerView.Adapter<MessageAdapter.
         notifyDataSetChanged()
 
     }
-
 
 }

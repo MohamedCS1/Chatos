@@ -39,11 +39,12 @@ import com.example.adapters.MessageAdapter
 import com.example.messenger.databinding.ActivityChatBinding
 import com.example.pojo.*
 import com.example.sharedPreferences.AppSharedPreferences
+import com.example.tools.DialogMethod
+import com.example.tools.DialogMethodClick
 import com.example.tools.LoadingProgress
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.*
@@ -53,7 +54,7 @@ import java.io.IOException
 import java.util.*
 
 
-class ChatActivity : AppCompatActivity() {
+class ChatActivity : AppCompatActivity()  {
 
     lateinit var binding: ActivityChatBinding
     lateinit var context: Context
@@ -90,6 +91,11 @@ class ChatActivity : AppCompatActivity() {
 
     lateinit var timer:Timer
 
+    private val IMAGE_CPTURE_REQUEST_CODE = 94
+
+
+    lateinit var dialogMethod:DialogMethod
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,6 +111,8 @@ class ChatActivity : AppCompatActivity() {
         appPref.PrefManager(this)
 
         currentUserUID = appPref.getCurrentUserUID()
+
+        dialogMethod = DialogMethod(this)
 
         createBottomSheet()
 
@@ -146,13 +154,25 @@ class ChatActivity : AppCompatActivity() {
         Glide.with(this).load(currentFriend.imagePath).placeholder(R.drawable.ic_photo_placeholder).into(binding.imageviewPhotoProfile)
 
         binding.buSendImage.setOnClickListener {
-            val intentImage = Intent().apply {
-                type = "image/*"
-                action = Intent.ACTION_GET_CONTENT
-                putExtra(Intent.EXTRA_MIME_TYPES , arrayOf("image/jpeg" ,"image/png"))
-            }
-
-            activityResultLauncher.launch(intentImage)
+            dialogMethod.show()
+            dialogMethod.setOnMethodClick(object:DialogMethodClick{
+                override fun onClickDialogMethod(id: Int) {
+                    if (id == R.id.bu_storage)
+                    {
+                        val intentImage = Intent().apply {
+                            type = "image/*"
+                            action = Intent.ACTION_GET_CONTENT
+                            putExtra(Intent.EXTRA_MIME_TYPES , arrayOf("image/jpeg" ,"image/png"))
+                        }
+                        activityResultLauncher.launch(intentImage)
+                    }
+                    else if (id == R.id.bu_camera)
+                    {
+                        val intentToCamera = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                        startActivityForResult(intentToCamera ,IMAGE_CPTURE_REQUEST_CODE)
+                    }
+                }
+            })
         }
 
         activityResultLauncher = registerForActivityResult(
@@ -448,19 +468,27 @@ class ChatActivity : AppCompatActivity() {
     }
 
 
+
     fun getMessageFromFireBase(channelId: String)
     {
+
         runOnUiThread {
             binding.animationLoadingMessages.visibility = View.VISIBLE
         }
         val arrayOfReceiveMessage = arrayListOf<ReceiveMessage>()
 
-                val query = chatChannelsCollectionRef.document(channelId).collection("messages").orderBy("date" ,Query.Direction.DESCENDING)
-                query.addSnapshotListener { querySnapshot, error ->
+        val query = chatChannelsCollectionRef.document(channelId).collection("messages").orderBy("date" ,Query.Direction.DESCENDING)
+         query.addSnapshotListener { querySnapshot, error ->
                     runOnUiThread {
                         binding.animationLoadingMessages.visibility = View.GONE
                     }
+                    if (error != null)
+                    {
+                        Toast.makeText(this ,"error" ,Toast.LENGTH_SHORT).show()
+                        return@addSnapshotListener
+                    }
                     messageAdapter.arrayOfMessages.clear()
+
                     querySnapshot!!.documents.forEach {
                             document ->
                         if (document.id == "lastMessage")
@@ -486,7 +514,8 @@ class ChatActivity : AppCompatActivity() {
                     messageAdapter.setList(arrayOfReceiveMessage )
 
                     binding.rvChat.scrollToPosition(0)
-                }
+
+         }
     }
     fun createBottomSheet()
     {
@@ -508,6 +537,7 @@ class ChatActivity : AppCompatActivity() {
 
 
     private fun startRecording() {
+        binding.audioRecordView.recreate()
         recorder = MediaRecorder()
         recorder!!.setAudioSource(MediaRecorder.AudioSource.MIC)
         recorder!!.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS)
@@ -558,10 +588,10 @@ class ChatActivity : AppCompatActivity() {
                         binding.voiceMessageContainer.visibility = View.GONE
                     }
                 })
-            binding.audioRecordView.recreate()
-
             binding.chronometerMessageDelay.base = SystemClock.elapsedRealtime()
             binding.chronometerMessageDelay.stop()
+
+
         } catch (stopException: RuntimeException) {
             Log.d("LOG_TAG", " message derreure " + stopException.message)
         }
@@ -655,5 +685,18 @@ class ChatActivity : AppCompatActivity() {
     override fun onStart() {
         checkPermissionRecordAudio()
         super.onStart()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == IMAGE_CPTURE_REQUEST_CODE)
+        {
+            val image = bitmapToUri(data?.extras?.get("data") as Bitmap)
+            compressImage(image!!)
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+    fun bitmapToUri(inImage: Bitmap): Uri? {
+        val path = MediaStore.Images.Media.insertImage(this.contentResolver, inImage, "Title", null)
+        return Uri.parse(path)
     }
 }
