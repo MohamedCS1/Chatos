@@ -548,7 +548,7 @@ class ChatActivity : AppCompatActivity()  {
         } catch (e: IOException) {
             Log.e("LOG_TAG", "prepare() failed" + e.message)
         }
-        recorder!!.start()
+        recorder?.start()
         binding.voiceMessageContainer.visibility = View.VISIBLE
         binding.voiceMessageContainer.alpha = 0.0f
 
@@ -688,10 +688,10 @@ class ChatActivity : AppCompatActivity()  {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == IMAGE_CPTURE_REQUEST_CODE)
+        if (requestCode == IMAGE_CPTURE_REQUEST_CODE && data?.data != null)
         {
-            val image = bitmapToUri(data?.extras?.get("data") as Bitmap)
-            compressImage(image!!)
+                val image = bitmapToUri(data.extras?.get("data") as Bitmap)
+                compressImage(image!!)
         }
         super.onActivityResult(requestCode, resultCode, data)
     }

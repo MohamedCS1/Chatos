@@ -19,6 +19,8 @@ import androidx.compose.runtime.Composable
 import com.bumptech.glide.Glide
 import com.example.messenger.databinding.ActivityProfileBinding
 import com.example.sharedPreferences.AppSharedPreferences
+import com.example.tools.DialogMethod
+import com.example.tools.DialogMethodClick
 import com.example.tools.LoadingProgress
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -48,6 +50,10 @@ class ProfileActivity : AppCompatActivity() {
 
     private val currentUserStorageRef:StorageReference get() = storageInstance.reference.child(FirebaseAuth.getInstance().currentUser!!.uid)
 
+    private val IMAGE_CPTURE_REQUEST_CODE = 94
+
+    lateinit var dialogMethod: DialogMethod
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProfileBinding.inflate(layoutInflater)
@@ -58,6 +64,8 @@ class ProfileActivity : AppCompatActivity() {
         appPref.PrefManager(this)
 
         loadingProgress = LoadingProgress(this)
+
+        dialogMethod = DialogMethod(this)
 
         retrieveImageFromStorage()
 
@@ -90,13 +98,25 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         binding.profileImageBig.setOnClickListener {
-            val intentImage = Intent().apply {
-                type = "image/*"
-                action = Intent.ACTION_GET_CONTENT
-                putExtra(Intent.EXTRA_MIME_TYPES , arrayOf("image/jpeg" ,"image/png"))
-            }
-
-            activityResultLauncher.launch(intentImage)
+            dialogMethod.show()
+            dialogMethod.setOnMethodClick(object: DialogMethodClick {
+                override fun onClickDialogMethod(id: Int) {
+                    if (id == R.id.bu_storage)
+                    {
+                        val intentImage = Intent().apply {
+                            type = "image/*"
+                            action = Intent.ACTION_GET_CONTENT
+                            putExtra(Intent.EXTRA_MIME_TYPES , arrayOf("image/jpeg" ,"image/png"))
+                        }
+                        activityResultLauncher.launch(intentImage)
+                    }
+                    else if (id == R.id.bu_camera)
+                    {
+                        val intentToCamera = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                        startActivityForResult(intentToCamera ,IMAGE_CPTURE_REQUEST_CODE)
+                    }
+                }
+            })
         }
 
         binding.buToMain.setOnClickListener {
@@ -159,5 +179,18 @@ class ProfileActivity : AppCompatActivity() {
                 Toast.makeText(this , it.exception?.message.toString(),Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == IMAGE_CPTURE_REQUEST_CODE && data?.data != null)
+        {
+            val image = bitmapToUri(data.extras?.get("data") as Bitmap)
+            compressImage(image!!)
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+    fun bitmapToUri(inImage: Bitmap): Uri? {
+        val path = MediaStore.Images.Media.insertImage(this.contentResolver, inImage, "Title", null)
+        return Uri.parse(path)
     }
 }
