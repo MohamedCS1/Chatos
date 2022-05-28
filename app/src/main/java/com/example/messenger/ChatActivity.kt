@@ -9,10 +9,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.os.SystemClock
 import android.provider.MediaStore
 import android.provider.Settings
@@ -31,6 +33,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
+import androidx.core.graphics.drawable.toDrawable
+import androidx.core.net.toFile
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -51,6 +57,7 @@ import kotlinx.coroutines.*
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
+import java.nio.ByteBuffer
 import java.util.*
 
 
@@ -93,8 +100,9 @@ class ChatActivity : AppCompatActivity()  {
 
     private val IMAGE_CPTURE_REQUEST_CODE = 94
 
-
     lateinit var dialogMethod:DialogMethod
+
+    lateinit var currentPhotoPath:String
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -168,7 +176,16 @@ class ChatActivity : AppCompatActivity()  {
                     }
                     else if (id == R.id.bu_camera)
                     {
+
+                        val fileName = "photo"
+                        val storageDirectory = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                        val imageFile = File.createTempFile(fileName ,".jpg" ,storageDirectory)
+
+                        currentPhotoPath = imageFile.absolutePath
+                        val imageUri = FileProvider.getUriForFile(this@ChatActivity ,"com.example.messenger.fileprovider" ,imageFile)
                         val intentToCamera = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                        intentToCamera.putExtra(MediaStore.EXTRA_OUTPUT ,imageUri)
+
                         startActivityForResult(intentToCamera ,IMAGE_CPTURE_REQUEST_CODE)
                     }
                 }
@@ -182,7 +199,7 @@ class ChatActivity : AppCompatActivity()  {
                     if (result?.resultCode == Activity.RESULT_OK && result.data != null)
                     {
                         val imagePath = result.data!!.data
-                        compressImage(imagePath!!)
+                        compressImageUri(imagePath!!)
                     }
                 }
             })
@@ -203,7 +220,7 @@ class ChatActivity : AppCompatActivity()  {
         }
     }
 
-    fun compressImage(imageUri: Uri){
+    fun compressImageUri(imageUri: Uri){
         val outputStream = ByteArrayOutputStream()
         MediaStore.Images.Media.getBitmap(this.contentResolver ,imageUri).compress(Bitmap.CompressFormat.JPEG ,30 ,outputStream)
         upLoadProfileImageToFirebase(outputStream.toByteArray())
@@ -211,6 +228,19 @@ class ChatActivity : AppCompatActivity()  {
                 path -> sendMessage(currentChannelId , ImageMessage(path ,currentUserUID ,currentFriend.uid ,appPref.getCurrentUserName() ,currentFriend.name ,Calendar.getInstance().time))
         }
     }
+
+    fun compressImageBitmap(imageBitmap: Bitmap){
+
+        val outputStream = ByteArrayOutputStream()
+        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
+        val byteArray = outputStream.toByteArray()
+
+        upLoadProfileImageToFirebase(byteArray)
+        {
+                path -> sendMessage(currentChannelId , ImageMessage(path ,currentUserUID ,currentFriend.uid ,appPref.getCurrentUserName() ,currentFriend.name ,Calendar.getInstance().time))
+        }
+    }
+
 
     fun upLoadProfileImageToFirebase(imageByteArray:ByteArray ,onSuccess:(imagePath:String) -> Unit)
     {
@@ -590,10 +620,8 @@ class ChatActivity : AppCompatActivity()  {
                 })
             binding.chronometerMessageDelay.base = SystemClock.elapsedRealtime()
             binding.chronometerMessageDelay.stop()
-
-
         } catch (stopException: RuntimeException) {
-            Log.d("LOG_TAG", " message derreure " + stopException.message)
+            Log.d("LOG_TAG", "stopException" + stopException.message)
         }
         uploadAudio()
     }
@@ -688,15 +716,12 @@ class ChatActivity : AppCompatActivity()  {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == IMAGE_CPTURE_REQUEST_CODE && data?.data != null)
+        if (requestCode == IMAGE_CPTURE_REQUEST_CODE)
         {
-                val image = bitmapToUri(data.extras?.get("data") as Bitmap)
-                compressImage(image!!)
+            val imageBitmap = BitmapFactory.decodeFile(currentPhotoPath)
+            compressImageBitmap(imageBitmap)
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
-    fun bitmapToUri(inImage: Bitmap): Uri? {
-        val path = MediaStore.Images.Media.insertImage(this.contentResolver, inImage, "Title", null)
-        return Uri.parse(path)
-    }
+
 }

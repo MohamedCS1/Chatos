@@ -93,6 +93,7 @@
         <entry key="app/src/main/res/menu/drawer_menu.xml" value="0.5" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.256" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.256" />
+        <entry key="app/src/main/res/xml/file_paths.xml" value="0.17144078666096624" />
       </map>
     </option>
   </component>
