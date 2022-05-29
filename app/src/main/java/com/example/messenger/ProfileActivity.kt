@@ -4,9 +4,11 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.view.View
 import android.widget.Button
@@ -16,8 +18,10 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
+import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
 import com.example.messenger.databinding.ActivityProfileBinding
+import com.example.pojo.ImageMessage
 import com.example.sharedPreferences.AppSharedPreferences
 import com.example.tools.DialogMethod
 import com.example.tools.DialogMethodClick
@@ -27,6 +31,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.util.*
 
 class ProfileActivity : AppCompatActivity() {
@@ -53,6 +58,9 @@ class ProfileActivity : AppCompatActivity() {
     private val IMAGE_CPTURE_REQUEST_CODE = 94
 
     lateinit var dialogMethod: DialogMethod
+
+    lateinit var currentPhotoPath:String
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -112,7 +120,16 @@ class ProfileActivity : AppCompatActivity() {
                     }
                     else if (id == R.id.bu_camera)
                     {
+
+                        val fileName = "photo"
+                        val storageDirectory = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                        val imageFile = File.createTempFile(fileName ,".jpg" ,storageDirectory)
+
+                        currentPhotoPath = imageFile.absolutePath
+                        val imageUri = FileProvider.getUriForFile(this@ProfileActivity ,"com.example.messenger.fileprovider" ,imageFile)
                         val intentToCamera = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                        intentToCamera.putExtra(MediaStore.EXTRA_OUTPUT ,imageUri)
+
                         startActivityForResult(intentToCamera ,IMAGE_CPTURE_REQUEST_CODE)
                     }
                 }
@@ -131,7 +148,7 @@ class ProfileActivity : AppCompatActivity() {
                         binding.profileImageBig.setImageURI(result.data!!.data)
 
                         val imagePath = result.data!!.data
-                        compressImage(imagePath!!)
+                        compressImageUri(imagePath!!)
                     }
                 }
             })
@@ -142,7 +159,7 @@ class ProfileActivity : AppCompatActivity() {
         Glide.with(this).load(appPref.getProfileImagePath()).placeholder(R.drawable.ic_photo_placeholder).into(binding.profileImageBig)
     }
 
-    fun compressImage(imageUri:Uri){
+    fun compressImageUri(imageUri:Uri){
         val outputStream = ByteArrayOutputStream()
         MediaStore.Images.Media.getBitmap(this.contentResolver ,imageUri).compress(Bitmap.CompressFormat.JPEG ,30 ,outputStream)
         upLoadProfileImageToFirebase(outputStream.toByteArray())
@@ -151,6 +168,20 @@ class ProfileActivity : AppCompatActivity() {
             appPref.insertProfileImagePath(path)
         }
     }
+
+    fun compressImageBitmap(imageBitmap: Bitmap){
+
+        val outputStream = ByteArrayOutputStream()
+        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
+        val byteArray = outputStream.toByteArray()
+
+        upLoadProfileImageToFirebase(byteArray)
+        {
+            path ->  currentUserDocRef.update("imagePath" ,path)
+            appPref.insertProfileImagePath(path)
+        }
+    }
+
     fun upLoadProfileImageToFirebase(imageByteArray:ByteArray ,onSuccess:(imagePath:String) -> Unit)
     {
         loadingProgress.show()
@@ -182,15 +213,12 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == IMAGE_CPTURE_REQUEST_CODE && data?.data != null)
+        if (requestCode == IMAGE_CPTURE_REQUEST_CODE)
         {
-            val image = bitmapToUri(data.extras?.get("data") as Bitmap)
-            compressImage(image!!)
+            val imageBitmap = BitmapFactory.decodeFile(currentPhotoPath)
+            compressImageBitmap(imageBitmap)
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
-    fun bitmapToUri(inImage: Bitmap): Uri? {
-        val path = MediaStore.Images.Media.insertImage(this.contentResolver, inImage, "Title", null)
-        return Uri.parse(path)
-    }
+
 }
